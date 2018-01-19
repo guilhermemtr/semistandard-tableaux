@@ -4,6 +4,7 @@
 #define __PM_ORDERED_ARRAY_DEFAULT_SIZE (1 << 5)
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "types.h"
 
@@ -25,14 +26,14 @@ typedef struct
  * @param _pmoa pointer to the structure where the array should be created.
  */
 void
-__pm_ordered_array_create (const __pm_ordered_array_t *_pmoa);
+__pm_ordered_array_create (__pm_ordered_array_t *_pmoa);
 
 /** Destroys the array.
  * Destroys the array, freeing all the space allocated.
  * @param _pmoa the plactic monoid ordered array.
  */
 void
-__pm_ordered_array_destroy (const __pm_ordered_array_t *_pmoa);
+__pm_ordered_array_destroy (__pm_ordered_array_t *_pmoa);
 
 /** Places a new element into the ordered array, possibly returning the replaced
  * element. Places a new element into the ordered array. If the new element is
@@ -46,8 +47,18 @@ __pm_ordered_array_destroy (const __pm_ordered_array_t *_pmoa);
  * replaced another previously stored element.
  */
 __pm_ordered_array_place_result_t
-__pm_ordered_array_place (const __pm_ordered_array_t *_pmoa,
-                          const __matroid_cell_t      to_place,
-                          const __matroid_cell_t *    replaced);
+__pm_ordered_array_place (__pm_ordered_array_t * _pmoa,
+                          const __matroid_cell_t to_place,
+                          __matroid_cell_t *     replaced);
+
+/** Copies the first array into the second.
+ * Copies the first array into the second, resizing it if needed.
+ * @param _pmoa_from the plactic monoid ordered array from which data is copied.
+ * @param _pmoa_to the plactic monoid to which the data is copied.
+ */
+void
+__pm_ordered_array_copy (const __pm_ordered_array_t *_pmoa_from,
+                         __pm_ordered_array_t *      _pmoa_to);
+
 
 #endif    // __PM_ORDERED_ARRAY__

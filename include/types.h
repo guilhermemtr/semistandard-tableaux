@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <stddef.h>
 
 typedef uint64_t
                  __matroid_cell_val_t;    //!< type of the value stored in matroid cells.

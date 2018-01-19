@@ -14,7 +14,7 @@ LDFLAGS=-lpthread -lm
 FILE_PREFIX=.c
 OBJ=.o
 
-SOURCES=main.c $(SRC_PATH)/example.c
+SOURCES=main.c $(SRC_PATH)/ordered_array.c $(SRC_PATH)/plactic_matroid.c
 OBJECTS=$(SOURCES:$(FILE_PREFIX)=$(OBJ))
 
 EXECUTABLE=test
