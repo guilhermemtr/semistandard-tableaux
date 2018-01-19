@@ -43,11 +43,16 @@ __pm_ordered_array_place (__pm_ordered_array_t * _pmoa,
 
   size_t top    = _pmoa->counter - 1;
   size_t bottom = 0;
-  size_t mid    = (top + bottom) >> 1;
-  bool   found  = false;
+  size_t mid    = (top + bottom + 1) >> 1;
 
-  while (!found)
+  while (true)
   {
+    if (to_place.val < _pmoa->array[mid].val
+        && (mid == 0 || to_place.val >= _pmoa->array[mid - 1].val))
+    {
+      break;
+    }
+
     if (to_place.val < _pmoa->array[mid].val)
     {
       top = mid;
@@ -55,9 +60,8 @@ __pm_ordered_array_place (__pm_ordered_array_t * _pmoa,
     {
       bottom = mid;
     }
-    found = to_place.val < _pmoa->array[mid].val
-            && (mid == 0 || to_place.val >= _pmoa->array[mid - 1].val);
-    mid = (top + bottom) >> 1;
+
+    mid = (top + bottom + 1) >> 1;
   }
 
   *replaced         = _pmoa->array[mid];

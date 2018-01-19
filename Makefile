@@ -8,7 +8,6 @@ INC_PATH=include
 INCS=$(foreach d, $(INC_PATH), -I$d)
 
 CFLAGS=-fPIC -march=native -Wall $(MODE) $(INCS)
-SFLAGS=-shared
 LDFLAGS=-lpthread -lm
 
 FILE_PREFIX=.c
@@ -19,17 +18,15 @@ OBJECTS=$(SOURCES:$(FILE_PREFIX)=$(OBJ))
 
 EXECUTABLE=test
 
-SOLIB=libplacticmonoids.so
-
-MODE=$(RELEASE)
+MODE=$(DEBUG)
 
 RELEASE=-O2
 DEBUG=-g 
 
-all: $(SOURCES) $(SOLIB)
-	$(CC) $(CFLAGS) $(OBJECTS) $(SFLAGS) -o $(SOLIB) $(LDFLAGS)
+all: $(SOURCES) $(EXECUTABLE)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $(EXECUTABLE) $(LDFLAGS)
 
-$(SOLIB):$(OBJECTS)
+$(EXECUTABLE):$(OBJECTS)
 
 %$(OBJ): %FILE_PREFIX
 	$(CC) $(CFLAGS) $< $@ $(LDFLAGS)

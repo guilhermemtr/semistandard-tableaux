@@ -2,6 +2,15 @@
 
 #ifdef __PM_MATROID__
 
+static void
+__pm_matroid_initialize_rows (__pm_matroid_t *_pm)
+{
+  for (size_t i = _pm->counter; i < _pm->size; i++)
+  {
+    __pm_ordered_array_create (&(_pm->columns[i]));
+  }
+}
+
 __pm_matroid_t *
 __pm_matroid_create (void)
 {
@@ -9,6 +18,7 @@ __pm_matroid_create (void)
   matroid->size           = __PM_ORDERED_ARRAY_DEFAULT_SIZE;
   matroid->counter        = 0;
   matroid->columns = malloc (matroid->size * sizeof (__pm_ordered_array_t));
+  __pm_matroid_initialize_rows (matroid);
   return matroid;
 }
 
@@ -18,6 +28,7 @@ __pm_matroid_resize (__pm_matroid_t *_pm)
   _pm->size = (_pm->size + 1) << 1;    // multiplication by two
   _pm->columns =
     realloc (_pm->columns, _pm->size * sizeof (__pm_ordered_array_t));
+  __pm_matroid_initialize_rows (_pm);
 }
 
 static void
@@ -32,6 +43,10 @@ __pm_matroid_add_cell (__pm_matroid_t *_pm, const __matroid_cell_t cell)
     if (j == _pm->size)
     {
       __pm_matroid_resize (_pm);
+    }
+    if (j == _pm->counter)
+    {
+      _pm->counter++;
     }
     res = __pm_ordered_array_place (&(_pm->columns[j++]), to_place, &replaced);
     to_place = replaced;
@@ -52,7 +67,7 @@ __pm_matroid_init (__pm_matroid_t *        _pm,
 void
 __pm_matroid_destroy (__pm_matroid_t *_pm)
 {
-  for (size_t i = 0; i < _pm->counter; i++)
+  for (size_t i = 0; i < _pm->size; i++)
   {
     __pm_ordered_array_destroy (&(_pm->columns[i]));
   }
@@ -61,26 +76,25 @@ __pm_matroid_destroy (__pm_matroid_t *_pm)
 }
 
 void
-__pm_matroid_iterate_matroid (const __pm_matroid_t *   _pm,
-                              iteration_function fn,
-                              void *             data)
+__pm_matroid_iterate_matroid (const __pm_matroid_t *_pm,
+                              iteration_function    fn,
+                              void *                data)
 {
   size_t index = 0;
   size_t i     = 0;
-  size_t j     = _pm->counter - 1;
-  while (i <= _pm->columns[0].counter)
+  size_t j     = _pm->counter;
+  while (j != 0)
   {
-    while (j >= 0)
+    while (i < _pm->columns[j-1].counter)
     {
-      ptrdiff_t offset = fn (_pm->columns[j].array[i], index++, data);
+      ptrdiff_t offset = fn (_pm->columns[j-1].array[i++], index++, data);
       if (offset != 1)
       {
         abort ();    // not yet implemented
       }
-      j--;
     }
-    j = _pm->counter - 1;
-    i++;
+    i = 0;
+    j--;
   }
 }
 
@@ -144,6 +158,7 @@ __pm_matroid_resize_to (__pm_matroid_t *_pm, const size_t sz)
   _pm->size = sz;
   _pm->columns =
     realloc (_pm->columns, _pm->size * sizeof (__pm_ordered_array_t));
+  __pm_matroid_initialize_rows (_pm);
 }
 
 void
@@ -214,12 +229,33 @@ __pm_matroid_check (const __pm_matroid_t *_pm)
 __pm_matroid_t *
 __pm_matroid_read_file (const char *filename)
 {
-  return NULL;
+  FILE *           f    = fopen (filename, "r");
+  __pm_matroid_t * _pm  = __pm_matroid_create ();
+  __matroid_cell_t cell = {0, 0};
+  while (fscanf (f, "%lu", &(cell.val)) != EOF)
+  {
+    __pm_matroid_add_cell (_pm, cell);
+  }
+  return _pm;
+}
+
+static ptrdiff_t
+__pm_matroid_write_file_iterator_function (__matroid_cell_t cell,
+                                           size_t           sz,
+                                           void *           data)
+{
+  FILE *f = (FILE *) data;
+  fprintf (f, "%lu\n", cell.val);
+  return (ptrdiff_t) 1;
 }
 
 void
 __pm_matroid_write_file (const __pm_matroid_t *_pm, const char *filename)
 {
+  FILE *f = fopen (filename, "w");
+  __pm_matroid_iterate_matroid (
+    _pm, __pm_matroid_write_file_iterator_function, f);
+  fclose (f);
 }
 
 #endif    // __PM_MATROID__

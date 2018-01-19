@@ -1,8 +1,9 @@
 #ifndef __PM_MATROID__
 #define __PM_MATROID__
 
-#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 
 #include "ordered_array.h"
@@ -29,7 +30,9 @@ typedef struct
  * previous position, 0 to stay still and 1 to move to the next cell of the
  * matroid).
  */
-typedef ptrdiff_t(iteration_function) (__matroid_cell_t cell, size_t sz, void *data);
+typedef ptrdiff_t (iteration_function) (__matroid_cell_t cell,
+                                        size_t           sz,
+                                        void *           data);
 
 /** Creates a new plactic matroid.
  * Creates a new plactic matroid with the default size.
@@ -64,9 +67,9 @@ __pm_matroid_destroy (__pm_matroid_t *_pm);
  * @param data additional data to be passed to the iteration function.
  */
 void
-__pm_matroid_iterate_matroid (const __pm_matroid_t *   _pm,
-                              iteration_function fn,
-                              void *             data);
+__pm_matroid_iterate_matroid (const __pm_matroid_t *_pm,
+                              iteration_function    fn,
+                              void *                data);
 
 /** Returns the total number of cells of the plactic matroid.
  * Returns the total number of cells of the plactic matroid.
