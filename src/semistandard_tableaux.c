@@ -1,4 +1,4 @@
-#include "plactic_matroid.h"
+#include "semistandard_tableaux.h"
 
 #ifdef __PM_MATROID__
 
@@ -85,9 +85,9 @@ __pm_matroid_iterate_matroid (const __pm_matroid_t *_pm,
   size_t j     = _pm->counter;
   while (j != 0)
   {
-    while (i < _pm->columns[j-1].counter)
+    while (i < _pm->columns[j - 1].counter)
     {
-      ptrdiff_t offset = fn (_pm->columns[j-1].array[i++], index++, data);
+      ptrdiff_t offset = fn (_pm->columns[j - 1].array[i++], index++, data);
       if (offset != 1)
       {
         abort ();    // not yet implemented
@@ -232,6 +232,51 @@ __pm_matroid_read_file (const char *filename)
   FILE *           f    = fopen (filename, "r");
   __pm_matroid_t * _pm  = __pm_matroid_create ();
   __matroid_cell_t cell = {0, 0};
+  while (fscanf (f, "%lu", &(cell.val)) != EOF)
+  {
+    __pm_matroid_add_cell (_pm, cell);
+  }
+  return _pm;
+}
+
+__pm_matroid_t *
+__pm_matroid_read_structured_file (const char *filename)
+{
+  FILE *          f   = fopen (filename, "r");
+  __pm_matroid_t *_pm = __pm_matroid_create ();
+
+  char * line = NULL;
+  size_t len  = 0;
+  char * token1;
+  char * token2;
+  char * save_ptr1;
+  char * save_ptr2;
+  char * end_ptr  = NULL;
+  int    base_val = 10;
+  int    base_tag = 16;
+
+  while (getline (&line, &len, f) != -1)
+  {
+    token1 = strtok_r (line, ",", &save_ptr1);
+
+    while (token1 != NULL)
+    {
+      token2                    = strtok_r (token1, ":", &save_ptr2);
+      __matroid_cell_val_t v    = strtoull (token2, &end_ptr, base_val);
+      token2                    = strtok_r (NULL, ":", &save_ptr2);
+      __matroid_cell_tag_t t    = strtoull (token2, &end_ptr, base_tag);
+      __matroid_cell_t     cell = {.val = v, .tag = t};
+
+
+      token1 = strtok_r (NULL, ",", &save_ptr1);
+    }
+
+    free (line);
+    line = NULL;
+    len  = 0;
+  }
+
+  __matroid_cell_t cell;
   while (fscanf (f, "%lu", &(cell.val)) != EOF)
   {
     __pm_matroid_add_cell (_pm, cell);

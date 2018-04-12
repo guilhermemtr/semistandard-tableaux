@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "plactic_matroid.h"
+#include "semistandard_tableaux.h"
 
 int
 main(int argc, char ** argv)

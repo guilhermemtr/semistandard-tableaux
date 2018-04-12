@@ -4,6 +4,7 @@ RM=rm -f
 
 SRC_PATH=src
 INC_PATH=include
+BUILD_PATH=build
 
 INCS=$(foreach d, $(INC_PATH), -I$d)
 
@@ -13,10 +14,12 @@ LDFLAGS=-lpthread -lm
 FILE_PREFIX=.c
 OBJ=.o
 
-SOURCES=main.c $(SRC_PATH)/ordered_array.c $(SRC_PATH)/plactic_matroid.c
-OBJECTS=$(SOURCES:$(FILE_PREFIX)=$(OBJ))
+SOURCES=$(SRC_PATH)/main.c $(SRC_PATH)/ordered_array.c $(SRC_PATH)/semistandard_tableaux.c
+OBJS=$(subst $(SRC_PATH),$(BUILD_PATH),$(SOURCES))
+OBJECTS=$(OBJS:$(FILE_PREFIX)=$(OBJ))
 
-EXECUTABLE=test
+
+EXECUTABLE=$(BUILD_PATH)/test
 
 MODE=$(DEBUG)
 
@@ -28,8 +31,8 @@ all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE):$(OBJECTS)
 
-%$(OBJ): %FILE_PREFIX
-	$(CC) $(CFLAGS) $< $@ $(LDFLAGS)
+$(BUILD_PATH)/%$(OBJ): $(SRC_PATH)/%$(FILE_PREFIX)
+	$(CC) $(CFLAGS) -c $< -o $@ $(LDFLAGS)
 
 clean:
 	$(RM) $(OBJECTS) $(SOLIB)
