@@ -1,1 +1,1 @@
-# plactic-monoids
+# Semistandard tableaux library
