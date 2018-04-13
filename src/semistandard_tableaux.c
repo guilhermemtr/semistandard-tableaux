@@ -265,58 +265,127 @@ __sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
 
 
 static ptrdiff_t
-__sst_tableaux_read_iteration_function (__tableaux_cell_t cell,
-                                        size_t            index,
-                                        size_t            real_index,
-                                        void *            data)
+__sst_tableaux_read_to_plain_iteration_function (__tableaux_cell_t cell,
+                                                 size_t            index,
+                                                 size_t            real_index,
+                                                 void *            data)
 {
   __tableaux_cell_val_t *vector = (__tableaux_cell_val_t *) data;
-  vector[real_index]            = cell.val;
+  for (size_t i = 0; i < cell.len; i++)
+  {
+    vector[real_index + i] = cell.val;
+  }
   return (ptrdiff_t) 1;
 }
 
-//TODO
 size_t
-__sst_tableaux_read_tableaux (const __sst_tableaux_t *      _sst,
-                              const __tableaux_cell_val_t **_sst_tableaux_cells)
+__sst_tableaux_read_to_plain_tableaux (
+  const __sst_tableaux_t *      _sst,
+  const __tableaux_cell_val_t **_sst_tableaux_cells)
 {
   size_t total_size    = __sst_tableaux_storage_size (_sst);
   *_sst_tableaux_cells = malloc (total_size * sizeof (__tableaux_cell_val_t));
   __sst_tableaux_iterate_tableaux (
-    _sst, __sst_tableaux_read_iteration_function, _sst_tableaux_cells);
+    _sst, __sst_tableaux_read_to_plain_iteration_function, _sst_tableaux_cells);
   return total_size;
 }
 
-//TODO
+void
+__sst_tableaux_read_from_plain_tableaux (
+  __sst_tableaux_t *           _sst,
+  const __tableaux_cell_val_t *_sst_tableaux_cells,
+  const size_t                 len)
+{
+  __tableaux_cell_val_t curr  = len > 0 ? _sst_tableaux_cells[0] : 0;
+  size_t                count = 0;
+  for (size_t i = 0; i < len; i++)
+  {
+    if (_sst_tableaux_cells[i] == curr)
+    {
+      count++;
+    } else
+    {
+      __tableaux_cell_t cell = {.val = curr, .len = count};
+      __sst_tableaux_add_cell (_sst, cell);
+      curr  = _sst_tableaux_cells[i];
+      count = 1;
+    }
+  }
+}
+
+static ptrdiff_t
+__sst_tableaux_read_to_compressed_iteration_function (__tableaux_cell_t cell,
+                                                      size_t            index,
+                                                      size_t real_index,
+                                                      void * data)
+{
+  __tableaux_cell_t *vector = (__tableaux_cell_t *) data;
+  vector[real_index]        = cell;
+  return (ptrdiff_t) 1;
+}
+
 size_t
-__sst_tableaux_read_tableaux_compressed (
+__sst_tableaux_read_to_compressed_tableaux (
   const __sst_tableaux_t *_sst, const __tableaux_cell_t **_sst_tableaux_cells)
 {
-  size_t total_size    = __sst_tableaux_storage_size (_sst);
+  size_t total_size    = __sst_tableaux_size (_sst);
   *_sst_tableaux_cells = malloc (total_size * sizeof (__tableaux_cell_val_t));
   __sst_tableaux_iterate_tableaux (
-    _sst, __sst_tableaux_read_iteration_function, _sst_tableaux_cells);
+    _sst,
+    __sst_tableaux_read_to_compressed_iteration_function,
+    _sst_tableaux_cells);
   return total_size;
+}
+
+void
+__sst_tableaux_read_from_compressed_tableaux (
+  __sst_tableaux_t *       _sst,
+  const __tableaux_cell_t *_sst_tableaux_cells,
+  const size_t             len)
+{
+  __tableaux_cell_val_t curr  = len > 0 ? _sst_tableaux_cells[0].val : 0;
+  size_t                count = 0;
+  for (size_t i = 0; i < len; i++)
+  {
+    if (_sst_tableaux_cells[i].val == curr)
+    {
+      count += _sst_tableaux_cells[i].len;
+    } else
+    {
+      __tableaux_cell_t cell = {.val = curr, .len = count};
+      __sst_tableaux_add_cell (_sst, cell);
+      curr  = _sst_tableaux_cells[i].val;
+      count = _sst_tableaux_cells[i].len;
+    }
+  }
 }
 
 __sst_tableaux_t *
-__sst_tableaux_read_file (const char *filename)
+__sst_tableaux_read_plain_file (const char *filename)
 {
-  FILE *            f    = fopen (filename, "r");
-  __sst_tableaux_t *_sst = __sst_tableaux_create ();
-  __tableaux_cell_t cell = {0, 0};
-  while (fscanf (f, "%lu", &(cell.val)) != EOF)
+  FILE *                 f     = fopen (filename, "r");
+  size_t                 sz    = (1 << 5);
+  size_t                 count = 0;
+  __tableaux_cell_val_t *plain = malloc (sz * sizeof (__tableaux_cell_val_t));
+
+  while (fscanf (f, "%lu", &(plain[count++])) != EOF)
   {
-    __sst_tableaux_add_cell (_sst, cell);
+    if (count == sz)
+    {
+      sz    = sz << 1;
+      plain = realloc (plain, sz * sizeof (__tableaux_cell_val_t));
+    }
   }
+  __sst_tableaux_t *_sst = __sst_tableaux_create ();
+  __sst_tableaux_read_from_plain_tableaux (_sst, plain, count);
   return _sst;
 }
 
 static ptrdiff_t
-__sst_tableaux_write_file_iterator_function (__tableaux_cell_t cell,
-                                             size_t            index,
-                                             size_t            real_index,
-                                             void *            data)
+__sst_tableaux_write_plain_file_iterator_function (__tableaux_cell_t cell,
+                                                   size_t            index,
+                                                   size_t            real_index,
+                                                   void *            data)
 {
   FILE *f = (FILE *) data;
   fprintf (f, "%lu\n", cell.val);
@@ -324,34 +393,55 @@ __sst_tableaux_write_file_iterator_function (__tableaux_cell_t cell,
 }
 
 void
-__sst_tableaux_write_file (const __sst_tableaux_t *_sst, const char *filename)
+__sst_tableaux_write_plain_file (const __sst_tableaux_t *_sst,
+                                 const char *            filename)
 {
   FILE *f = fopen (filename, "w");
   __sst_tableaux_iterate_tableaux (
-    _sst, __sst_tableaux_write_file_iterator_function, f);
+    _sst, __sst_tableaux_write_plain_file_iterator_function, f);
   fclose (f);
 }
 
 __sst_tableaux_t *
-__sst_tableaux_read_file_compressed (const char *filename)
+__sst_tableaux_read_compressed_file (const char *filename)
 {
-  FILE *            f    = fopen (filename, "r");
-  __sst_tableaux_t *_sst = __sst_tableaux_create ();
-  __tableaux_cell_t cell = {0, 0};
-  while (fscanf (f, "%lu", &(cell.val)) != EOF)
+  FILE *             f     = fopen (filename, "r");
+  size_t             sz    = (1 << 5);
+  size_t             count = 0;
+  __tableaux_cell_t *cells = malloc (sz * sizeof (__tableaux_cell_t));
+
+  while (fscanf (f, "%lu %lu", &(cells[count].val), &(cells[count].len)) != EOF)
   {
-    __sst_tableaux_add_cell (_sst, cell);
+    count++;
+    if (count == sz)
+    {
+      sz    = sz << 1;
+      cells = realloc (cells, sz * sizeof (__tableaux_cell_t));
+    }
   }
+  __sst_tableaux_t *_sst = __sst_tableaux_create ();
+  __sst_tableaux_read_from_compressed_tableaux (_sst, cells, count);
   return _sst;
 }
 
+static ptrdiff_t
+__sst_tableaux_write_compressed_file_iterator_function (__tableaux_cell_t cell,
+                                                        size_t            index,
+                                                        size_t real_index,
+                                                        void * data)
+{
+  FILE *f = (FILE *) data;
+  fprintf (f, "%lu %lu\n", cell.val, cell.len);
+  return (ptrdiff_t) 1;
+}
+
 void
-__sst_tableaux_write_file_compressed (const __sst_tableaux_t *_sst,
+__sst_tableaux_write_compressed_file (const __sst_tableaux_t *_sst,
                                       const char *            filename)
 {
   FILE *f = fopen (filename, "w");
   __sst_tableaux_iterate_tableaux (
-    _sst, __sst_tableaux_write_file_iterator_function, f);
+    _sst, __sst_tableaux_write_compressed_file_iterator_function, f);
   fclose (f);
 }
 

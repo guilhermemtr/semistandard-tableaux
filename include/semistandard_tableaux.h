@@ -135,9 +135,21 @@ __sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
  * @return the size of the tableaux cells vector.
  */
 size_t
-__sst_tableaux_read_tableaux (
+__sst_tableaux_read_to_plain_tableaux (
   const __sst_tableaux_t *      _sst,
   const __tableaux_cell_val_t **_sst_tableaux_cells);
+
+/** Reads a semistandard tableaux from a vector of numbers.
+ * Reads a semistandard tableaux from a vector of numbers (or, in other words,
+ * returns a semistandard tableaux from the given word).
+ * @param _sst the semistandard tableaux.
+ * @param the vector of numbers corresponding to the semistandard tableaux.
+ */
+void
+__sst_tableaux_read_from_plain_tableaux (
+  __sst_tableaux_t *           _sst,
+  const __tableaux_cell_val_t *_sst_tableaux_cells,
+  const size_t                 len);
 
 /** Reads a semistandard tableaux into a compressed vector of cells.
  * Reads a semistandard tableaux into a compressed vector of cells (or, in
@@ -148,26 +160,39 @@ __sst_tableaux_read_tableaux (
  * @return the size of the compressed tableaux cells vector.
  */
 size_t
-__sst_tableaux_read_tableaux_compressed (
+__sst_tableaux_read_to_compressed_tableaux (
   const __sst_tableaux_t *_sst, const __tableaux_cell_t **_sst_tableaux_cells);
 
-/** Reads a semistandard tableaux from a file.
- * Reads a semistandard tableaux from the file with the given filename.
+/** Reads a semistandard tableaux from a compressed vector of cells.
+ * Reads a semistandard tableaux from a compressed vector of cells (or, in
+ * other words, returns a compressed semistandard tableaux given its compressed
+ * word).
+ * @param _sst the semistandard tableaux.
+ * @param the vector of cells corresponding to the semistandard tableaux.
+ */
+void
+__sst_tableaux_read_from_compressed_tableaux (
+  __sst_tableaux_t *       _sst,
+  const __tableaux_cell_t *_sst_tableaux_cells,
+  const size_t             len);
+
+/** Reads a semistandard tableaux from a plain file.
+ * Reads a semistandard tableaux from the plain file with the given filename.
  * @param filename the name of the file from which the semistandard tableaux is
  * to be read.
  * @return _sst the semistandard tableaux read.
  */
 __sst_tableaux_t *
-__sst_tableaux_read_file (const char *filename);
+__sst_tableaux_read_plain_file (const char *filename);
 
-/** Writes the given semistandard tableaux into a file.
- * Writes the given semistandard tableaux into a file.
- * @param _sst the semistandard tableaux to be written to a file.
+/** Writes the given semistandard tableaux into a plain file.
+ * Writes the given semistandard tableaux into a plain file.
+ * @param _sst the semistandard tableaux to be written to a plain file.
  * @param filename the filename of the file where the semistandard tableaux will
  * be stored.
  */
 void
-__sst_tableaux_write_file (const __sst_tableaux_t *_sst, const char *filename);
+__sst_tableaux_write_plain_file (const __sst_tableaux_t *_sst, const char *filename);
 
 /** Reads a compressed semistandard tableaux from a file.
  * Reads a compressed semistandard tableaux from the file with the given
@@ -177,7 +202,7 @@ __sst_tableaux_write_file (const __sst_tableaux_t *_sst, const char *filename);
  * @return _sst the semistandard tableaux read.
  */
 __sst_tableaux_t *
-__sst_tableaux_read_file_compressed (const char *filename);
+__sst_tableaux_read_compressed_file (const char *filename);
 
 /** Writes the given semistandard tableaux into a compressed file.
  * Writes the given semistandard tableaux into a compressed file.
@@ -186,7 +211,7 @@ __sst_tableaux_read_file_compressed (const char *filename);
  * tableaux will be stored.
  */
 void
-__sst_tableaux_write_file_compressed (const __sst_tableaux_t *_sst,
+__sst_tableaux_write_compressed_file (const __sst_tableaux_t *_sst,
                                       const char *            filename);
 
 
