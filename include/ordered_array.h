@@ -53,7 +53,8 @@ __sst_ordered_array_resize (__sst_ordered_array_t *_sstoa);
 
 /** Resizes the array to the given size.
  * Resizes the array to the given size, unless the given size is not enough to
- * store all the elements of the array.
+ * store all the elements of the array. If the given size is not enough, then
+ * the array is resized to _sstoa->counter.
  * @param _sstoa the semistandard tableaux ordered array to be resized.
  * @param size the new size to which the semistandard tableaux ordered array.
  */

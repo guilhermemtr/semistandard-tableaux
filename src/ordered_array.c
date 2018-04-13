@@ -31,7 +31,7 @@ __sst_ordered_array_real_length (__sst_ordered_array_t *_sstoa)
 void
 __sst_ordered_array_resize_to (__sst_ordered_array_t *_sstoa, const size_t sz)
 {
-  _sstoa->size = sz;
+  _sstoa->size = sz >= _sstoa->counter ? sz : _sstoa->counter;
   _sstoa->array =
     realloc (_sstoa->array, _sstoa->size * sizeof (__tableaux_cell_t));
 }
@@ -39,7 +39,7 @@ __sst_ordered_array_resize_to (__sst_ordered_array_t *_sstoa, const size_t sz)
 void
 __sst_ordered_array_resize (__sst_ordered_array_t *_sstoa)
 {
-  __sst_ordered_array_resize_to(_sstoa, (_sstoa->size + 1) << 1);
+  __sst_ordered_array_resize_to (_sstoa, (_sstoa->size + 1) << 1);
 }
 
 void

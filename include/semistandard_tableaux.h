@@ -18,20 +18,22 @@ typedef struct
   size_t
     counter;    //!< number of positions of the array used. invariant: counter
                 //!< <= size.
-  __sst_ordered_array_t *columns;    //!< tableaux columns.
+  __sst_ordered_array_t *rows;    //!< tableaux rows.
 } __sst_tableaux_t;
 
 /** Type of function that is called during iterations of tableauxs.
  * Type of function that is called during iterations of tableauxs.
  * @param cell the value of the cell currently being iterated.
  * @param index the index of the cell.
+ * @param real_index the true index of the cell.
  * @param data pointer to additional data.
  * @return the offset that the iterator should go to (-1 being to go to the
  * previous position, 0 to stay still and 1 to move to the next cell of the
  * tableaux).
  */
 typedef ptrdiff_t (iteration_function) (__tableaux_cell_t cell,
-                                        size_t            sz,
+                                        size_t            index,
+                                        size_t            real_index,
                                         void *            data);
 
 /** Creates a new semistandard tableaux.
@@ -90,6 +92,40 @@ __sst_tableaux_size (const __sst_tableaux_t *_sst);
 size_t
 __sst_tableaux_storage_size (const __sst_tableaux_t *_sst);
 
+/** Verifies if the semistandard tableaux given as input is ok.
+ * Verifies if the semistandard tableaux given as input is ok.
+ * @param _sst the semistandard tableaux.
+ */
+bool
+__sst_tableaux_check (const __sst_tableaux_t *_sst);
+
+/** Places a new element into the ordered array, possibly returning the replaced
+ * element. Places a new element into the ordered array. If the new element is
+ * appended to the array, APPENDED is returned; otherwise, REPLACED is returned,
+ * and the value of the replaced element is written in the replaced parameter.
+ * @param _sstoa the semistandard tableaux ordered array.
+ * @param to_place the element to be placed in the array.
+ * @param replaced pointer to a variable where the function can write the value
+ * replaced.
+ * @return APPENDED if the element was appended, or REPLACED if the element
+ * replaced another previously stored element.
+ */
+__sst_ordered_array_place_result_t
+__sst_ordered_array_place (__sst_ordered_array_t * _sstoa,
+                           const __tableaux_cell_t to_place,
+                           __tableaux_cell_t *     replaced);
+
+/** Multiplies two semistandard tableauxs given as input into a semistandard
+ * tableaux also given as input. Multiplies the two semistandard tableauxs given
+ * as input, writing the new semistandard tableaux in the third input parameter.
+ * @param _sst_left the first semistandard tableaux.
+ * @param _sst_right the second semistandard tableaux.
+ * @param _sst_result the resulting semistandard tableaux.
+ */
+void
+__sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
+                         const __sst_tableaux_t *_sst_right,
+                         __sst_tableaux_t *      _sst_result);
 
 /** Reads a semistandard tableaux into a vector of numbers.
  * Reads a semistandard tableaux into a vector of numbers (or, in other words,
@@ -113,28 +149,7 @@ __sst_tableaux_read_tableaux (
  */
 size_t
 __sst_tableaux_read_tableaux_compressed (
-  const __sst_tableaux_t *      _sst,
-  const __tableaux_cell_t **_sst_tableaux_cells);
-
-
-/** Multiplies two semistandard tableauxs given as input into a semistandard
- * tableaux also given as input. Multiplies the two semistandard tableauxs given
- * as input, writing the new semistandard tableaux in the third input parameter.
- * @param _sst_left the first semistandard tableaux.
- * @param _sst_right the second semistandard tableaux.
- * @param _sst_result the resulting semistandard tableaux.
- */
-void
-__sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
-                         const __sst_tableaux_t *_sst_right,
-                         __sst_tableaux_t *      _sst_result);
-
-/** Verifies if the semistandard tableaux given as input is ok.
- * Verifies if the semistandard tableaux given as input is ok.
- * @param _sst the semistandard tableaux.
- */
-bool
-__sst_tableaux_check (const __sst_tableaux_t *_sst);
+  const __sst_tableaux_t *_sst, const __tableaux_cell_t **_sst_tableaux_cells);
 
 /** Reads a semistandard tableaux from a file.
  * Reads a semistandard tableaux from the file with the given filename.

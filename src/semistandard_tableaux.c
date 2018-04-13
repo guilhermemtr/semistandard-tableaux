@@ -7,7 +7,7 @@ __sst_tableaux_initialize_rows (__sst_tableaux_t *_sst)
 {
   for (size_t i = _sst->counter; i < _sst->size; i++)
   {
-    __sst_ordered_array_create (&(_sst->columns[i]));
+    __sst_ordered_array_create (&(_sst->rows[i]));
   }
 }
 
@@ -17,7 +17,7 @@ __sst_tableaux_create (void)
   __sst_tableaux_t *tableaux = malloc (sizeof (__sst_tableaux_t));
   tableaux->size             = __SST_ORDERED_ARRAY_DEFAULT_SIZE;
   tableaux->counter          = 0;
-  tableaux->columns = malloc (tableaux->size * sizeof (__sst_ordered_array_t));
+  tableaux->rows = malloc (tableaux->size * sizeof (__sst_ordered_array_t));
   __sst_tableaux_initialize_rows (tableaux);
   return tableaux;
 }
@@ -26,8 +26,8 @@ static void
 __sst_tableaux_resize (__sst_tableaux_t *_sst)
 {
   _sst->size = (_sst->size + 1) << 1;    // multiplication by two
-  _sst->columns =
-    realloc (_sst->columns, _sst->size * sizeof (__sst_ordered_array_t));
+  _sst->rows =
+    realloc (_sst->rows, _sst->size * sizeof (__sst_ordered_array_t));
   __sst_tableaux_initialize_rows (_sst);
 }
 
@@ -48,8 +48,7 @@ __sst_tableaux_add_cell (__sst_tableaux_t *_sst, const __tableaux_cell_t cell)
     {
       _sst->counter++;
     }
-    res =
-      __sst_ordered_array_place (&(_sst->columns[j++]), to_place, &replaced);
+    res = __sst_ordered_array_place (&(_sst->rows[j++]), to_place, &replaced);
     to_place = replaced;
   }
 }
@@ -70,26 +69,30 @@ __sst_tableaux_destroy (__sst_tableaux_t *_sst)
 {
   for (size_t i = 0; i < _sst->size; i++)
   {
-    __sst_ordered_array_destroy (&(_sst->columns[i]));
+    __sst_ordered_array_destroy (&(_sst->rows[i]));
   }
-  free (_sst->columns);
+  free (_sst->rows);
   free (_sst);
 }
 
-//TODO
+//
 void
 __sst_tableaux_iterate_tableaux (const __sst_tableaux_t *_sst,
                                  iteration_function      fn,
                                  void *                  data)
 {
-  size_t index = 0;
-  size_t i     = 0;
-  size_t j     = _sst->counter;
+  size_t index      = 0;
+  size_t real_index = 0;
+  size_t i          = 0;
+  size_t j          = _sst->counter;
   while (j != 0)
   {
-    while (i < _sst->columns[j - 1].counter)
+    while (i < _sst->rows[j - 1].counter)
     {
-      ptrdiff_t offset = fn (_sst->columns[j - 1].array[i++], index++, data);
+      ptrdiff_t offset =
+        fn (_sst->rows[j - 1].array[i], index++, real_index, data);
+      real_index += _sst->rows[j - 1].array[i++].len;
+
       if (offset != 1)
       {
         abort ();    // not yet implemented
@@ -106,9 +109,9 @@ __sst_tableaux_size (const __sst_tableaux_t *_sst)
   size_t total_size = 0;
   for (size_t i = 0; i < _sst->counter; i++)
   {
-    for (size_t j = 0; j < _sst->columns[i].counter; j++)
+    for (size_t j = 0; j < _sst->rows[i].counter; j++)
     {
-      total_size += _sst->columns[i].array[j].length;
+      total_size += _sst->rows[i].array[j].len;
     }
   }
   return total_size;
@@ -120,48 +123,63 @@ __sst_tableaux_storage_size (const __sst_tableaux_t *_sst)
   size_t total_size = 0;
   for (size_t i = 0; i < _sst->counter; i++)
   {
-    total_size += _sst->columns[i].counter;
+    total_size += _sst->rows[i].counter;
   }
   return total_size;
 }
 
-static ptrdiff_t
-__sst_tableaux_read_iteration_function (__tableaux_cell_t cell,
-                                        size_t            index,
-                                        void *            data)
+bool
+__sst_tableaux_check (const __sst_tableaux_t *_sst)
 {
-  __tableaux_cell_val_t *vector = (__tableaux_cell_val_t *) data;
-  vector[index]                 = cell.val;
-  return (ptrdiff_t) 1;
+  bool ok = true;
+
+  // first, check sizes
+  if (_sst->counter == 0)
+  {
+    return ok;
+  }
+
+  size_t prev = _sst->rows[0].counter;
+  for (size_t j = 0; j < _sst->counter; j++)
+  {
+    ok   = ok && prev >= __sst_ordered_array_real_length (&(_sst->rows[j]));
+    prev = __sst_ordered_array_real_length (&(_sst->rows[j]));
+    if (!ok)
+    {
+      return ok;    // haha
+    }
+  }
+
+  // second, check value constraints
+  for (size_t j = 0; j < _sst->counter; j++)
+  {
+    for (size_t i = 0; i < _sst->rows[j].counter; i++)
+    {
+      ok = ok
+           && (i + 1 >= _sst->rows[j].counter
+               || _sst->rows[j].array[i].val < _sst->rows[j].array[i + 1].val);
+      ok =
+        ok
+        && (j + 1 >= _sst->counter
+            || _sst->rows[j + 1].array[i].val < _sst->rows[j + 1].array[i].val);
+
+      if (!ok)
+      {
+        return ok;
+      }
+    }
+  }
+  return ok;
 }
 
-//TODO
-size_t
-__sst_tableaux_read_tableaux (const __sst_tableaux_t *      _sst,
-                              const __tableaux_cell_val_t **_sst_tableaux_cells)
-{
-  size_t total_size    = __sst_tableaux_size (_sst);
-  *_sst_tableaux_cells = malloc (total_size * sizeof (__tableaux_cell_val_t));
-  __sst_tableaux_iterate_tableaux (
-    _sst, __sst_tableaux_read_iteration_function, _sst_tableaux_cells);
-  return total_size;
-}
 
-//TODO
-size_t
-__sst_tableaux_read_tableaux_compressed (
-  const __sst_tableaux_t *_sst, const __tableaux_cell_t **_sst_tableaux_cells)
-{
-  size_t total_size    = __sst_tableaux_size (_sst);
-  *_sst_tableaux_cells = malloc (total_size * sizeof (__tableaux_cell_val_t));
-  __sst_tableaux_iterate_tableaux (
-    _sst, __sst_tableaux_read_iteration_function, _sst_tableaux_cells);
-  return total_size;
-}
+
+
 
 static ptrdiff_t
 __sst_tableaux_multiply_iteration_function (const __tableaux_cell_t cell,
                                             const size_t            index,
+                                            const size_t            real_index,
                                             void *                  data)
 {
   __sst_tableaux_t *_sst_result = (__sst_tableaux_t *) data;
@@ -173,8 +191,8 @@ static void
 __sst_tableaux_resize_to (__sst_tableaux_t *_sst, const size_t sz)
 {
   _sst->size = sz;
-  _sst->columns =
-    realloc (_sst->columns, _sst->size * sizeof (__sst_ordered_array_t));
+  _sst->rows =
+    realloc (_sst->rows, _sst->size * sizeof (__sst_ordered_array_t));
   __sst_tableaux_initialize_rows (_sst);
 }
 
@@ -237,56 +255,48 @@ __sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
 
   for (size_t i = 0; i < _sst_left->counter; i++)
   {
-    __sst_ordered_array_copy (&_sst_left->columns[i], &_sst_result->columns[i]);
+    __sst_ordered_array_copy (&_sst_left->rows[i], &_sst_result->rows[i]);
   }
 
   __sst_tableaux_iterate_tableaux (
     _sst_right, __sst_tableaux_multiply_iteration_function, _sst_result);
 }
 
-bool
-__sst_tableaux_check (const __sst_tableaux_t *_sst)
+
+
+static ptrdiff_t
+__sst_tableaux_read_iteration_function (__tableaux_cell_t cell,
+                                        size_t            index,
+                                        size_t            real_index,
+                                        void *            data)
 {
-  bool ok = true;
+  __tableaux_cell_val_t *vector = (__tableaux_cell_val_t *) data;
+  vector[real_index]            = cell.val;
+  return (ptrdiff_t) 1;
+}
 
-  // first, check sizes
-  if (_sst->counter == 0)
-  {
-    return ok;
-  }
+//TODO
+size_t
+__sst_tableaux_read_tableaux (const __sst_tableaux_t *      _sst,
+                              const __tableaux_cell_val_t **_sst_tableaux_cells)
+{
+  size_t total_size    = __sst_tableaux_storage_size (_sst);
+  *_sst_tableaux_cells = malloc (total_size * sizeof (__tableaux_cell_val_t));
+  __sst_tableaux_iterate_tableaux (
+    _sst, __sst_tableaux_read_iteration_function, _sst_tableaux_cells);
+  return total_size;
+}
 
-  size_t prev = _sst->columns[0].counter;
-  for (size_t j = 0; j < _sst->counter; j++)
-  {
-    ok   = ok && prev >= _sst->columns[j].counter;
-    prev = _sst->columns[j].counter;
-    if (!ok)
-    {
-      return ok;    // haha
-    }
-  }
-
-  // second, check value constraints
-  for (size_t j = 0; j < _sst->counter; j++)
-  {
-    for (size_t i = 0; i < _sst->columns[j].counter; i++)
-    {
-      ok = ok
-           && (i + 1 >= _sst->columns[j].counter
-               || _sst->columns[j].array[i].val
-                    <= _sst->columns[j].array[i + 1].val);
-      ok = ok
-           && (j + 1 >= _sst->counter
-               || _sst->columns[j + 1].array[i].val
-                    < _sst->columns[j + 1].array[i].val);
-
-      if (!ok)
-      {
-        return ok;
-      }
-    }
-  }
-  return ok;
+//TODO
+size_t
+__sst_tableaux_read_tableaux_compressed (
+  const __sst_tableaux_t *_sst, const __tableaux_cell_t **_sst_tableaux_cells)
+{
+  size_t total_size    = __sst_tableaux_storage_size (_sst);
+  *_sst_tableaux_cells = malloc (total_size * sizeof (__tableaux_cell_val_t));
+  __sst_tableaux_iterate_tableaux (
+    _sst, __sst_tableaux_read_iteration_function, _sst_tableaux_cells);
+  return total_size;
 }
 
 __sst_tableaux_t *
@@ -304,7 +314,8 @@ __sst_tableaux_read_file (const char *filename)
 
 static ptrdiff_t
 __sst_tableaux_write_file_iterator_function (__tableaux_cell_t cell,
-                                             size_t            sz,
+                                             size_t            index,
+                                             size_t            real_index,
                                              void *            data)
 {
   FILE *f = (FILE *) data;
@@ -367,11 +378,11 @@ __sst_tableaux_read_structured_file (const char *filename)
 
     while (token1 != NULL)
     {
-      token2                        = strtok_r (token1, ":", &save_ptr2);
-      __tableaux_cell_val_t v       = strtoull (token2, &end_ptr, base_val);
-      token2                        = strtok_r (NULL, ":", &save_ptr2);
-      __tableaux_cell_length_t l    = strtoull (token2, &end_ptr, base_tag);
-      __tableaux_cell_t        cell = {.val = v, .length = l};
+      token2                     = strtok_r (token1, ":", &save_ptr2);
+      __tableaux_cell_val_t v    = strtoull (token2, &end_ptr, base_val);
+      token2                     = strtok_r (NULL, ":", &save_ptr2);
+      __tableaux_cell_len_t l    = strtoull (token2, &end_ptr, base_tag);
+      __tableaux_cell_t     cell = {.val = v, .len = l};
 
 
       token1 = strtok_r (NULL, ",", &save_ptr1);
