@@ -105,6 +105,20 @@ __sst_tableaux_size (const __sst_tableaux_t *_sst)
   size_t total_size = 0;
   for (size_t i = 0; i < _sst->counter; i++)
   {
+    for (size_t j = 0; j < _sst->columns[i].counter; j++)
+    {
+      total_size += _sst->columns[i].array[j].length;
+    }
+  }
+  return total_size;
+}
+
+size_t
+__sst_tableaux_storage_size (const __sst_tableaux_t *_sst)
+{
+  size_t total_size = 0;
+  for (size_t i = 0; i < _sst->counter; i++)
+  {
     total_size += _sst->columns[i].counter;
   }
   return total_size;
@@ -129,19 +143,6 @@ __sst_tableaux_read_tableaux (const __sst_tableaux_t *      _sst,
   __sst_tableaux_iterate_tableaux (
     _sst, __sst_tableaux_read_iteration_function, _sst_tableaux_cells);
   return total_size;
-}
-
-void
-__sst_tableaux_apply_tag (__sst_tableaux_t *          _sst,
-                          const __tableaux_cell_tag_t tag)
-{
-  for (size_t j = 0; j < _sst->counter; j++)
-  {
-    for (size_t i = 0; i < _sst->columns[j].counter; i++)
-    {
-      _sst->columns[j].array[i].tag = tag;
-    }
-  }
 }
 
 static ptrdiff_t
@@ -263,11 +264,11 @@ __sst_tableaux_read_structured_file (const char *filename)
 
     while (token1 != NULL)
     {
-      token2                     = strtok_r (token1, ":", &save_ptr2);
-      __tableaux_cell_val_t v    = strtoull (token2, &end_ptr, base_val);
-      token2                     = strtok_r (NULL, ":", &save_ptr2);
-      __tableaux_cell_tag_t t    = strtoull (token2, &end_ptr, base_tag);
-      __tableaux_cell_t     cell = {.val = v, .tag = t};
+      token2                        = strtok_r (token1, ":", &save_ptr2);
+      __tableaux_cell_val_t v       = strtoull (token2, &end_ptr, base_val);
+      token2                        = strtok_r (NULL, ":", &save_ptr2);
+      __tableaux_cell_length_t l    = strtoull (token2, &end_ptr, base_tag);
+      __tableaux_cell_t        cell = {.val = v, .length = l};
 
 
       token1 = strtok_r (NULL, ",", &save_ptr1);

@@ -31,8 +31,8 @@ typedef struct
  * tableaux).
  */
 typedef ptrdiff_t (iteration_function) (__tableaux_cell_t cell,
-                                        size_t           sz,
-                                        void *           data);
+                                        size_t            sz,
+                                        void *            data);
 
 /** Creates a new semistandard tableaux.
  * Creates a new semistandard tableaux with the default size.
@@ -48,28 +48,29 @@ __sst_tableaux_create (void);
  * @param the size of the word (from which the tableaux is being built).
  */
 void
-__sst_tableaux_init (__sst_tableaux_t *        _sst,
-                   const __tableaux_cell_t *_sst_values,
-                   const size_t            sz);
+__sst_tableaux_init (__sst_tableaux_t *       _sst,
+                     const __tableaux_cell_t *_sst_values,
+                     const size_t             sz);
 
-/** Destroys a semistandard tableaux, freeing all memory allocated by the tableaux.
- * Destroys a semistandard tableaux, freeing all memory allocated by the tableaux.
+/** Destroys a semistandard tableaux, freeing all memory allocated by the
+ * tableaux. Destroys a semistandard tableaux, freeing all memory allocated by
+ * the tableaux.
  * @param _sst the semistandard tableaux structure to be destroyed.
  */
 void
 __sst_tableaux_destroy (__sst_tableaux_t *_sst);
 
 /** Iterates a semistandard tableaux using the column technique.
- * Iterates a semistandard tableaux using the column technique, invoking the function
- * passed as parameter for each value iterated.
+ * Iterates a semistandard tableaux using the column technique, invoking the
+ * function passed as parameter for each value iterated.
  * @param _sst the semistandard tableaux.
  * @param fn the function to be called.
  * @param data additional data to be passed to the iteration function.
  */
 void
 __sst_tableaux_iterate_tableaux (const __sst_tableaux_t *_sst,
-                              iteration_function    fn,
-                              void *                data);
+                                 iteration_function      fn,
+                                 void *                  data);
 
 /** Returns the total number of cells of the semistandard tableaux.
  * Returns the total number of cells of the semistandard tableaux.
@@ -79,37 +80,54 @@ __sst_tableaux_iterate_tableaux (const __sst_tableaux_t *_sst,
 size_t
 __sst_tableaux_size (const __sst_tableaux_t *_sst);
 
+/** Returns the number of cells of the representation of the semistandard
+ * tableaux. Returns the number of cells of the representation of the
+ * semistandard tableaux.
+ * @param _sst the semistandard tableaux.
+ * @return the number of cells of the representation of the semistandard
+ * tableaux.
+ */
+size_t
+__sst_tableaux_storage_size (const __sst_tableaux_t *_sst);
+
 
 /** Reads a semistandard tableaux into a vector of numbers.
- * Reads a semistandard tableaux into a vector of numbers (or, in other words, returns
- * a semistandard tableaux's word).
+ * Reads a semistandard tableaux into a vector of numbers (or, in other words,
+ * returns a semistandard tableaux's word).
  * @param _sst the semistandard tableaux.
  * @param the vector of numbers corresponding to the semistandard tableaux.
  * @return the size of the tableaux cells vector.
  */
 size_t
-__sst_tableaux_read_tableaux (const __sst_tableaux_t *       _sst,
-                           const __tableaux_cell_val_t **_sst_tableaux_cells);
+__sst_tableaux_read_tableaux (
+  const __sst_tableaux_t *      _sst,
+  const __tableaux_cell_val_t **_sst_tableaux_cells);
 
-/** Sets the tag of each semistandard tableaux cell.
- * Sets the tag of each semistandard tableaux cell to the given value.
+/** Reads a semistandard tableaux into a compressed vector of cells.
+ * Reads a semistandard tableaux into a compressed vector of cells (or, in
+ * other words, returns a word corresponding to a compressed semistandard
+ * tableaux).
  * @param _sst the semistandard tableaux.
- * @param tag the value of the tag.
+ * @param the vector of cells corresponding to the semistandard tableaux.
+ * @return the size of the compressed tableaux cells vector.
  */
-void
-__sst_tableaux_apply_tag (__sst_tableaux_t *_sst, const __tableaux_cell_tag_t tag);
+size_t
+__sst_tableaux_read_tableaux_compressed (
+  const __sst_tableaux_t *      _sst,
+  const __tableaux_cell_t **_sst_tableaux_cells);
 
-/** Multiplies two semistandard tableauxs given as input into a semistandard tableaux also
- * given as input. Multiplies the two semistandard tableauxs given as input, writing
- * the new semistandard tableaux in the third input parameter.
+
+/** Multiplies two semistandard tableauxs given as input into a semistandard
+ * tableaux also given as input. Multiplies the two semistandard tableauxs given
+ * as input, writing the new semistandard tableaux in the third input parameter.
  * @param _sst_left the first semistandard tableaux.
  * @param _sst_right the second semistandard tableaux.
  * @param _sst_result the resulting semistandard tableaux.
  */
 void
 __sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
-                       const __sst_tableaux_t *_sst_right,
-                       __sst_tableaux_t *      _sst_result);
+                         const __sst_tableaux_t *_sst_right,
+                         __sst_tableaux_t *      _sst_result);
 
 /** Verifies if the semistandard tableaux given as input is ok.
  * Verifies if the semistandard tableaux given as input is ok.
@@ -120,8 +138,8 @@ __sst_tableaux_check (const __sst_tableaux_t *_sst);
 
 /** Reads a semistandard tableaux from a file.
  * Reads a semistandard tableaux from the file with the given filename.
- * @param filename the name of the file from which the semistandard tableaux is to be
- * read.
+ * @param filename the name of the file from which the semistandard tableaux is
+ * to be read.
  * @return _sst the semistandard tableaux read.
  */
 __sst_tableaux_t *
@@ -130,10 +148,31 @@ __sst_tableaux_read_file (const char *filename);
 /** Writes the given semistandard tableaux into a file.
  * Writes the given semistandard tableaux into a file.
  * @param _sst the semistandard tableaux to be written to a file.
- * @param filename the filename of the file where the semistandard tableaux will be
- * stored.
+ * @param filename the filename of the file where the semistandard tableaux will
+ * be stored.
  */
 void
 __sst_tableaux_write_file (const __sst_tableaux_t *_sst, const char *filename);
+
+/** Reads a compressed semistandard tableaux from a file.
+ * Reads a compressed semistandard tableaux from the file with the given
+ * filename.
+ * @param filename the name of the file from which the compressed semistandard
+ * tableaux is to be read.
+ * @return _sst the semistandard tableaux read.
+ */
+__sst_tableaux_t *
+__sst_tableaux_read_file_compressed (const char *filename);
+
+/** Writes the given semistandard tableaux into a compressed file.
+ * Writes the given semistandard tableaux into a compressed file.
+ * @param _sst the compressed semistandard tableaux to be written to a file.
+ * @param filename the filename of the file where the compressed semistandard
+ * tableaux will be stored.
+ */
+void
+__sst_tableaux_write_file_compressed (const __sst_tableaux_t *_sst,
+                                      const char *            filename);
+
 
 #endif    // __SST_TABLEAUX__

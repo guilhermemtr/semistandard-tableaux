@@ -48,17 +48,18 @@ __sst_ordered_array_destroy (__sst_ordered_array_t *_sstoa);
  */
 __sst_ordered_array_place_result_t
 __sst_ordered_array_place (__sst_ordered_array_t * _sstoa,
-                          const __tableaux_cell_t to_place,
-                          __tableaux_cell_t *     replaced);
+                           const __tableaux_cell_t to_place,
+                           __tableaux_cell_t *     replaced);
 
 /** Copies the first array into the second.
  * Copies the first array into the second, resizing it if needed.
- * @param _sstoa_from the semistandard tableaux ordered array from which data is copied.
+ * @param _sstoa_from the semistandard tableaux ordered array from which data is
+ * copied.
  * @param _sstoa_to the semistandard tableaux to which the data is copied.
  */
 void
 __sst_ordered_array_copy (const __sst_ordered_array_t *_sstoa_from,
-                         __sst_ordered_array_t *      _sstoa_to);
+                          __sst_ordered_array_t *      _sstoa_to);
 
 
 #endif    // __SST_ORDERED_ARRAY__

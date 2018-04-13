@@ -9,17 +9,17 @@
 typedef uint64_t
   __tableaux_cell_val_t;    //!< type of the value stored in tableaux cells.
 typedef uint64_t
-  __tableaux_cell_tag_t;    //!< type of the tag of tableaux cells.
+  __tableaux_cell_length_t;    //!< type of the length of tableaux cells.
 
-/** Type that represents a tableaux cell.
- * Type that represents a tableaux cell, with the value of the cell and an
- * additional tag.
+/** Type that represents a sequence of tableaux cells with the same value.
+ * Type that represents a sequence of tableaux cells, with the same value, of a
+ * certain length.
  */
 typedef struct
 {
   __tableaux_cell_val_t val;    //!< value of the tableaux cell.
-  __tableaux_cell_tag_t tag;    //!< tag of the tableaux cell. The tag is used for
-                               //!< displaying purposes.
+  __tableaux_cell_length_t
+    length;    //!< length of the sequence of the tableaux cell.
 } __tableaux_cell_t;
 
 /** Enum that represents the return values for the place function (of the

@@ -25,10 +25,11 @@ __sst_ordered_array_resize (__sst_ordered_array_t *_sstoa)
     realloc (_sstoa->array, _sstoa->size * sizeof (__tableaux_cell_t));
 }
 
+//TODO
 __sst_ordered_array_place_result_t
 __sst_ordered_array_place (__sst_ordered_array_t * _sstoa,
-                          const __tableaux_cell_t to_place,
-                          __tableaux_cell_t *     replaced)
+                           const __tableaux_cell_t to_place,
+                           __tableaux_cell_t *     replaced)
 {
   if (_sstoa->counter == 0
       || to_place.val >= _sstoa->array[_sstoa->counter - 1].val)
@@ -64,7 +65,7 @@ __sst_ordered_array_place (__sst_ordered_array_t * _sstoa,
     mid = (top + bottom + 1) >> 1;
   }
 
-  *replaced         = _sstoa->array[mid];
+  *replaced          = _sstoa->array[mid];
   _sstoa->array[mid] = to_place;
   return REPLACED;
 }
@@ -79,7 +80,7 @@ __sst_ordered_array_resize_to (__sst_ordered_array_t *_sstoa, const size_t sz)
 
 void
 __sst_ordered_array_copy (const __sst_ordered_array_t *_sstoa_from,
-                         __sst_ordered_array_t *      _sstoa_to)
+                          __sst_ordered_array_t *      _sstoa_to)
 {
   if (__builtin_expect (_sstoa_from->counter >= _sstoa_to->size, 0))
   {
