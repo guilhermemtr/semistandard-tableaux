@@ -35,21 +35,30 @@ __sst_ordered_array_create (__sst_ordered_array_t *_sstoa);
 void
 __sst_ordered_array_destroy (__sst_ordered_array_t *_sstoa);
 
-/** Places a new element into the ordered array, possibly returning the replaced
- * element. Places a new element into the ordered array. If the new element is
- * appended to the array, APPENDED is returned; otherwise, REPLACED is returned,
- * and the value of the replaced element is written in the replaced parameter.
+/** Returns the true size of the array.
+ * Returns the true size of the array, taking into account the length of the
+ * cells.
  * @param _sstoa the semistandard tableaux ordered array.
- * @param to_place the element to be placed in the array.
- * @param replaced pointer to a variable where the function can write the value
- * replaced.
- * @return APPENDED if the element was appended, or REPLACED if the element
- * replaced another previously stored element.
+ * @return size the true size of the semistandard tableaux ordered array.
  */
-__sst_ordered_array_place_result_t
-__sst_ordered_array_place (__sst_ordered_array_t * _sstoa,
-                           const __tableaux_cell_t to_place,
-                           __tableaux_cell_t *     replaced);
+size_t
+__sst_ordered_array_real_length (__sst_ordered_array_t *_sstoa);
+
+/** Resizes the array to be twice as long.
+ * Resizes the array to be twice as long.
+ * @param _sstoa the semistandard tableaux ordered array to be resized.
+ */
+void
+__sst_ordered_array_resize (__sst_ordered_array_t *_sstoa);
+
+/** Resizes the array to the given size.
+ * Resizes the array to the given size, unless the given size is not enough to
+ * store all the elements of the array.
+ * @param _sstoa the semistandard tableaux ordered array to be resized.
+ * @param size the new size to which the semistandard tableaux ordered array.
+ */
+void
+__sst_ordered_array_resize_to (__sst_ordered_array_t *_sstoa, const size_t sz);
 
 /** Copies the first array into the second.
  * Copies the first array into the second, resizing it if needed.
