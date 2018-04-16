@@ -60,21 +60,31 @@ static void
 __sst_ordered_array_place_cell (__sst_ordered_array_t *_sstoa,
                                 __tableaux_cell_t      to_place,
                                 __tableaux_cell_t *    replaced,
-                                size_t                 pos,
-                                size_t                 real_nr_replaced)
+                                size_t *               pos)
 {
+  // if the cell is to be appended
   if (_sstoa->counter == 0
       || to_place.val >= _sstoa->array[_sstoa->counter - 1].val)
   {
-    if (_sstoa->counter + real_nr_to_place >= _sstoa->size)
+    if (_sstoa->counter == _sstoa->size)
     {
       __sst_ordered_array_resize_to (_sstoa,
                                      (_sstoa->size + real_nr_to_place) << 2);
     }
+
+    if ((_sstoa->counter == 0)
+        || (to_place.val > _sstoa->array[_sstoa->counter - 1].val))
+    {
+      _sstoa->array[_sstoa->counter++] = to_place;
+    } else    // _sstoa->array[_sstoa->counter - 1].val == to_place.val
+    {
+      _sstoa->array[_sstoa->counter - 1].len += to_place.len;
+    }
+    return;
   }
 
-  size_t missing = to_place.len;
-
+  // if the cell is not to be appended
+  // search for correct position to place the cell
   size_t top    = _sstoa->counter - 1;
   size_t bottom = 0;
   size_t mid    = (top + bottom + 1) >> 1;
@@ -97,19 +107,77 @@ __sst_ordered_array_place_cell (__sst_ordered_array_t *_sstoa,
 
     mid = (top + bottom + 1) >> 1;
   }
+
   size_t idx = mid;
-  if (_sstoa[idx].val == to_place.val)
+
+  // place the cell
+  if (idx == 0 || _sstoa->array[idx - 1].val < to_place.val)
   {
-    _sstoa[idx].len += to_place.len;
+    if (_sstoa->counter == _sstoa->size)
+    {
+      __sst_ordered_array_resize_to (_sstoa,
+                                     (_sstoa->size + real_nr_to_place) << 2);
+    }
+
+    for (size_t i = _sstoa->counter - 1; i <= idx; i--)
+    {
+      _sstoa->array[i + 1] = _sstoa->array[i];
+    }
+
+    if (idx == 0)
+    {
+      _sstoa->array[idx] = to_place;
+    } else    // _sstoa->array[idx - 1].val < to_place.val
+    {
+      _sstoa->array[idx - 1] = to_place;
+    }
+  } else    // _sstoa->array[idx - 1].val == to_place.val
+  {
+    _sstoa->array[idx - 1].len += to_place.len;
+  }
+
+  idx++;
+
+  size_t extra = to_place.len;
+
+  // remove all the extra cells, starting at idx (to append them to another row)
+
+  while (extra > 0)
+  {
+    if (extra > _sstoa->array[idx].len)
+    {
+      extra -= _sstoa->array[idx].len;
+    } else if (extra == _sstoa->array[idx].len)
+    {
+      extra -= _sstoa->array[idx].len;
+      // shift all one to the left
+    } else    // extra < _sstoa[idx].len
+    {
+      replaced[*pos]         = _sstoa->array[idx];
+      replaced[*pos].len     = extra;
+      _sstoa->array[idx].len = _sstoa->array[idx].len - extra;
+      *pos                   = *pos + extra;
+      extra                  = 0;
+    }
+  }
+
+  if (_sstoa->array[idx].val == to_place.val)
+  {
+    _sstoa->array[idx].len += to_place.len;
+    // remove the extra ones
     return;
   }
-  
+
   while (missing > 0)
   {
-    
   }
   *replaced          = _sstoa->array[mid];
   _sstoa->array[mid] = to_place[0];
+
+
+
+
+
   return nr_replaced;
 }
 
@@ -120,69 +188,19 @@ __sst_ordered_array_place_cell (__sst_ordered_array_t *_sstoa,
 void
 __sst_ordered_array_place (__sst_ordered_array_t *_sstoa,
                            __tableaux_cell_t *    to_place,
-                           size_t                 nr_to_place,
                            size_t                 real_nr_to_place,
                            __tableaux_cell_t *    replaced,
-                           size_t                 nr_replaced,
-                           size_t                 real_nr_replaced)
+                           size_t *               real_nr_replaced)
 {
-  size_t curr_replaced_pos = 0;
-  size_t curr_to_place_pos = 0;
-  size_t real_nr_placed    = 0;
+  size_t nr_placed  = 0;
+  *real_nr_replaced = 0;
 
-
-
-
-
-  if (to_place[nr_to_place - 1].val >= _sstoa->array[_sstoa->counter - 1].val)
+  while (nr_placed < real_nr_to_place)
   {
-    if (_sstoa->counter + real_nr_to_place >= _sstoa->size)
-    {
-      __sst_ordered_array_resize_to (_sstoa,
-                                     (_sstoa->size + real_nr_to_place) << 1);
-    }
+    __sst_ordered_array_place_cell (
+      _sstoa, to_place[nr_placed], replaced, real_nr_replaced);
+    nr_placed += to_place[nr_placed].len;
   }
-
-
-
-  size_t missing = to_place[curr_to_place_pos].len;
-
-  while (nr put < nr to place)
-  {
-    missing_curr = x;
-    while (missing_curr > 0)
-    {
-      place missing;
-    }
-  }
-
-  size_t top    = _sstoa->counter - 1;
-  size_t bottom = 0;
-  size_t mid    = (top + bottom + 1) >> 1;
-
-
-  while (true)
-  {
-    if (to_place[0].val < _sstoa->array[mid].val
-        && (mid == 0 || to_place[0].val >= _sstoa->array[mid - 1].val))
-    {
-      break;
-    }
-
-    if (to_place[0].val < _sstoa->array[mid].val)
-    {
-      top = mid;
-    } else
-    {
-      bottom = mid;
-    }
-
-    mid = (top + bottom + 1) >> 1;
-  }
-
-  *replaced          = _sstoa->array[mid];
-  _sstoa->array[mid] = to_place[0];
-  return nr_replaced;
 }
 
 #endif    // __SST_ORDERED_ARRAY__
