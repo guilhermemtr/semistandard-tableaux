@@ -131,6 +131,7 @@ __sst_ordered_array_place_cell (__sst_ordered_array_t *_sstoa,
     {
       _sstoa->array[idx - 1] = to_place;
     }
+    _sstoa->counter++;
   } else    // _sstoa->array[idx - 1].val == to_place.val
   {
     _sstoa->array[idx - 1].len += to_place.len;
@@ -138,19 +139,28 @@ __sst_ordered_array_place_cell (__sst_ordered_array_t *_sstoa,
 
   idx++;
 
+  // remove all the extra cells, starting at idx (to append them to another row)
+
   size_t extra = to_place.len;
 
-  // remove all the extra cells, starting at idx (to append them to another row)
+  size_t beg = 0;
+  size_t dis = 0;
 
   while (extra > 0)
   {
-    if (extra > _sstoa->array[idx].len)
+    if (extra >= _sstoa->array[idx].len)
     {
-      extra -= _sstoa->array[idx].len;
-    } else if (extra == _sstoa->array[idx].len)
-    {
-      extra -= _sstoa->array[idx].len;
-      // shift all one to the left
+      if (dis == 0)
+      {
+        beg = idx;
+        dis = 1;
+      } else
+      {
+        dis++;
+      }
+      replaced[*pos] = _sstoa->array[idx];
+      *pos           = *pos + _sstoa->array[idx].len;
+      extra          = extra - _sstoa->array[idx].len;
     } else    // extra < _sstoa[idx].len
     {
       replaced[*pos]         = _sstoa->array[idx];
@@ -161,29 +171,13 @@ __sst_ordered_array_place_cell (__sst_ordered_array_t *_sstoa,
     }
   }
 
-  if (_sstoa->array[idx].val == to_place.val)
+  // shift all one to the left
+  for (size_t i = beg; i + dis < _sstoa->counter; i++)
   {
-    _sstoa->array[idx].len += to_place.len;
-    // remove the extra ones
-    return;
+    _sstoa->array[i] = _sstoa->array[i + dis];
   }
-
-  while (missing > 0)
-  {
-  }
-  *replaced          = _sstoa->array[mid];
-  _sstoa->array[mid] = to_place[0];
-
-
-
-
-
-  return nr_replaced;
+  _sstoa->counter -= dis;
 }
-
-
-
-
 
 void
 __sst_ordered_array_place (__sst_ordered_array_t *_sstoa,
