@@ -71,5 +71,23 @@ void
 __sst_ordered_array_copy (const __sst_ordered_array_t *_sstoa_from,
                           __sst_ordered_array_t *      _sstoa_to);
 
+/** Places new elements into the ordered array, possibly returning replaced
+ * elements. Places new elements into the ordered array. The returned value
+ * corresponds to the number of elements that were appended to the array.
+ * @param _sstoa the semistandard tableaux ordered array.
+ * @param to_place the elements to be placed in the array.
+ * @param nr_to_place the number of elements to be placed in the array.
+ * @param replaced pointer to a variable where the function can write the values
+ * replaced.
+ * @return number of (compressed) elements replaced.
+ */
+void
+__sst_ordered_array_place (__sst_ordered_array_t *_sstoa,
+                           __tableaux_cell_t *    to_place,
+                           size_t                 nr_to_place,
+                           size_t                 real_nr_to_place,
+                           __tableaux_cell_t *    replaced,
+                           size_t                 nr_replaced,
+                           size_t                 real_nr_replaced);
 
 #endif    // __SST_ORDERED_ARRAY__

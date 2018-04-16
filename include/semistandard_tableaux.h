@@ -99,22 +99,6 @@ __sst_tableaux_storage_size (const __sst_tableaux_t *_sst);
 bool
 __sst_tableaux_check (const __sst_tableaux_t *_sst);
 
-/** Places a new element into the ordered array, possibly returning the replaced
- * element. Places a new element into the ordered array. If the new element is
- * appended to the array, APPENDED is returned; otherwise, REPLACED is returned,
- * and the value of the replaced element is written in the replaced parameter.
- * @param _sstoa the semistandard tableaux ordered array.
- * @param to_place the element to be placed in the array.
- * @param replaced pointer to a variable where the function can write the value
- * replaced.
- * @return APPENDED if the element was appended, or REPLACED if the element
- * replaced another previously stored element.
- */
-__sst_ordered_array_place_result_t
-__sst_ordered_array_place (__sst_ordered_array_t * _sstoa,
-                           const __tableaux_cell_t to_place,
-                           __tableaux_cell_t *     replaced);
-
 /** Multiplies two semistandard tableauxs given as input into a semistandard
  * tableaux also given as input. Multiplies the two semistandard tableauxs given
  * as input, writing the new semistandard tableaux in the third input parameter.
