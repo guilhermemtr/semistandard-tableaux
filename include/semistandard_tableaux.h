@@ -50,9 +50,9 @@ __sst_tableaux_create (void);
  * @param the size of the word (from which the tableaux is being built).
  */
 void
-__sst_tableaux_init (__sst_tableaux_t *       _sst,
-                     const __tableaux_cell_t *_sst_values,
-                     const size_t             sz);
+__sst_tableaux_init (__sst_tableaux_t * _sst,
+                     __tableaux_cell_t *_sst_values,
+                     const size_t       sz);
 
 /** Destroys a semistandard tableaux, freeing all memory allocated by the
  * tableaux. Destroys a semistandard tableaux, freeing all memory allocated by
@@ -176,7 +176,8 @@ __sst_tableaux_read_plain_file (const char *filename);
  * be stored.
  */
 void
-__sst_tableaux_write_plain_file (const __sst_tableaux_t *_sst, const char *filename);
+__sst_tableaux_write_plain_file (const __sst_tableaux_t *_sst,
+                                 const char *            filename);
 
 /** Reads a compressed semistandard tableaux from a file.
  * Reads a compressed semistandard tableaux from the file with the given

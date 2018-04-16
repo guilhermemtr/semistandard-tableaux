@@ -84,10 +84,8 @@ __sst_ordered_array_copy (const __sst_ordered_array_t *_sstoa_from,
 void
 __sst_ordered_array_place (__sst_ordered_array_t *_sstoa,
                            __tableaux_cell_t *    to_place,
-                           size_t                 nr_to_place,
                            size_t                 real_nr_to_place,
                            __tableaux_cell_t *    replaced,
-                           size_t                 nr_replaced,
-                           size_t                 real_nr_replaced);
+                           size_t *               real_nr_replaced);
 
 #endif    // __SST_ORDERED_ARRAY__

@@ -69,7 +69,7 @@ __sst_ordered_array_place_cell (__sst_ordered_array_t *_sstoa,
     if (_sstoa->counter == _sstoa->size)
     {
       __sst_ordered_array_resize_to (_sstoa,
-                                     (_sstoa->size + real_nr_to_place) << 2);
+                                     (_sstoa->size + to_place.len) << 2);
     }
 
     if ((_sstoa->counter == 0)
@@ -116,7 +116,7 @@ __sst_ordered_array_place_cell (__sst_ordered_array_t *_sstoa,
     if (_sstoa->counter == _sstoa->size)
     {
       __sst_ordered_array_resize_to (_sstoa,
-                                     (_sstoa->size + real_nr_to_place) << 2);
+                                     (_sstoa->size + to_place.len) << 2);
     }
 
     for (size_t i = _sstoa->counter - 1; i <= idx; i--)

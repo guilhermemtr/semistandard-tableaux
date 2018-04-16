@@ -33,38 +33,39 @@ __sst_tableaux_resize (__sst_tableaux_t *_sst)
 
 static void
 __sst_tableaux_add_cells (__sst_tableaux_t * _sst,
-                          __tableaux_cell_t *cell,
-                          const size_t       nr_cells,
-                          const size_t       real_nr_cells)
+                          __tableaux_cell_t *cells,
+                          size_t             nr_cells,
+                          size_t             real_nr_cells)
 {
-  __tableaux_cell_t to_place[cell.len];
-  size_t            nr_to_place = 1;
-  __tableaux_cell_t replaced[cell.len];
-  size_t            nr_replaced    = 0;
-  size_t            total_replaced = 0;
-  size_t            j              = 0;
-  to_place[0]                      = cell;
+  __tableaux_cell_t to_place[real_nr_cells];
+  __tableaux_cell_t replaced[real_nr_cells];
 
-  while (res != 0)
+  for (size_t i = 0, j = 0; j < real_nr_cells; j += cells[i++].len)
   {
-    if (j == _sst->size)
-    {
-      __sst_tableaux_resize (_sst);
-    }
+    to_place[j] = cells[i];
+  }
+
+  size_t j = 0;
+
+  while (real_nr_cells != 0)
+  {
     if (j == _sst->counter)
     {
       _sst->counter++;
+      if (_sst->counter == _sst->size)
+      {
+        __sst_tableaux_resize (_sst);
+      }
     }
-    nr_replaced =
-      __sst_ordered_array_place (&(_sst->rows[j++]), to_place, replaced);
-    total_replaced += nr_replaced;
-    to_place = replaced;
+
+    __sst_ordered_array_place (
+      &(_sst->rows[j++]), to_place, real_nr_cells, replaced, &real_nr_cells);
   }
 }
 
 void
 __sst_tableaux_init (__sst_tableaux_t *       _sst,
-                     const __tableaux_cell_t *_sst_values,
+                     __tableaux_cell_t *_sst_values,
                      const size_t             sz)
 {
   size_t real_sz = 0;
@@ -183,21 +184,6 @@ __sst_tableaux_check (const __sst_tableaux_t *_sst)
   return ok;
 }
 
-
-
-
-
-static ptrdiff_t
-__sst_tableaux_multiply_iteration_function (const __tableaux_cell_t cell,
-                                            const size_t            index,
-                                            const size_t            real_index,
-                                            void *                  data)
-{
-  __sst_tableaux_t *_sst_result = (__sst_tableaux_t *) data;
-  __sst_tableaux_add_cell (_sst_result, cell);
-  return (ptrdiff_t) 1;
-}
-
 static void
 __sst_tableaux_resize_to (__sst_tableaux_t *_sst, const size_t sz)
 {
@@ -223,8 +209,9 @@ __sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
     __sst_ordered_array_copy (&_sst_left->rows[i], &_sst_result->rows[i]);
   }
 
-  __sst_tableaux_iterate_tableaux (
-    _sst_right, __sst_tableaux_multiply_iteration_function, _sst_result);
+  // TODO
+  //__sst_tableaux_iterate_tableaux (
+  //  _sst_right, __sst_tableaux_multiply_iteration_function, _sst_result);
 }
 
 
@@ -451,7 +438,7 @@ __sst_tableaux_read_structured_file (const char *filename)
   __tableaux_cell_t cell;
   while (fscanf (f, "%lu", &(cell.val)) != EOF)
   {
-    __sst_tableaux_add_cell (_sst, cell);
+    //__sst_tableaux_add_cell (_sst, cell);
   }
   return _sst;
 }
