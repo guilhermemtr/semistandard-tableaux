@@ -114,7 +114,8 @@ __it_test_identity (char *           identity,
                  mapped_splits_2,
                  nr_splits_2,
                  id,
-                 nr_vars);
+                 nr_vars,
+		 elems);
     } else
     {
       size_t tests[nr_elems][beg + 1];

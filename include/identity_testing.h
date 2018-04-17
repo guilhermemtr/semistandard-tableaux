@@ -12,33 +12,39 @@
 #define __IT_DELIMITER__ "="
 #define __IT_OP_SYMBOL__ "."
 
-/** Type of function that is called during iterations of tableauxs.
- * Type of function that is called during iterations of tableauxs.
- * @param cell the value of the cell currently being iterated.
- * @param index the index of the cell.
- * @param real_index the true index of the cell.
- * @param data pointer to additional data.
- * @return the offset that the iterator should go to (-1 being to go to the
- * previous position, 0 to stay still and 1 to move to the next cell of the
- * tableaux).
+/** Verifies the validity of an identity, given two assignments.
+ * Verifies the validity of an identity, given two assignments and the identity.
+ * @param x the left side of the identity.
+ * @param len_x the length of the left side of the identity.
+ * @param y the right side of the identity.
+ * @param len_y the length of the right side of the identity.
+ * @param assigns the assignments to the variables.
+ * @param nr_vars the number of variables.
+ * @param elems the elements to which the variables can be set.
+ * @return whether the identity was verified for the given assignment or not.
  */
 typedef bool(identity_testing) (size_t *x,
                                 size_t  len_x,
                                 size_t *y,
                                 size_t  len_y,
                                 size_t *assigns,
-                                size_t  nr_vars);
+                                size_t  nr_vars,
+                                void *  elems);
 
-
+/** Tests the validity of the given identity.
+ * Tests the validity of the given identity, by trying all possible combinations
+ * and verifying if the identity holds.
+ * @param identity the identity to be verified, of the form "a1.a2...=b1.b2...".
+ * @param elems the elements to which the variables can be set.
+ * @param nr_elems the number of elements to which the variables can be set.
+ * @param fn the function used to test the identity for each possible variable
+ * assignments.
+ * @return whether the identity was verified for the given assignment or not.
+ */
 bool
 __it_test_identity (char *           identity,
                     void *           elems,
                     size_t           nr_elems,
                     identity_testing fn);
-
-
-// define function for identity testing
-
-// function that receives two
 
 #endif    // __IDENTITY_TESTING__

@@ -70,7 +70,8 @@ check_identity (size_t *x,
                 size_t *y,
                 size_t  len_y,
                 size_t *assigns,
-                size_t  nr_vars)
+                size_t  nr_vars,
+                void *  elems)
 {
   printf ("Assignment:\t");
   for (size_t i = 0; i < nr_vars; i++)
