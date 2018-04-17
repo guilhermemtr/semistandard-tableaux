@@ -104,12 +104,11 @@ place_cell_mid (__sst_ordered_array_t *_sstoa,
 
     _sstoa->array[*idx] = to_place;
     _sstoa->counter++;
+    *idx = *idx + 1;
   } else    // _sstoa->array[*idx - 1].val == to_place.val
   {
     _sstoa->array[*idx - 1].len += to_place.len;
   }
-
-  *idx = *idx + 1;
 }
 
 static void

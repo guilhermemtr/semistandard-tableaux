@@ -29,6 +29,10 @@ main (int argc, char **argv)
   {
     printf ("round: %d, sz: %u\n", i, sz);
     printf ("adding: {%u,%u}\n", cells[i].val, cells[i].len);
+    if (i == 6)
+    {
+      printf ("last\n");
+    }
     place_cell (arr, cells[i], replaced, &sz);
     print_array (arr);
 
@@ -36,8 +40,8 @@ main (int argc, char **argv)
     size_t j = 0;
     while (j < sz)
     {
-      printf("{%u,%u},",replaced[j].val, replaced[j].len);
-      j+= replaced[j].len;
+      printf ("{%u,%u},", replaced[j].val, replaced[j].len);
+      j += replaced[j].len;
     }
     printf ("]\n");
   }
