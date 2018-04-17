@@ -55,26 +55,42 @@ unit_test_2 ()
 
 
   __sst_tableaux_print (m1);
-  printf("\n\n");
+  printf ("\n\n");
   __sst_tableaux_print (m2);
-  printf("\n\n");
+  printf ("\n\n");
   __sst_tableaux_print (m_res);
 
   __sst_tableaux_write_plain_file (m_res, "m_res.sst");
   __sst_tableaux_write_compressed_file (m_res, "m_res.sstc");
 }
 
+static bool
+check_identity (size_t *x,
+                size_t  len_x,
+                size_t *y,
+                size_t  len_y,
+                size_t *assigns,
+                size_t  nr_vars)
+{
+  printf ("Assignment:\t");
+  for (size_t i = 0; i < nr_vars; i++)
+  {
+    printf ("%lu,", assigns[i]);
+  }
+  printf ("\n");
+  return true;
+}
+
 void
 unit_test_3 ()
 {
   char identity[] = "x.y.z=z.x.x.y";
-  __it_test_identity (identity, NULL, 0L);
+  __it_test_identity (identity, NULL, 10L, check_identity);
 }
-
 
 int
 main (int argc, char **argv)
 {
-  unit_test_3();
+  unit_test_3 ();
   return 0;
 }

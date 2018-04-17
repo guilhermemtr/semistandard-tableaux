@@ -4,6 +4,7 @@
 #include <assert.h>
 
 #include "hashmap.h"
+#include "configuration.h"
 
 #ifndef __IDENTITY_TESTING__
 #define __IDENTITY_TESTING__
@@ -21,14 +22,19 @@
  * previous position, 0 to stay still and 1 to move to the next cell of the
  * tableaux).
  */
-/*typedef ptrdiff_t (identity_testing) (__tableaux_cell_t cell,
-                                      size_t            index,
-                                      size_t            real_index,
-                                      void *            data);
-*/
+typedef bool(identity_testing) (size_t *x,
+                                size_t  len_x,
+                                size_t *y,
+                                size_t  len_y,
+                                size_t *assigns,
+                                size_t  nr_vars);
+
 
 bool
-__it_test_identity (char *identity, void *elems, size_t nr_elems);
+__it_test_identity (char *           identity,
+                    void *           elems,
+                    size_t           nr_elems,
+                    identity_testing fn);
 
 
 // define function for identity testing

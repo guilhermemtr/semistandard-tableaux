@@ -72,7 +72,10 @@ get_mapped_splits (char ** splits_1,
 }
 
 bool
-__it_test_identity (char *identity, void *elems, size_t nr_elems)
+__it_test_identity (char *           identity,
+                    void *           elems,
+                    size_t           nr_elems,
+                    identity_testing fn)
 {
   char *split_1;
   char *split_2;
@@ -101,11 +104,42 @@ __it_test_identity (char *identity, void *elems, size_t nr_elems)
                                       mapped_splits_1,
                                       mapped_splits_2);
 
-  for (size_t i = 0; i < nr_elems; i++)
+
+  bool test_identity (size_t beg, size_t * id)
   {
+    if (beg == nr_vars)
+    {
+      return fn (mapped_splits_1,
+                 nr_splits_1,
+                 mapped_splits_2,
+                 nr_splits_2,
+                 id,
+                 nr_vars);
+    } else
+    {
+      size_t tests[nr_elems][beg + 1];
+      for (size_t i = 0; i < nr_elems; i++)
+      {
+        for (size_t j = 0; j < beg; j++)
+        {
+          tests[i][j] = id[j];
+        }
+      }
+
+      bool ok = true;
+
+      for (size_t i = 0; i < nr_elems; i++)
+      {
+        tests[i][beg] = i;
+        ok &= spawn (test_identity (beg + 1, tests[i]));
+      }
+
+      sync;
+      return ok;
+    }
   }
 
-  return true;
+  return test_identity (0, NULL);
 }
 
 #endif    // __IDENTITY_TESTING__
