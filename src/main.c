@@ -46,11 +46,11 @@ unit_tests_1 ()
 int
 main (int argc, char **argv)
 {
-  //__sst_tableaux_t *m1    = __sst_tableaux_read_plain_file ("m1");
-  // __sst_tableaux_t *m2    = __sst_tableaux_read_file ("m2");
-  // __sst_tableaux_t *m_res = __sst_tableaux_create ();
-  // __sst_tableaux_multiply (m1, m2, m_res);
-  //__sst_tableaux_write_plain_file (m1, "m1.sst");
-  //__sst_tableaux_write_compressed_file (m1, "m1.sstc");
+  __sst_tableaux_t *m1    = __sst_tableaux_read_plain_file ("inputs/m2");
+  //__sst_tableaux_t *m2    = __sst_tableaux_read_plain_file ("m2");
+  //__sst_tableaux_t *m_res = __sst_tableaux_create ();
+  //__sst_tableaux_multiply (m1, m2, m_res);
+  __sst_tableaux_write_plain_file (m1, "m1.sst");
+  __sst_tableaux_write_compressed_file (m1, "m1.sstc");
   return 0;
 }

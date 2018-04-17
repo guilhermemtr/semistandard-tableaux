@@ -68,8 +68,9 @@ __sst_tableaux_destroy (__sst_tableaux_t *_sst);
  * @param _sst the semistandard tableaux.
  * @param fn the function to be called.
  * @param data additional data to be passed to the iteration function.
+ * @return the real size of the tableaux.
  */
-void
+size_t
 __sst_tableaux_iterate_tableaux (const __sst_tableaux_t *_sst,
                                  iteration_function      fn,
                                  void *                  data);
@@ -99,6 +100,22 @@ __sst_tableaux_storage_size (const __sst_tableaux_t *_sst);
 bool
 __sst_tableaux_check (const __sst_tableaux_t *_sst);
 
+/** Multiplies two semistandard tableauxs given as input, and with the given
+ * sizes into a semistandard tableaux also given as input. Multiplies the two
+ * semistandard tableauxs given as input, and with the given sizes, writing the
+ * new semistandard tableaux in the third input parameter.
+ * @param _sst_left the first semistandard tableaux.
+ * @param _sst_right the second semistandard tableaux.
+ * @param sz_right the size of the second semistandard tableaux.
+ * @param _sst_result the resulting semistandard tableaux.
+ * @return the (shortened) size of the resulting tableaux
+ */
+size_t
+__sst_tableaux_fast_multiply (const __sst_tableaux_t *_sst_left,
+                              const __sst_tableaux_t *_sst_right,
+                              const size_t            sz_right,
+                              __sst_tableaux_t *      _sst_result);
+
 /** Multiplies two semistandard tableauxs given as input into a semistandard
  * tableaux also given as input. Multiplies the two semistandard tableauxs given
  * as input, writing the new semistandard tableaux in the third input parameter.
@@ -116,12 +133,10 @@ __sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
  * returns a semistandard tableaux's word).
  * @param _sst the semistandard tableaux.
  * @param the vector of numbers corresponding to the semistandard tableaux.
- * @return the size of the tableaux cells vector.
  */
-size_t
+void
 __sst_tableaux_read_to_plain_tableaux (
-  const __sst_tableaux_t *      _sst,
-  const __tableaux_cell_val_t **_sst_tableaux_cells);
+  const __sst_tableaux_t *_sst, __tableaux_cell_val_t *_sst_tableaux_cells);
 
 /** Reads a semistandard tableaux from a vector of numbers.
  * Reads a semistandard tableaux from a vector of numbers (or, in other words,
@@ -145,7 +160,7 @@ __sst_tableaux_read_from_plain_tableaux (
  */
 size_t
 __sst_tableaux_read_to_compressed_tableaux (
-  const __sst_tableaux_t *_sst, const __tableaux_cell_t **_sst_tableaux_cells);
+  const __sst_tableaux_t *_sst, __tableaux_cell_t *_sst_tableaux_cells);
 
 /** Reads a semistandard tableaux from a compressed vector of cells.
  * Reads a semistandard tableaux from a compressed vector of cells (or, in

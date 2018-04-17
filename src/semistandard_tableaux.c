@@ -31,14 +31,20 @@ __sst_tableaux_resize (__sst_tableaux_t *_sst)
   __sst_tableaux_initialize_rows (_sst);
 }
 
-static void
+static size_t
 __sst_tableaux_add_cells (__sst_tableaux_t * _sst,
                           __tableaux_cell_t *cells,
-                          size_t             nr_cells,
                           size_t             real_nr_cells)
 {
-  __tableaux_cell_t to_place[real_nr_cells];
-  __tableaux_cell_t replaced[real_nr_cells];
+  __tableaux_cell_t arr1[real_nr_cells];
+  __tableaux_cell_t arr2[real_nr_cells];
+
+  __tableaux_cell_t *to_place = arr1;
+  __tableaux_cell_t *replaced = arr2;
+
+  size_t result_sz = 0;
+
+
 
   for (size_t i = 0, j = 0; j < real_nr_cells; j += cells[i++].len)
   {
@@ -51,29 +57,36 @@ __sst_tableaux_add_cells (__sst_tableaux_t * _sst,
   {
     if (j == _sst->counter)
     {
-      _sst->counter++;
       if (_sst->counter == _sst->size)
       {
         __sst_tableaux_resize (_sst);
       }
+      _sst->counter++;
     }
 
     __sst_ordered_array_place (
-      &(_sst->rows[j++]), to_place, real_nr_cells, replaced, &real_nr_cells);
+      &(_sst->rows[j]), to_place, real_nr_cells, replaced, &real_nr_cells);
+
+    result_sz += _sst->rows[j++].counter;
+
+    __tableaux_cell_t *tmp = to_place;
+    to_place               = replaced;
+    replaced               = tmp;
   }
+  return result_sz;
 }
 
 void
-__sst_tableaux_init (__sst_tableaux_t *       _sst,
+__sst_tableaux_init (__sst_tableaux_t * _sst,
                      __tableaux_cell_t *_sst_values,
-                     const size_t             sz)
+                     const size_t       sz)
 {
   size_t real_sz = 0;
   for (size_t i = 0; i < sz; i++)
   {
     real_sz += _sst_values[i].len;
   }
-  __sst_tableaux_add_cells (_sst, _sst_values, sz, real_sz);
+  __sst_tableaux_add_cells (_sst, _sst_values, real_sz);
 }
 
 void
@@ -87,8 +100,7 @@ __sst_tableaux_destroy (__sst_tableaux_t *_sst)
   free (_sst);
 }
 
-//
-void
+size_t
 __sst_tableaux_iterate_tableaux (const __sst_tableaux_t *_sst,
                                  iteration_function      fn,
                                  void *                  data)
@@ -113,6 +125,7 @@ __sst_tableaux_iterate_tableaux (const __sst_tableaux_t *_sst,
     i = 0;
     j--;
   }
+  return real_index;
 }
 
 size_t
@@ -193,6 +206,30 @@ __sst_tableaux_resize_to (__sst_tableaux_t *_sst, const size_t sz)
   __sst_tableaux_initialize_rows (_sst);
 }
 
+size_t
+__sst_tableaux_fast_multiply (const __sst_tableaux_t *_sst_left,
+                              const __sst_tableaux_t *_sst_right,
+                              const size_t            sz_right,
+                              __sst_tableaux_t *      _sst_result)
+{
+  _sst_result->counter = 0;
+  if (__builtin_expect (_sst_left->counter >= _sst_result->size, 0))
+  {
+    __sst_tableaux_resize_to (_sst_result, _sst_left->counter);
+  }
+
+  for (size_t i = 0; i < _sst_left->counter; i++)
+  {
+    __sst_ordered_array_copy (&_sst_left->rows[i], &_sst_result->rows[i]);
+  }
+
+  __tableaux_cell_t right_tableaux[sz_right];
+  size_t            real_sz_right =
+    __sst_tableaux_read_to_compressed_tableaux (_sst_right, right_tableaux);
+
+  return __sst_tableaux_add_cells (_sst_result, right_tableaux, real_sz_right);
+}
+
 void
 __sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
                          const __sst_tableaux_t *_sst_right,
@@ -209,11 +246,13 @@ __sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
     __sst_ordered_array_copy (&_sst_left->rows[i], &_sst_result->rows[i]);
   }
 
+  // __sst_tableaux_add_cells (
+  //  __sst_tableaux_t * _sst, __tableaux_cell_t * cells, size_t real_nr_cells)
+
   // TODO
   //__sst_tableaux_iterate_tableaux (
   //  _sst_right, __sst_tableaux_multiply_iteration_function, _sst_result);
 }
-
 
 
 static ptrdiff_t
@@ -230,16 +269,12 @@ __sst_tableaux_read_to_plain_iteration_function (__tableaux_cell_t cell,
   return (ptrdiff_t) 1;
 }
 
-size_t
+void
 __sst_tableaux_read_to_plain_tableaux (
-  const __sst_tableaux_t *      _sst,
-  const __tableaux_cell_val_t **_sst_tableaux_cells)
+  const __sst_tableaux_t *_sst, __tableaux_cell_val_t *_sst_tableaux_cells)
 {
-  size_t total_size    = __sst_tableaux_storage_size (_sst);
-  *_sst_tableaux_cells = malloc (total_size * sizeof (__tableaux_cell_val_t));
   __sst_tableaux_iterate_tableaux (
     _sst, __sst_tableaux_read_to_plain_iteration_function, _sst_tableaux_cells);
-  return total_size;
 }
 
 void
@@ -258,7 +293,7 @@ __sst_tableaux_read_from_plain_tableaux (
     } else
     {
       __tableaux_cell_t cell = {.val = curr, .len = count};
-      __sst_tableaux_add_cells (_sst, &cell, 1, count);
+      __sst_tableaux_add_cells (_sst, &cell, count);
       curr  = _sst_tableaux_cells[i];
       count = 1;
     }
@@ -278,15 +313,12 @@ __sst_tableaux_read_to_compressed_iteration_function (__tableaux_cell_t cell,
 
 size_t
 __sst_tableaux_read_to_compressed_tableaux (
-  const __sst_tableaux_t *_sst, const __tableaux_cell_t **_sst_tableaux_cells)
+  const __sst_tableaux_t *_sst, __tableaux_cell_t *_sst_tableaux_cells)
 {
-  size_t total_size    = __sst_tableaux_size (_sst);
-  *_sst_tableaux_cells = malloc (total_size * sizeof (__tableaux_cell_val_t));
-  __sst_tableaux_iterate_tableaux (
+  return __sst_tableaux_iterate_tableaux (
     _sst,
     __sst_tableaux_read_to_compressed_iteration_function,
     _sst_tableaux_cells);
-  return total_size;
 }
 
 void
@@ -305,7 +337,7 @@ __sst_tableaux_read_from_compressed_tableaux (
     } else
     {
       __tableaux_cell_t cell = {.val = curr, .len = count};
-      __sst_tableaux_add_cells (_sst, &cell, 1, count);
+      __sst_tableaux_add_cells (_sst, &cell, count);
       curr  = _sst_tableaux_cells[i].val;
       count = _sst_tableaux_cells[i].len;
     }
