@@ -2,7 +2,7 @@
 #include "semistandard_tableaux.h"
 
 void
-unit_tests_1 ()
+unit_test_1 ()
 {
   __tableaux_cell_t cells[10];
   cells[0] = (__tableaux_cell_t){3L, 5L};
@@ -43,14 +43,30 @@ unit_tests_1 ()
   printf ("]\n");
 }
 
+void
+unit_test_2 ()
+{
+  __sst_tableaux_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1");
+  __sst_tableaux_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2");
+
+  __sst_tableaux_t *m_res = __sst_tableaux_create ();
+  __sst_tableaux_multiply (m1, m2, m_res);
+
+
+  __sst_tableaux_print (m1);
+  printf("\n\n");
+  __sst_tableaux_print (m2);
+  printf("\n\n");
+  __sst_tableaux_print (m_res);
+
+  __sst_tableaux_write_plain_file (m_res, "m_res.sst");
+  __sst_tableaux_write_compressed_file (m_res, "m_res.sstc");
+}
+
+
 int
 main (int argc, char **argv)
 {
-  __sst_tableaux_t *m1    = __sst_tableaux_read_plain_file ("inputs/m2");
-  //__sst_tableaux_t *m2    = __sst_tableaux_read_plain_file ("m2");
-  //__sst_tableaux_t *m_res = __sst_tableaux_create ();
-  //__sst_tableaux_multiply (m1, m2, m_res);
-  __sst_tableaux_write_plain_file (m1, "m1.sst");
-  __sst_tableaux_write_compressed_file (m1, "m1.sstc");
+  unit_test_2 ();
   return 0;
 }

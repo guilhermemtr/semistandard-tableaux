@@ -235,23 +235,8 @@ __sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
                          const __sst_tableaux_t *_sst_right,
                          __sst_tableaux_t *      _sst_result)
 {
-  _sst_result->counter = 0;
-  if (__builtin_expect (_sst_left->counter >= _sst_result->size, 0))
-  {
-    __sst_tableaux_resize_to (_sst_result, _sst_left->counter);
-  }
-
-  for (size_t i = 0; i < _sst_left->counter; i++)
-  {
-    __sst_ordered_array_copy (&_sst_left->rows[i], &_sst_result->rows[i]);
-  }
-
-  // __sst_tableaux_add_cells (
-  //  __sst_tableaux_t * _sst, __tableaux_cell_t * cells, size_t real_nr_cells)
-
-  // TODO
-  //__sst_tableaux_iterate_tableaux (
-  //  _sst_right, __sst_tableaux_multiply_iteration_function, _sst_result);
+  size_t sz_right = __sst_tableaux_storage_size (_sst_right);
+  __sst_tableaux_fast_multiply (_sst_left, _sst_right, sz_right, _sst_result);
 }
 
 
@@ -372,7 +357,10 @@ __sst_tableaux_write_plain_file_iterator_function (__tableaux_cell_t cell,
                                                    void *            data)
 {
   FILE *f = (FILE *) data;
-  fprintf (f, "%lu\n", cell.val);
+  for (size_t i = 0; i < cell.len; i++)
+  {
+    fprintf (f, "%lu\n", cell.val);
+  }
   return (ptrdiff_t) 1;
 }
 
@@ -473,6 +461,22 @@ __sst_tableaux_read_structured_file (const char *filename)
     //__sst_tableaux_add_cell (_sst, cell);
   }
   return _sst;
+}
+
+void
+__sst_tableaux_print (const __sst_tableaux_t *_sst)
+{
+  for (size_t i = 0; i < _sst->counter; i++)
+  {
+    for (size_t j = 0; j < _sst->rows[i].counter; j++)
+    {
+      for (size_t k = 0; k < _sst->rows[i].array[j].len; k++)
+      {
+        printf ("%lu, ", _sst->rows[i].array[j].val);
+      }
+    }
+    printf ("\n");
+  }
 }
 
 #endif    // __SST_TABLEAUX__

@@ -214,5 +214,12 @@ void
 __sst_tableaux_write_compressed_file (const __sst_tableaux_t *_sst,
                                       const char *            filename);
 
+/** Prints the given semistandard tableaux into stdout.
+ * Prints the given semistandard tableaux into stdout.
+ * @param _sst the compressed semistandard tableaux to be written to a file.
+ */
+void
+__sst_tableaux_print (const __sst_tableaux_t *_sst);
+
 
 #endif    // __SST_TABLEAUX__
