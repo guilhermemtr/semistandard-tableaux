@@ -21,6 +21,17 @@ typedef struct
   __sst_ordered_array_t *rows;    //!< tableaux rows.
 } __sst_tableaux_t;
 
+/** Structure that represents a semistandard tableaux in the word format.
+ * Structure that represents a semistandard tableaux in the word format.
+ */
+typedef struct
+{
+  size_t size;       //!< shortened size of the tableaux.
+  size_t counter;    //!< shortened counter of the tableaux. invariant: counter
+                     //!< <= size.
+  __tableaux_cell_t *cells;    //!< tableaux cells.
+} __sst_word_tableaux_t;
+
 /** Type of function that is called during iterations of tableauxs.
  * Type of function that is called during iterations of tableauxs.
  * @param cell the value of the cell currently being iterated.
