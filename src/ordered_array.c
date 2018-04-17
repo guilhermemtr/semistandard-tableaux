@@ -61,7 +61,7 @@ get_mid (__sst_ordered_array_t *_sstoa, __tableaux_cell_val_t val)
 {
   size_t top    = _sstoa->counter - 1;
   size_t bottom = 0;
-  size_t mid    = (top + bottom + 1) >> 1;
+  size_t mid    = (top + bottom) >> 1;
 
   while (true)
   {
@@ -71,15 +71,15 @@ get_mid (__sst_ordered_array_t *_sstoa, __tableaux_cell_val_t val)
       break;
     }
 
-    if (val < _sstoa->array[mid].val)
+    if (val >= _sstoa->array[mid].val)
     {
-      top = mid;
+      bottom = mid + 1;
     } else
     {
-      bottom = mid;
+      top = mid;
     }
 
-    mid = (top + bottom + 1) >> 1;
+    mid = (top + bottom) >> 1;
   }
   return mid;
 }
@@ -97,18 +97,12 @@ place_cell_mid (__sst_ordered_array_t *_sstoa,
                                      (_sstoa->size + to_place.len) << 2);
     }
 
-    for (size_t i = _sstoa->counter - 1; i <= *idx; i--)
+    for (size_t i = _sstoa->counter; i > *idx; i--)
     {
-      _sstoa->array[i + 1] = _sstoa->array[i];
+      _sstoa->array[i] = _sstoa->array[i - 1];
     }
 
-    if (*idx == 0)
-    {
-      _sstoa->array[*idx] = to_place;
-    } else    // _sstoa->array[*idx - 1].val < to_place.val
-    {
-      _sstoa->array[*idx - 1] = to_place;
-    }
+    _sstoa->array[*idx] = to_place;
     _sstoa->counter++;
   } else    // _sstoa->array[*idx - 1].val == to_place.val
   {
@@ -130,7 +124,10 @@ shift_cells_after_mid (__sst_ordered_array_t *_sstoa,
 
   while (extra > 0)
   {
-    if (extra >= _sstoa->array[*idx].len)
+    if (*idx >= _sstoa->counter)
+    {
+      extra = 0;
+    } else if (extra >= _sstoa->array[*idx].len)
     {
       if (dis == 0)
       {
@@ -151,6 +148,7 @@ shift_cells_after_mid (__sst_ordered_array_t *_sstoa,
       *pos                    = *pos + extra;
       extra                   = 0;
     }
+    *idx = *idx + 1;
   }
 
   // shift all one to the left
@@ -162,8 +160,18 @@ shift_cells_after_mid (__sst_ordered_array_t *_sstoa,
 }
 
 
+void
+print_array (__sst_ordered_array_t *_sstoa)
+{
+  printf ("[");
+  for (size_t i = 0; i < _sstoa->counter; i++)
+  {
+    printf ("{%u, %u},\t", _sstoa->array[i].val, _sstoa->array[i].len);
+  }
+  printf ("]\n");
+}
 
-static void
+void
 place_cell (__sst_ordered_array_t *_sstoa,
             __tableaux_cell_t      to_place,
             __tableaux_cell_t *    replaced,

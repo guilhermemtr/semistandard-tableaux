@@ -21,6 +21,15 @@ typedef struct
   __tableaux_cell_t *array;    //!< array.
 } __sst_ordered_array_t;
 
+void
+place_cell (__sst_ordered_array_t *_sstoa,
+            __tableaux_cell_t      to_place,
+            __tableaux_cell_t *    replaced,
+            size_t *               pos);
+
+void
+print_array (__sst_ordered_array_t *_sstoa);
+
 /** Creates an ordered array to be used in semistandard tableaux.
  * Creates an ordered array to be used in semistandard tableaux.
  * @param _sstoa pointer to the structure where the array should be created.
