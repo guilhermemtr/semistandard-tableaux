@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "semistandard_tableaux.h"
+#include "identity_testing.h"
 
 void
 unit_test_1 ()
@@ -63,10 +64,17 @@ unit_test_2 ()
   __sst_tableaux_write_compressed_file (m_res, "m_res.sstc");
 }
 
+void
+unit_test_3 ()
+{
+  char identity[] = "x.y.z=z.x.x.y";
+  __it_test_identity (identity, NULL, 0L);
+}
+
 
 int
 main (int argc, char **argv)
 {
-  unit_test_2 ();
+  unit_test_3();
   return 0;
 }

@@ -417,52 +417,6 @@ __sst_tableaux_write_compressed_file (const __sst_tableaux_t *_sst,
   fclose (f);
 }
 
-//TODO
-__sst_tableaux_t *
-__sst_tableaux_read_structured_file (const char *filename)
-{
-  FILE *            f    = fopen (filename, "r");
-  __sst_tableaux_t *_sst = __sst_tableaux_create ();
-
-  char * line = NULL;
-  size_t len  = 0;
-  char * token1;
-  char * token2;
-  char * save_ptr1;
-  char * save_ptr2;
-  char * end_ptr  = NULL;
-  int    base_val = 10;
-  int    base_tag = 16;
-
-  while (getline (&line, &len, f) != -1)
-  {
-    token1 = strtok_r (line, ",", &save_ptr1);
-
-    while (token1 != NULL)
-    {
-      token2                     = strtok_r (token1, ":", &save_ptr2);
-      __tableaux_cell_val_t v    = strtoull (token2, &end_ptr, base_val);
-      token2                     = strtok_r (NULL, ":", &save_ptr2);
-      __tableaux_cell_len_t l    = strtoull (token2, &end_ptr, base_tag);
-      __tableaux_cell_t     cell = {.val = v, .len = l};
-
-
-      token1 = strtok_r (NULL, ",", &save_ptr1);
-    }
-
-    free (line);
-    line = NULL;
-    len  = 0;
-  }
-
-  __tableaux_cell_t cell;
-  while (fscanf (f, "%lu", &(cell.val)) != EOF)
-  {
-    //__sst_tableaux_add_cell (_sst, cell);
-  }
-  return _sst;
-}
-
 void
 __sst_tableaux_print (const __sst_tableaux_t *_sst)
 {

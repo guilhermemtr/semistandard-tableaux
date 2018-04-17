@@ -4,7 +4,9 @@ RM=rm -f
 
 SRC_PATH=src
 INC_PATH=include
-BUILD_PATH=build
+BUILD_PATH=.
+
+#BUILD_PATH=build
 
 INCS=$(foreach d, $(INC_PATH), -I$d)
 
@@ -14,7 +16,7 @@ LDFLAGS=-lpthread -lm
 FILE_PREFIX=.c
 OBJ=.o
 
-SOURCES=$(SRC_PATH)/main.c $(SRC_PATH)/ordered_array.c $(SRC_PATH)/semistandard_tableaux.c
+SOURCES=$(SRC_PATH)/main.c $(SRC_PATH)/ordered_array.c $(SRC_PATH)/semistandard_tableaux.c $(SRC_PATH)/identity_testing.c $(SRC_PATH)/hashmap.c
 OBJS=$(subst $(SRC_PATH),$(BUILD_PATH),$(SOURCES))
 OBJECTS=$(OBJS:$(FILE_PREFIX)=$(OBJ))
 
