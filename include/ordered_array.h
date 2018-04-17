@@ -3,6 +3,7 @@
 
 #define __SST_ORDERED_ARRAY_DEFAULT_SIZE (1 << 5)
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -20,15 +21,6 @@ typedef struct
                 //!< <= size.
   __tableaux_cell_t *array;    //!< array.
 } __sst_ordered_array_t;
-
-void
-place_cell (__sst_ordered_array_t *_sstoa,
-            __tableaux_cell_t      to_place,
-            __tableaux_cell_t *    replaced,
-            size_t *               pos);
-
-void
-print_array (__sst_ordered_array_t *_sstoa);
 
 /** Creates an ordered array to be used in semistandard tableaux.
  * Creates an ordered array to be used in semistandard tableaux.
@@ -96,5 +88,12 @@ __sst_ordered_array_place (__sst_ordered_array_t *_sstoa,
                            size_t                 real_nr_to_place,
                            __tableaux_cell_t *    replaced,
                            size_t *               real_nr_replaced);
+
+/** Prints the given ordered array to stdout.
+ * Prints the given ordered array to stdout.
+ * @param _sstoa pointer to the structure where the array should be created.
+ */
+void
+print_array (__sst_ordered_array_t *_sstoa);
 
 #endif    // __SST_ORDERED_ARRAY__

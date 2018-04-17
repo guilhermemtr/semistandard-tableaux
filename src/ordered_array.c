@@ -165,12 +165,12 @@ print_array (__sst_ordered_array_t *_sstoa)
   printf ("[");
   for (size_t i = 0; i < _sstoa->counter; i++)
   {
-    printf ("{%u, %u},\t", _sstoa->array[i].val, _sstoa->array[i].len);
+    printf ("{%lu, %lu},\t", _sstoa->array[i].val, _sstoa->array[i].len);
   }
   printf ("]\n");
 }
 
-void
+static void
 place_cell (__sst_ordered_array_t *_sstoa,
             __tableaux_cell_t      to_place,
             __tableaux_cell_t *    replaced,
