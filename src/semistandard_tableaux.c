@@ -268,15 +268,66 @@ tableaux_equals (const __sst_tableaux_t *_sst_left,
 }
 
 bool
-check_tableaux_identity (size_t *x,
-                         size_t  len_x,
-                         size_t *y,
-                         size_t  len_y,
-                         size_t *assigns,
-                         size_t  nr_vars,
-                         void *  elems)
+__sst_tableaux_check_identity (size_t *x,
+                               size_t  len_x,
+                               size_t *y,
+                               size_t  len_y,
+                               size_t *assigns,
+                               size_t  nr_vars,
+                               void *  elems)
 {
-  return true; //tableaux_equals (left, right);
+  __sst_word_tableaux_t *tableaux = (__sst_word_tableaux_t *) elems;
+
+  __sst_word_tableaux_t left_side[len_x];
+  __sst_word_tableaux_t right_side[len_y];
+
+  size_t len_left  = 0;
+  size_t len_right = 0;
+
+  for (size_t i = 0; i < len_x; i++)
+  {
+    __sst_word_tableaux_t curr = tableaux[assigns[x[i]]];
+    left_side[i]               = curr;
+    len_left                   = len_left + curr.counter;
+  }
+
+  for (size_t i = 0; i < len_y; i++)
+  {
+    __sst_word_tableaux_t curr = tableaux[assigns[y[i]]];
+    right_side[i]              = curr;
+    len_right                  = len_right + curr.counter;
+  }
+
+  __tableaux_cell_t left_cells[len_left];
+  __tableaux_cell_t right_cells[len_right];
+
+  __sst_word_tableaux_t left = {
+    .size = len_left, .counter = len_left, .cells = left_cells};
+
+  __sst_word_tableaux_t right = {
+    .size = len_right, .counter = len_right, .cells = right_cells};
+
+  for (size_t i = 0; i < len_x; i++)
+  {
+    memcpy (&(left.cells[i]),
+            &(left_side[i].cells),
+            sizeof (__tableaux_cell_t) * left_side[i].counter);
+  }
+
+  for (size_t i = 0; i < len_y; i++)
+  {
+    memcpy (&(right.cells[i]),
+            &(right_side[i].cells),
+            sizeof (__tableaux_cell_t) * right_side[i].counter);
+  }
+
+  __sst_tableaux_t *l = __sst_tableaux_create ();
+  __sst_tableaux_t *r = __sst_tableaux_create ();
+
+  __sst_tableaux_read_from_compressed_tableaux (l, left.cells, left.counter);
+  __sst_tableaux_read_from_compressed_tableaux (r, right.cells, right.counter);
+
+  return tableaux_equals (l, left.counter, r, right.counter);
 }
 
 static ptrdiff_t

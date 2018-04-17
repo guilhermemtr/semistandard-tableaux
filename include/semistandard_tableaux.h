@@ -151,13 +151,13 @@ __sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
  * @return whether the identity was verified for the given assignment or not.
  */
 bool
-check_tableaux_identity (size_t *x,
-                         size_t  len_x,
-                         size_t *y,
-                         size_t  len_y,
-                         size_t *assigns,
-                         size_t  nr_vars,
-                         void *  elems);
+__sst_tableaux_check_identity (size_t *x,
+                               size_t  len_x,
+                               size_t *y,
+                               size_t  len_y,
+                               size_t *assigns,
+                               size_t  nr_vars,
+                               void *  elems);
 
 /** Reads a semistandard tableaux into a vector of numbers.
  * Reads a semistandard tableaux into a vector of numbers (or, in other words,
