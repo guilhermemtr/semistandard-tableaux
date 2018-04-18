@@ -1,6 +1,9 @@
 #ifndef __SST_POOL__
 #define __SST_POOL__
 
+#include <dirent.h>
+#include <sys/types.h>
+
 #include "semistandard_tableaux.h"
 
 #define __SST_POOL_DEFAULT_SIZE (1 << 5)
@@ -75,6 +78,15 @@ __sst_pool_add_tableaux_from_plain_file (__sst_pool_t *p, char *fn);
  */
 void
 __sst_pool_add_tableaux_from_compressed_file (__sst_pool_t *p, char *fn);
+
+/** Function that adds all the tableaux that are stored in files within the
+ * given directory. Function that adds all the tableaux that are stored in files
+ * within the given directory, to the given tableaux pool.
+ * @param p the pool to which the tableaux is to be added.
+ * @param dir_path the path of the directory where the tableaux are stored.
+ */
+void
+__sst_pool_add_tableaux_from_directory (__sst_pool_t *p, char *dir_path);
 
 /** Function that adds randomly generated tableaux to a tableaux pool.
  * Function that adds nr_random randomly generated tableaux to the given

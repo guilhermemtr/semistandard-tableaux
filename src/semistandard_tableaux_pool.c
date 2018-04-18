@@ -93,6 +93,53 @@ __sst_pool_add_tableaux_from_compressed_file (__sst_pool_t *p, char *fn)
   __sst_pool_add_tableaux (p, t);
 }
 
+// copied from
+// https://stackoverflow.com/questions/744766/how-to-compare-ends-of-strings-in-c
+static bool
+str_suffix_match (const char *str, const char *suffix)
+{
+  if (!str || !suffix)
+    return 0;
+  size_t lenstr    = strlen (str);
+  size_t lensuffix = strlen (suffix);
+  if (lensuffix > lenstr)
+    return 0;
+  return strncmp (str + lenstr - lensuffix, suffix, lensuffix) == 0;
+}
+
+void
+__sst_pool_add_tableaux_from_directory (__sst_pool_t *p, char *dir_path)
+{
+  DIR *          dir;
+  struct dirent *ent;
+  dir = opendir (dir_path);
+
+  if (dir != NULL)
+  {
+    size_t len_dir_path = strlen (dir_path);
+    /* print all the files and directories within directory */
+    while ((ent = readdir (dir)) != NULL)
+    {
+      if (str_suffix_match (ent->d_name, ".sst"))
+      {
+        size_t fn_len = strlen (ent->d_name);
+        char   concat[len_dir_path + fn_len + 1];
+        strcpy (concat, dir_path);
+        strcpy (&(concat[len_dir_path]), ent->d_name);
+        __sst_pool_add_tableaux_from_plain_file (p, concat);
+      } else if (str_suffix_match (ent->d_name, ".sstc"))
+      {
+        size_t fn_len = strlen (ent->d_name);
+        char   concat[len_dir_path + fn_len + 1];
+        strcpy (concat, dir_path);
+        strcpy (&(concat[len_dir_path]), ent->d_name);
+        __sst_pool_add_tableaux_from_compressed_file (p, concat);
+      }
+    }
+    closedir (dir);
+  }
+}
+
 void
 __sst_pool_add_random_tableaux (__sst_pool_t *        p,
                                 size_t                nr_random,

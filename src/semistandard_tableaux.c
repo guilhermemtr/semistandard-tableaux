@@ -402,8 +402,10 @@ __sst_tableaux_read_compressed_file (const char *filename)
   size_t             count = 0;
   __tableaux_cell_t *cells = malloc (sz * sizeof (__tableaux_cell_t));
 
-  while (fscanf (f, "%lu %lu", &(cells[count].val), &(cells[count].len)) != EOF)
+  int read = 0;
+  while (read != EOF)
   {
+    read = fscanf (f, "%lu %lu", &(cells[count].val), &(cells[count].len));
     count++;
     if (count == sz)
     {

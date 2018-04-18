@@ -50,8 +50,8 @@ void
 unit_test_2 ()
 {
   printf ("\n\n=== UNIT TEST 2 ===\n\n\n");
-  __sst_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1");
-  __sst_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2");
+  __sst_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1.sst");
+  __sst_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2.sst");
 
   __sst_t *m_res = __sst_tableaux_create ();
   __sst_tableaux_multiply (m1, m2, m_res);
@@ -63,8 +63,8 @@ unit_test_2 ()
   printf ("\n\n");
   __sst_tableaux_print (m_res);
 
-  __sst_tableaux_write_plain_file (m_res, "m_res.sst");
-  __sst_tableaux_write_compressed_file (m_res, "m_res.sstc");
+  __sst_tableaux_write_plain_file (m_res, "inputs/m_res.sst");
+  __sst_tableaux_write_compressed_file (m_res, "inputs/m_res.sstc");
 }
 
 static bool
@@ -97,8 +97,8 @@ void
 unit_test_4 (char identity[])
 {
   printf ("\n\n=== UNIT TEST 4 ===\n\n\n");
-  __sst_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1");
-  __sst_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2");
+  __sst_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1.sst");
+  __sst_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2.sst");
 
   __sst_t *m_res = __sst_tableaux_create ();
 
@@ -149,8 +149,8 @@ void
 unit_test_5 ()
 {
   printf ("\n\n=== UNIT TEST 5 ===\n\n\n");
-  __sst_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1");
-  __sst_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2");
+  __sst_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1.sst");
+  __sst_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2.sst");
 
   __sst_t *m_res = __sst_tableaux_create ();
   __sst_tableaux_multiply (m1, m2, m_res);
@@ -173,6 +173,23 @@ unit_test_5 ()
   __sst_pool_print (p, __sst_tableaux_print);
 }
 
+void
+unit_test_6 ()
+{
+  printf ("\n\n=== UNIT TEST 6 ===\n\n\n");
+
+  __sst_pool_t *p = __sst_pool_create_sst_pool ();
+
+  __sst_pool_add_tableaux_from_directory (p, "./inputs/");
+
+  __sst_pool_print (p, __sst_tableaux_print);
+
+  __sst_pool_remove_duplicates (p);
+
+  __sst_pool_print (p, __sst_tableaux_print);
+}
+
+
 int
 main (int argc, char **argv)
 {
@@ -192,6 +209,8 @@ main (int argc, char **argv)
   unit_test_4 (id2_4);
 
   unit_test_5 ();
+
+  unit_test_6 ();
 
   return 0;
 }
