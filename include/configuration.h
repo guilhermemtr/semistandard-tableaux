@@ -1,9 +1,13 @@
-//#define __USE_CILK__
 
-#ifndef __USE_CILK__
+
+// the macro __cilk is automatically defined if the source code is compiled as
+// cilk code.
+
+#ifndef __cilk
 #define spawn(X) X
-#define sync 
+#define sync
 #else
+#include <cilk/cilk.h>
 #define spawn(X) cilk_spawn X
-#define sync __cilk_sync
+#define sync cilk_sync
 #endif

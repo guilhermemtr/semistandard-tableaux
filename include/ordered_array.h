@@ -40,24 +40,17 @@ __sst_ordered_array_destroy (__sst_ordered_array_t *_sstoa);
  * Returns the true size of the array, taking into account the length of the
  * cells.
  * @param _sstoa the semistandard tableaux ordered array.
- * @return size the true size of the semistandard tableaux ordered array.
+ * @return the true size of the semistandard tableaux ordered array.
  */
 size_t
-__sst_ordered_array_real_length (__sst_ordered_array_t *_sstoa);
-
-/** Resizes the array to be twice as long.
- * Resizes the array to be twice as long.
- * @param _sstoa the semistandard tableaux ordered array to be resized.
- */
-void
-__sst_ordered_array_resize (__sst_ordered_array_t *_sstoa);
+__sst_ordered_array_size (__sst_ordered_array_t *_sstoa);
 
 /** Resizes the array to the given size.
  * Resizes the array to the given size, unless the given size is not enough to
  * store all the elements of the array. If the given size is not enough, then
  * the array is resized to _sstoa->counter.
  * @param _sstoa the semistandard tableaux ordered array to be resized.
- * @param size the new size to which the semistandard tableaux ordered array.
+ * @param sz the new size of the semistandard tableaux ordered array.
  */
 void
 __sst_ordered_array_resize_to (__sst_ordered_array_t *_sstoa, const size_t sz);
@@ -91,7 +84,7 @@ __sst_ordered_array_place (__sst_ordered_array_t *_sstoa,
 
 /** Prints the given ordered array to stdout.
  * Prints the given ordered array to stdout.
- * @param _sstoa pointer to the structure where the array should be created.
+ * @param _sstoa pointer to the array to be printed.
  */
 void
 print_array (__sst_ordered_array_t *_sstoa);

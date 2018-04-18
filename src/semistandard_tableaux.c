@@ -23,9 +23,9 @@ __sst_tableaux_create (void)
 }
 
 static void
-__sst_tableaux_resize (__sst_tableaux_t *_sst)
+__sst_tableaux_resize_to (__sst_tableaux_t *_sst, const size_t sz)
 {
-  _sst->size = (_sst->size + 1) << 1;    // multiplication by two
+  _sst->size = sz;
   _sst->rows =
     realloc (_sst->rows, _sst->size * sizeof (__sst_ordered_array_t));
   __sst_tableaux_initialize_rows (_sst);
@@ -59,7 +59,7 @@ __sst_tableaux_add_cells (__sst_tableaux_t * _sst,
     {
       if (_sst->counter == _sst->size)
       {
-        __sst_tableaux_resize (_sst);
+        __sst_tableaux_resize_to (_sst, (_sst->size + 1) << 2);
       }
       _sst->counter++;
     }
@@ -151,92 +151,6 @@ __sst_tableaux_storage_size (const __sst_tableaux_t *_sst)
     total_size += _sst->rows[i].counter;
   }
   return total_size;
-}
-
-bool
-__sst_tableaux_check (const __sst_tableaux_t *_sst)
-{
-  bool ok = true;
-
-  // first, check sizes
-  if (_sst->counter == 0)
-  {
-    return ok;
-  }
-
-  size_t prev = _sst->rows[0].counter;
-  for (size_t j = 0; j < _sst->counter; j++)
-  {
-    ok   = ok && prev >= __sst_ordered_array_real_length (&(_sst->rows[j]));
-    prev = __sst_ordered_array_real_length (&(_sst->rows[j]));
-    if (!ok)
-    {
-      return ok;    // haha
-    }
-  }
-
-  // second, check value constraints
-  for (size_t j = 0; j < _sst->counter; j++)
-  {
-    for (size_t i = 0; i < _sst->rows[j].counter; i++)
-    {
-      ok = ok
-           && (i + 1 >= _sst->rows[j].counter
-               || _sst->rows[j].array[i].val < _sst->rows[j].array[i + 1].val);
-      ok =
-        ok
-        && (j + 1 >= _sst->counter
-            || _sst->rows[j + 1].array[i].val < _sst->rows[j + 1].array[i].val);
-
-      if (!ok)
-      {
-        return ok;
-      }
-    }
-  }
-  return ok;
-}
-
-static void
-__sst_tableaux_resize_to (__sst_tableaux_t *_sst, const size_t sz)
-{
-  _sst->size = sz;
-  _sst->rows =
-    realloc (_sst->rows, _sst->size * sizeof (__sst_ordered_array_t));
-  __sst_tableaux_initialize_rows (_sst);
-}
-
-size_t
-__sst_tableaux_fast_multiply (const __sst_tableaux_t *_sst_left,
-                              const __sst_tableaux_t *_sst_right,
-                              const size_t            sz_right,
-                              __sst_tableaux_t *      _sst_result)
-{
-  _sst_result->counter = 0;
-  if (__builtin_expect (_sst_left->counter >= _sst_result->size, 0))
-  {
-    __sst_tableaux_resize_to (_sst_result, _sst_left->counter);
-  }
-
-  for (size_t i = 0; i < _sst_left->counter; i++)
-  {
-    __sst_ordered_array_copy (&_sst_left->rows[i], &_sst_result->rows[i]);
-  }
-
-  __tableaux_cell_t right_tableaux[sz_right];
-  size_t            real_sz_right =
-    __sst_tableaux_read_to_compressed_tableaux (_sst_right, right_tableaux);
-
-  return __sst_tableaux_add_cells (_sst_result, right_tableaux, real_sz_right);
-}
-
-void
-__sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
-                         const __sst_tableaux_t *_sst_right,
-                         __sst_tableaux_t *      _sst_result)
-{
-  size_t sz_right = __sst_tableaux_storage_size (_sst_right);
-  __sst_tableaux_fast_multiply (_sst_left, _sst_right, sz_right, _sst_result);
 }
 
 static bool
@@ -563,6 +477,84 @@ __sst_tableaux_plain_word_print (const __sst_word_tableaux_t *_sst)
     }
   }
   printf ("\n");
+}
+
+bool
+__sst_tableaux_check (const __sst_tableaux_t *_sst)
+{
+  bool ok = true;
+
+  // first, check sizes
+  if (_sst->counter == 0)
+  {
+    return ok;
+  }
+
+  size_t prev = _sst->rows[0].counter;
+  for (size_t j = 0; j < _sst->counter; j++)
+  {
+    size_t curr = __sst_ordered_array_size (&(_sst->rows[j]));
+    ok          = ok && prev >= curr;
+    prev        = curr;
+    if (!ok)
+    {
+      return ok;    // haha
+    }
+  }
+
+  // second, check value constraints
+  for (size_t j = 0; j < _sst->counter; j++)
+  {
+    for (size_t i = 0; i < _sst->rows[j].counter; i++)
+    {
+      ok = ok
+           && (i + 1 >= _sst->rows[j].counter
+               || _sst->rows[j].array[i].val < _sst->rows[j].array[i + 1].val);
+      ok =
+        ok
+        && (j + 1 >= _sst->counter
+            || _sst->rows[j + 1].array[i].val < _sst->rows[j + 1].array[i].val);
+
+      if (!ok)
+      {
+        return ok;
+      }
+    }
+  }
+  return ok;
+}
+
+size_t
+__sst_tableaux_fast_multiply (const __sst_tableaux_t *_sst_left,
+                              const __sst_tableaux_t *_sst_right,
+                              const size_t            sz_right,
+                              __sst_tableaux_t *      _sst_result)
+{
+  _sst_result->counter = 0;
+  if (__builtin_expect (_sst_left->counter >= _sst_result->size, 0))
+  {
+    __sst_tableaux_resize_to (_sst_result, _sst_left->counter);
+  }
+
+  for (size_t i = 0; i < _sst_left->counter; i++)
+  {
+    __sst_ordered_array_copy (&_sst_left->rows[i], &_sst_result->rows[i]);
+  }
+
+  __tableaux_cell_t right_tableaux[sz_right];
+  size_t            real_sz_right =
+    __sst_tableaux_read_to_compressed_tableaux (_sst_right, right_tableaux);
+
+  return __sst_tableaux_add_cells (_sst_result, right_tableaux, real_sz_right);
+}
+
+void
+__sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
+                         const __sst_tableaux_t *_sst_right,
+                         __sst_tableaux_t *      _sst_result)
+{
+  size_t sz_right = __sst_tableaux_storage_size (_sst_right);
+  __sst_tableaux_fast_multiply (_sst_left, _sst_right, sz_right, _sst_result);
 }
 
 #endif    // __SST_TABLEAUX__

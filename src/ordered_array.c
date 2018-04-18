@@ -18,7 +18,7 @@ __sst_ordered_array_destroy (__sst_ordered_array_t *_sstoa)
 }
 
 size_t
-__sst_ordered_array_real_length (__sst_ordered_array_t *_sstoa)
+__sst_ordered_array_size (__sst_ordered_array_t *_sstoa)
 {
   size_t size = 0;
   for (size_t i = 0; i < _sstoa->counter; i++)
@@ -34,12 +34,6 @@ __sst_ordered_array_resize_to (__sst_ordered_array_t *_sstoa, const size_t sz)
   _sstoa->size = sz >= _sstoa->counter ? sz : _sstoa->counter;
   _sstoa->array =
     realloc (_sstoa->array, _sstoa->size * sizeof (__tableaux_cell_t));
-}
-
-void
-__sst_ordered_array_resize (__sst_ordered_array_t *_sstoa)
-{
-  __sst_ordered_array_resize_to (_sstoa, (_sstoa->size + 1) << 1);
 }
 
 void
@@ -158,18 +152,6 @@ shift_cells_after_mid (__sst_ordered_array_t *_sstoa,
   _sstoa->counter -= dis;
 }
 
-
-void
-print_array (__sst_ordered_array_t *_sstoa)
-{
-  printf ("[");
-  for (size_t i = 0; i < _sstoa->counter; i++)
-  {
-    printf ("{%lu, %lu},\t", _sstoa->array[i].val, _sstoa->array[i].len);
-  }
-  printf ("]\n");
-}
-
 static void
 place_cell (__sst_ordered_array_t *_sstoa,
             __tableaux_cell_t      to_place,
@@ -218,11 +200,23 @@ __sst_ordered_array_place (__sst_ordered_array_t *_sstoa,
   size_t nr_placed  = 0;
   *real_nr_replaced = 0;
 
+  // add the cells, one by one
   while (nr_placed < real_nr_to_place)
   {
     place_cell (_sstoa, to_place[nr_placed], replaced, real_nr_replaced);
     nr_placed += to_place[nr_placed].len;
   }
+}
+
+void
+print_array (__sst_ordered_array_t *_sstoa)
+{
+  printf ("[");
+  for (size_t i = 0; i < _sstoa->counter; i++)
+  {
+    printf ("{%lu, %lu},\t", _sstoa->array[i].val, _sstoa->array[i].len);
+  }
+  printf ("]\n");
 }
 
 #endif    // __SST_ORDERED_ARRAY__

@@ -141,23 +141,26 @@ __it_test_identity (char *           identity,
     } else
     {
       size_t tests[nr_elems][beg + 1];
+      bool   oks[nr_elems];
       for (size_t i = 0; i < nr_elems; i++)
       {
+        oks[i] = true;
         for (size_t j = 0; j < beg; j++)
         {
           tests[i][j] = id[j];
         }
       }
-
-      bool ok = true;
-
       for (size_t i = 0; i < nr_elems; i++)
       {
         tests[i][beg] = i;
-        ok &= spawn (test_identity (beg + 1, tests[i]));
+        oks[i]        = spawn (test_identity (beg + 1, tests[i]));
       }
-
       sync;
+      bool ok = true;
+      for (size_t i = 0; i < nr_elems; i++)
+      {
+        ok &= oks[i];
+      }
       return ok;
     }
   }

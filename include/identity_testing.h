@@ -21,7 +21,7 @@
  * @param len_y the length of the right side of the identity.
  * @param assigns the assignments to the variables.
  * @param nr_vars the number of variables.
- * @param elems the elements to which the variables can be set.
+ * @param elems the domains of the variables.
  * @return whether the identity was verified for the given assignment or not.
  */
 typedef bool(identity_testing) (size_t *x,
@@ -34,13 +34,16 @@ typedef bool(identity_testing) (size_t *x,
 
 /** Tests the validity of the given identity.
  * Tests the validity of the given identity, by trying all possible combinations
- * and verifying if the identity holds.
- * @param identity the identity to be verified, of the form "a1.a2...=b1.b2...".
+ * of the given elements, and verifying if the identity holds for those
+ * combinations.
+ * @param identity the identity to be verified, a string of the form
+ * "a1.a2...=b1.b2...".
  * @param elems the elements to which the variables can be set.
  * @param nr_elems the number of elements to which the variables can be set.
  * @param fn the function used to test the identity for each possible variable
  * assignments.
- * @return whether the identity was verified for the given assignment or not.
+ * @return whether the identity was verified for all the possible combinations
+ * with the given elements or not.
  */
 bool
 __it_test_identity (char *           identity,
