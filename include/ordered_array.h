@@ -29,6 +29,15 @@ typedef struct
 void
 __sst_ordered_array_create (__sst_ordered_array_t *_sstoa);
 
+/** Duplicates an ordered array.
+ * Duplicates an ordered array.
+ * @param _sstoa_from pointer to the ordered array to be duplicated.
+ * @param _sstoa_to pointer to the location of the new duplicated ordered array.
+ */
+void
+__sst_ordered_array_duplicate (__sst_ordered_array_t *_sstoa_from,
+                               __sst_ordered_array_t *_sstoa_to);
+
 /** Destroys the array.
  * Destroys the array, freeing all the space allocated.
  * @param _sstoa the semistandard tableaux ordered array.

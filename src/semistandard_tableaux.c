@@ -22,6 +22,21 @@ __sst_tableaux_create (void)
   return tableaux;
 }
 
+__sst_t *
+__sst_tableaux_duplicate (__sst_t *t)
+{
+  __sst_t *tableaux = malloc (sizeof (__sst_t));
+  tableaux->size    = t->size;
+  tableaux->counter = t->counter;
+  tableaux->rows    = malloc (tableaux->size * sizeof (__sst_ordered_array_t));
+  for (size_t i = 0; i < t->counter; i++)
+  {
+    __sst_ordered_array_duplicate (&(t->rows[i]), &(tableaux->rows[i]));
+  }
+  __sst_tableaux_initialize_rows (tableaux);
+  return tableaux;
+}
+
 static void
 __sst_tableaux_resize_to (__sst_t *_sst, const size_t sz)
 {

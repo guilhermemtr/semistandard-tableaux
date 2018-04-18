@@ -41,7 +41,7 @@ __sst_pool_create_sst_pool ();
  * @return the semistandard tableaux pool created.
  */
 __sst_pool_t *
-__sst_pool_create_sst_pool (__sst_pool_t *p, __tableaux_cell_val_t idx);
+__sst_pool_create_sst_index_pool (__sst_pool_t *p, __tableaux_cell_val_t idx);
 
 /** Destroys a pool of semistandard tableaux.
  * Destroys a pool of semistandard tableaux.
@@ -74,7 +74,7 @@ __sst_pool_add_tableaux_from_plain_file (__sst_pool_t *p, char *fn);
  * @param fn the filename of the file where the shortened tableaux is stored.
  */
 void
-__sst_pool_add_tableaux_from_compressed_file (__sst_pool_t *p, __sst_t *t);
+__sst_pool_add_tableaux_from_compressed_file (__sst_pool_t *p, char *fn);
 
 /** Function that adds randomly generated tableaux to a tableaux pool.
  * Function that adds nr_random randomly generated tableaux to the given

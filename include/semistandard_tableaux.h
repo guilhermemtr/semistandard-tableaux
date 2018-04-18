@@ -54,6 +54,14 @@ typedef ptrdiff_t (iteration_function) (__tableaux_cell_t cell,
 __sst_t *
 __sst_tableaux_create (void);
 
+/** Duplicates a semistandard tableaux.
+ * Duplicates the given semistandard tableaux.
+ * @param t the tableaux to be duplicated.
+ * @return the duplicated semistandard tableaux.
+ */
+__sst_t *
+__sst_tableaux_duplicate (__sst_t *t);
+
 /** Initializes the semistandard tableaux.
  * Initializes the semistandard tableaux with the values passed as parameter.
  * @param _sst the semistandard tableaux.

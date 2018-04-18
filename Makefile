@@ -16,14 +16,14 @@ LDFLAGS=-lpthread -lm
 FILE_PREFIX=.c
 OBJ=.o
 
-SOURCES=$(SRC_PATH)/main.c $(SRC_PATH)/ordered_array.c $(SRC_PATH)/semistandard_tableaux.c $(SRC_PATH)/identity_testing.c $(SRC_PATH)/hashmap.c
+SOURCES=$(SRC_PATH)/main.c $(SRC_PATH)/ordered_array.c $(SRC_PATH)/semistandard_tableaux.c $(SRC_PATH)/identity_testing.c $(SRC_PATH)/hashmap.c $(SRC_PATH)/semistandard_tableaux_pool.c
 OBJS=$(subst $(SRC_PATH),$(BUILD_PATH),$(SOURCES))
 OBJECTS=$(OBJS:$(FILE_PREFIX)=$(OBJ))
 
 
 EXECUTABLE=$(BUILD_PATH)/test
 
-MODE=$(DEBUG) $(CILKFLAGS)
+MODE=$(DEBUG) # $(CILKFLAGS)
 
 CILKFLAGS=-fcilkplus
 

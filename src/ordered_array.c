@@ -11,6 +11,15 @@ __sst_ordered_array_create (__sst_ordered_array_t *_sstoa)
 }
 
 void
+__sst_ordered_array_duplicate (__sst_ordered_array_t *_sstoa_from,
+                               __sst_ordered_array_t *_sstoa_to)
+{
+  _sstoa_to->size  = _sstoa_from->size;
+  _sstoa_to->array = malloc (_sstoa_to->size * sizeof (__tableaux_cell_t));
+  __sst_ordered_array_copy (_sstoa_from, _sstoa_to);
+}
+
+void
 __sst_ordered_array_destroy (__sst_ordered_array_t *_sstoa)
 {
   _sstoa->size = _sstoa->counter = 0;
