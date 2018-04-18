@@ -95,4 +95,12 @@ __sst_pool_add_random_tableaux (__sst_pool_t *        p,
 void
 __sst_pool_remove_duplicates (__sst_pool_t *p);
 
+/** Function that prints the tableaux of a pool.
+ * Function that prints the tableaux of the given pool.
+ * @param p the pool whose tableaux will be printed.
+ * @param print the print function to be used.
+ */
+void
+__sst_pool_print (__sst_pool_t *p, void (*print) (const __sst_t *));
+
 #endif    // __SST_POOL__

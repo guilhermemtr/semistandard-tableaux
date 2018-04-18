@@ -134,14 +134,28 @@ __sst_pool_remove_duplicates (__sst_pool_t *p)
   {
     if (p->tableaux[i] == NULL)
     {
-      while (p->tableaux[--ctr] != NULL)
+      while (p->tableaux[--ctr] == NULL && i < ctr)
+      {
         ;
+      }
       p->tableaux[i] = p->tableaux[ctr];
     }
   }
   p->counter = ctr;
 }
 
+void
+__sst_pool_print (__sst_pool_t *p, void (*print) (const __sst_t *))
+{
+  printf ("Showing entries of tableaux pool %p\n", p);
+
+  for (size_t i = 0; i < p->counter; i++)
+  {
+    printf ("Entry %lu:\n", i);
+    print (p->tableaux[i]);
+    printf ("\n");
+  }
+}
 
 
 #endif    // __SST_POOL__
