@@ -18,7 +18,7 @@ typedef struct
   size_t size;       //!< number of rows.
   size_t counter;    //!< number of rows used. invariant: counter <= size.
   __sst_ordered_array_t *rows;    //!< tableaux rows.
-} __sst_tableaux_t;
+} __sst_t;
 
 /** Structure that represents a semistandard tableaux in the word format.
  * Structure that represents a semistandard tableaux in the word format.
@@ -29,10 +29,10 @@ typedef struct
   size_t counter;    //!< counter of the shortened tableaux. invariant: counter
                      //!< <= size.
   __tableaux_cell_t *cells;    //!< tableaux cells.
-} __sst_word_tableaux_t;
+} __sst_word_t;
 
-/** Type of function that is called during iterations of tableauxs.
- * Type of function that is called during iterations of tableauxs.
+/** Type of function that is called during iterations of tableaux.
+ * Type of function that is called during iterations of tableaux.
  * @param cell the value of the cell currently being iterated.
  * @param index the index of the cell.
  * @param real_index the true index of the cell (i.e. its non shortened
@@ -51,7 +51,7 @@ typedef ptrdiff_t (iteration_function) (__tableaux_cell_t cell,
  * Creates a new semistandard tableaux with the default size.
  * @return the new semistandard tableaux.
  */
-__sst_tableaux_t *
+__sst_t *
 __sst_tableaux_create (void);
 
 /** Initializes the semistandard tableaux.
@@ -61,7 +61,7 @@ __sst_tableaux_create (void);
  * @param the length of the word (from which the tableaux is being built).
  */
 void
-__sst_tableaux_init (__sst_tableaux_t * _sst,
+__sst_tableaux_init (__sst_t *          _sst,
                      __tableaux_cell_t *_sst_values,
                      const size_t       sz);
 
@@ -70,7 +70,7 @@ __sst_tableaux_init (__sst_tableaux_t * _sst,
  * @param _sst the semistandard tableaux structure to be destroyed.
  */
 void
-__sst_tableaux_destroy (__sst_tableaux_t *_sst);
+__sst_tableaux_destroy (__sst_t *_sst);
 
 /** Iterates a semistandard tableaux using the column technique.
  * Iterates a semistandard tableaux using the column technique, invoking the
@@ -81,9 +81,9 @@ __sst_tableaux_destroy (__sst_tableaux_t *_sst);
  * @return the real size of the tableaux.
  */
 size_t
-__sst_tableaux_iterate_tableaux (const __sst_tableaux_t *_sst,
-                                 iteration_function      fn,
-                                 void *                  data);
+__sst_tableaux_iterate_tableaux (const __sst_t *    _sst,
+                                 iteration_function fn,
+                                 void *             data);
 
 /** Returns the total number of cells of the shortened semistandard tableaux.
  * Returns the total number of cells of the shortened semistandard tableaux.
@@ -91,7 +91,7 @@ __sst_tableaux_iterate_tableaux (const __sst_tableaux_t *_sst,
  * @return the total number of cells of the shortened semistandard tableaux.
  */
 size_t
-__sst_tableaux_size (const __sst_tableaux_t *_sst);
+__sst_tableaux_size (const __sst_t *_sst);
 
 /** Returns the total number of cells of the non-shortened semistandard
  * tableaux. Returns the number of cells of the non-shortened semistandard
@@ -100,7 +100,16 @@ __sst_tableaux_size (const __sst_tableaux_t *_sst);
  * @return the number of cells of the non-shortened semistandard tableaux.
  */
 size_t
-__sst_tableaux_storage_size (const __sst_tableaux_t *_sst);
+__sst_tableaux_storage_size (const __sst_t *_sst);
+
+/** Verifies if two tableaux are equal. Verifies if the two given tableaux are
+ * equal.
+ * @param _sst_left the first tableaux.
+ * @param _sst_right the second tableaux.
+ * @return whether the tableaux are equal or not.
+ */
+bool
+__sst_tableaux_equals (const __sst_t *_sst_left, const __sst_t *_sst_right);
 
 /** Verifies the validity of an identity, given a variable assignment.
  * Verifies the validity of an identity, given a variable assignment and the
@@ -131,7 +140,7 @@ __sst_tableaux_check_identity (size_t *x,
  */
 void
 __sst_tableaux_read_to_plain_tableaux (
-  const __sst_tableaux_t *_sst, __tableaux_cell_val_t *_sst_tableaux_cells);
+  const __sst_t *_sst, __tableaux_cell_val_t *_sst_tableaux_cells);
 
 /** Reads a shortened semistandard tableaux from a non-shortened vector of
  * numbers. Reads a shortened semistandard tableaux from a non-shortened vector
@@ -142,7 +151,7 @@ __sst_tableaux_read_to_plain_tableaux (
  */
 void
 __sst_tableaux_read_from_plain_tableaux (
-  __sst_tableaux_t *           _sst,
+  __sst_t *                    _sst,
   const __tableaux_cell_val_t *_sst_tableaux_cells,
   const size_t                 len);
 
@@ -156,7 +165,7 @@ __sst_tableaux_read_from_plain_tableaux (
  */
 size_t
 __sst_tableaux_read_to_compressed_tableaux (
-  const __sst_tableaux_t *_sst, __tableaux_cell_t *_sst_tableaux_cells);
+  const __sst_t *_sst, __tableaux_cell_t *_sst_tableaux_cells);
 
 /** Reads a shortened semistandard tableaux from a shortened vector of cells.
  * Reads a shortened semistandard tableaux from a shortened vector of cells
@@ -168,7 +177,7 @@ __sst_tableaux_read_to_compressed_tableaux (
  */
 void
 __sst_tableaux_read_from_compressed_tableaux (
-  __sst_tableaux_t *       _sst,
+  __sst_t *                _sst,
   const __tableaux_cell_t *_sst_tableaux_cells,
   const size_t             len);
 
@@ -179,7 +188,7 @@ __sst_tableaux_read_from_compressed_tableaux (
  * to be read.
  * @return _sst the shortened semistandard tableaux read.
  */
-__sst_tableaux_t *
+__sst_t *
 __sst_tableaux_read_plain_file (const char *filename);
 
 /** Writes the given shortened semistandard tableaux into a plain file.
@@ -189,8 +198,7 @@ __sst_tableaux_read_plain_file (const char *filename);
  * tableaux will be stored.
  */
 void
-__sst_tableaux_write_plain_file (const __sst_tableaux_t *_sst,
-                                 const char *            filename);
+__sst_tableaux_write_plain_file (const __sst_t *_sst, const char *filename);
 
 /** Reads a shortened semistandard tableaux from a file.
  * Reads a shortened semistandard tableaux from the file with the given
@@ -199,7 +207,7 @@ __sst_tableaux_write_plain_file (const __sst_tableaux_t *_sst,
  * tableaux is to be read.
  * @return _sst the shortened semistandard tableaux read.
  */
-__sst_tableaux_t *
+__sst_t *
 __sst_tableaux_read_compressed_file (const char *filename);
 
 /** Writes the given shortened semistandard tableaux into a shortened file.
@@ -209,21 +217,21 @@ __sst_tableaux_read_compressed_file (const char *filename);
  * tableaux will be stored.
  */
 void
-__sst_tableaux_write_compressed_file (const __sst_tableaux_t *_sst,
-                                      const char *            filename);
+__sst_tableaux_write_compressed_file (const __sst_t *_sst,
+                                      const char *   filename);
 /** Prints the given shortened semistandard tableaux into stdout.
  * Prints the given shortened semistandard tableaux into stdout.
  * @param _sst the shortened semistandard tableaux to be printed.
  */
 void
-__sst_tableaux_print (const __sst_tableaux_t *_sst);
+__sst_tableaux_print (const __sst_t *_sst);
 
 /** Prints the given semistandard tableaux in plain format to stdout.
  * Prints the given semistandard tableaux in plain format to stdout.
  * @param _sst the shortened semistandard tableaux to be printed.
  */
 void
-__sst_tableaux_plain_print (const __sst_tableaux_t *_sst);
+__sst_tableaux_plain_print (const __sst_t *_sst);
 
 /** Prints the given semistandard tableaux in the shortened word format into
  * stdout. Prints the given semistandard tableaux in the shortened word format
@@ -231,14 +239,14 @@ __sst_tableaux_plain_print (const __sst_tableaux_t *_sst);
  * @param _sst the word format shortened semistandard tableaux to be printed.
  */
 void
-__sst_tableaux_word_print (const __sst_word_tableaux_t *_sst);
+__sst_tableaux_word_print (const __sst_word_t *_sst);
 
 /** Prints the given semistandard tableaux in the plain word format into stdout.
  * Prints the given semistandard tableaux in the plain word format into stdout.
  * @param _sst the word format shortened semistandard tableaux to be printed.
  */
 void
-__sst_tableaux_plain_word_print (const __sst_word_tableaux_t *_sst);
+__sst_tableaux_plain_word_print (const __sst_word_t *_sst);
 
 /** Verifies if the shortened semistandard tableaux given as input is in proper
  * form. Verifies if the shortened semistandard tableaux given as input is in
@@ -246,7 +254,7 @@ __sst_tableaux_plain_word_print (const __sst_word_tableaux_t *_sst);
  * @param _sst the shortened semistandard tableaux.
  */
 bool
-__sst_tableaux_check (const __sst_tableaux_t *_sst);
+__sst_tableaux_check (const __sst_t *_sst);
 
 /** Multiplies two semistandard tableauxs given as input, and with the given
  * size into a semistandard tableaux also given as input. Multiplies the two
@@ -259,10 +267,10 @@ __sst_tableaux_check (const __sst_tableaux_t *_sst);
  * @return the size of the shortened resulting tableaux
  */
 size_t
-__sst_tableaux_fast_multiply (const __sst_tableaux_t *_sst_left,
-                              const __sst_tableaux_t *_sst_right,
-                              const size_t            sz_right,
-                              __sst_tableaux_t *      _sst_result);
+__sst_tableaux_fast_multiply (const __sst_t *_sst_left,
+                              const __sst_t *_sst_right,
+                              const size_t   sz_right,
+                              __sst_t *      _sst_result);
 
 /** Multiplies two semistandard tableauxs given as input into a semistandard
  * tableaux also given as input. Multiplies the two semistandard tableauxs given
@@ -272,8 +280,8 @@ __sst_tableaux_fast_multiply (const __sst_tableaux_t *_sst_left,
  * @param _sst_result the resulting semistandard tableaux.
  */
 void
-__sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
-                         const __sst_tableaux_t *_sst_right,
-                         __sst_tableaux_t *      _sst_result);
+__sst_tableaux_multiply (const __sst_t *_sst_left,
+                         const __sst_t *_sst_right,
+                         __sst_t *      _sst_result);
 
 #endif    // __SST_TABLEAUX__

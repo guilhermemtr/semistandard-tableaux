@@ -3,7 +3,7 @@
 #ifdef __SST_TABLEAUX__
 
 static void
-__sst_tableaux_initialize_rows (__sst_tableaux_t *_sst)
+__sst_tableaux_initialize_rows (__sst_t *_sst)
 {
   for (size_t i = _sst->counter; i < _sst->size; i++)
   {
@@ -11,19 +11,19 @@ __sst_tableaux_initialize_rows (__sst_tableaux_t *_sst)
   }
 }
 
-__sst_tableaux_t *
+__sst_t *
 __sst_tableaux_create (void)
 {
-  __sst_tableaux_t *tableaux = malloc (sizeof (__sst_tableaux_t));
-  tableaux->size             = __SST_ORDERED_ARRAY_DEFAULT_SIZE;
-  tableaux->counter          = 0;
-  tableaux->rows = malloc (tableaux->size * sizeof (__sst_ordered_array_t));
+  __sst_t *tableaux = malloc (sizeof (__sst_t));
+  tableaux->size    = __SST_ORDERED_ARRAY_DEFAULT_SIZE;
+  tableaux->counter = 0;
+  tableaux->rows    = malloc (tableaux->size * sizeof (__sst_ordered_array_t));
   __sst_tableaux_initialize_rows (tableaux);
   return tableaux;
 }
 
 static void
-__sst_tableaux_resize_to (__sst_tableaux_t *_sst, const size_t sz)
+__sst_tableaux_resize_to (__sst_t *_sst, const size_t sz)
 {
   _sst->size = sz;
   _sst->rows =
@@ -32,7 +32,7 @@ __sst_tableaux_resize_to (__sst_tableaux_t *_sst, const size_t sz)
 }
 
 static size_t
-__sst_tableaux_add_cells (__sst_tableaux_t * _sst,
+__sst_tableaux_add_cells (__sst_t *          _sst,
                           __tableaux_cell_t *cells,
                           size_t             real_nr_cells)
 {
@@ -77,7 +77,7 @@ __sst_tableaux_add_cells (__sst_tableaux_t * _sst,
 }
 
 void
-__sst_tableaux_init (__sst_tableaux_t * _sst,
+__sst_tableaux_init (__sst_t *          _sst,
                      __tableaux_cell_t *_sst_values,
                      const size_t       sz)
 {
@@ -90,7 +90,7 @@ __sst_tableaux_init (__sst_tableaux_t * _sst,
 }
 
 void
-__sst_tableaux_destroy (__sst_tableaux_t *_sst)
+__sst_tableaux_destroy (__sst_t *_sst)
 {
   for (size_t i = 0; i < _sst->size; i++)
   {
@@ -101,9 +101,9 @@ __sst_tableaux_destroy (__sst_tableaux_t *_sst)
 }
 
 size_t
-__sst_tableaux_iterate_tableaux (const __sst_tableaux_t *_sst,
-                                 iteration_function      fn,
-                                 void *                  data)
+__sst_tableaux_iterate_tableaux (const __sst_t *    _sst,
+                                 iteration_function fn,
+                                 void *             data)
 {
   size_t index      = 0;
   size_t real_index = 0;
@@ -129,7 +129,7 @@ __sst_tableaux_iterate_tableaux (const __sst_tableaux_t *_sst,
 }
 
 size_t
-__sst_tableaux_size (const __sst_tableaux_t *_sst)
+__sst_tableaux_size (const __sst_t *_sst)
 {
   size_t total_size = 0;
   for (size_t i = 0; i < _sst->counter; i++)
@@ -143,7 +143,7 @@ __sst_tableaux_size (const __sst_tableaux_t *_sst)
 }
 
 size_t
-__sst_tableaux_storage_size (const __sst_tableaux_t *_sst)
+__sst_tableaux_storage_size (const __sst_t *_sst)
 {
   size_t total_size = 0;
   for (size_t i = 0; i < _sst->counter; i++)
@@ -153,9 +153,8 @@ __sst_tableaux_storage_size (const __sst_tableaux_t *_sst)
   return total_size;
 }
 
-static bool
-tableaux_equals (const __sst_tableaux_t *_sst_left,
-                 const __sst_tableaux_t *_sst_right)
+bool
+__sst_tableaux_equals (const __sst_t *_sst_left, const __sst_t *_sst_right)
 {
   if (_sst_left->counter != _sst_right->counter)
   {
@@ -190,35 +189,35 @@ __sst_tableaux_check_identity (size_t *x,
                                size_t  nr_vars,
                                void *  elems)
 {
-  __sst_word_tableaux_t *tableaux = (__sst_word_tableaux_t *) elems;
+  __sst_word_t *tableaux = (__sst_word_t *) elems;
 
-  __sst_word_tableaux_t left_side[len_x];
-  __sst_word_tableaux_t right_side[len_y];
+  __sst_word_t left_side[len_x];
+  __sst_word_t right_side[len_y];
 
   size_t len_left  = 0;
   size_t len_right = 0;
 
   for (size_t i = 0; i < len_x; i++)
   {
-    __sst_word_tableaux_t curr = tableaux[assigns[x[i]]];
-    left_side[i]               = curr;
-    len_left                   = len_left + curr.counter;
+    __sst_word_t curr = tableaux[assigns[x[i]]];
+    left_side[i]      = curr;
+    len_left          = len_left + curr.counter;
   }
 
   for (size_t i = 0; i < len_y; i++)
   {
-    __sst_word_tableaux_t curr = tableaux[assigns[y[i]]];
-    right_side[i]              = curr;
-    len_right                  = len_right + curr.counter;
+    __sst_word_t curr = tableaux[assigns[y[i]]];
+    right_side[i]     = curr;
+    len_right         = len_right + curr.counter;
   }
 
   __tableaux_cell_t left_cells[len_left];
   __tableaux_cell_t right_cells[len_right];
 
-  __sst_word_tableaux_t left = {
+  __sst_word_t left = {
     .size = len_left, .counter = len_left, .cells = left_cells};
 
-  __sst_word_tableaux_t right = {
+  __sst_word_t right = {
     .size = len_right, .counter = len_right, .cells = right_cells};
 
   for (size_t i = 0, j = 0; i < len_x; i++)
@@ -239,13 +238,13 @@ __sst_tableaux_check_identity (size_t *x,
     }
   }
 
-  __sst_tableaux_t *l = __sst_tableaux_create ();
-  __sst_tableaux_t *r = __sst_tableaux_create ();
+  __sst_t *l = __sst_tableaux_create ();
+  __sst_t *r = __sst_tableaux_create ();
 
   __sst_tableaux_read_from_compressed_tableaux (l, left.cells, left.counter);
   __sst_tableaux_read_from_compressed_tableaux (r, right.cells, right.counter);
 
-  return tableaux_equals (l, r);
+  return __sst_tableaux_equals (l, r);
 }
 
 static ptrdiff_t
@@ -264,7 +263,7 @@ __sst_tableaux_read_to_plain_iteration_function (__tableaux_cell_t cell,
 
 void
 __sst_tableaux_read_to_plain_tableaux (
-  const __sst_tableaux_t *_sst, __tableaux_cell_val_t *_sst_tableaux_cells)
+  const __sst_t *_sst, __tableaux_cell_val_t *_sst_tableaux_cells)
 {
   __sst_tableaux_iterate_tableaux (
     _sst, __sst_tableaux_read_to_plain_iteration_function, _sst_tableaux_cells);
@@ -272,7 +271,7 @@ __sst_tableaux_read_to_plain_tableaux (
 
 void
 __sst_tableaux_read_from_plain_tableaux (
-  __sst_tableaux_t *           _sst,
+  __sst_t *                    _sst,
   const __tableaux_cell_val_t *_sst_tableaux_cells,
   const size_t                 len)
 {
@@ -306,7 +305,7 @@ __sst_tableaux_read_to_compressed_iteration_function (__tableaux_cell_t cell,
 
 size_t
 __sst_tableaux_read_to_compressed_tableaux (
-  const __sst_tableaux_t *_sst, __tableaux_cell_t *_sst_tableaux_cells)
+  const __sst_t *_sst, __tableaux_cell_t *_sst_tableaux_cells)
 {
   __sst_tableaux_iterate_tableaux (
     _sst,
@@ -317,9 +316,7 @@ __sst_tableaux_read_to_compressed_tableaux (
 
 void
 __sst_tableaux_read_from_compressed_tableaux (
-  __sst_tableaux_t *       _sst,
-  const __tableaux_cell_t *_sst_tableaux_cells,
-  const size_t             len)
+  __sst_t *_sst, const __tableaux_cell_t *_sst_tableaux_cells, const size_t len)
 {
   __tableaux_cell_val_t curr  = len > 0 ? _sst_tableaux_cells[0].val : 0;
   size_t                count = 0;
@@ -338,7 +335,7 @@ __sst_tableaux_read_from_compressed_tableaux (
   }
 }
 
-__sst_tableaux_t *
+__sst_t *
 __sst_tableaux_read_plain_file (const char *filename)
 {
   FILE *                 f     = fopen (filename, "r");
@@ -354,7 +351,7 @@ __sst_tableaux_read_plain_file (const char *filename)
       plain = realloc (plain, sz * sizeof (__tableaux_cell_val_t));
     }
   }
-  __sst_tableaux_t *_sst = __sst_tableaux_create ();
+  __sst_t *_sst = __sst_tableaux_create ();
   __sst_tableaux_read_from_plain_tableaux (_sst, plain, count);
   return _sst;
 }
@@ -374,8 +371,7 @@ __sst_tableaux_write_plain_file_iterator_function (__tableaux_cell_t cell,
 }
 
 void
-__sst_tableaux_write_plain_file (const __sst_tableaux_t *_sst,
-                                 const char *            filename)
+__sst_tableaux_write_plain_file (const __sst_t *_sst, const char *filename)
 {
   FILE *f = fopen (filename, "w");
   __sst_tableaux_iterate_tableaux (
@@ -383,7 +379,7 @@ __sst_tableaux_write_plain_file (const __sst_tableaux_t *_sst,
   fclose (f);
 }
 
-__sst_tableaux_t *
+__sst_t *
 __sst_tableaux_read_compressed_file (const char *filename)
 {
   FILE *             f     = fopen (filename, "r");
@@ -400,7 +396,7 @@ __sst_tableaux_read_compressed_file (const char *filename)
       cells = realloc (cells, sz * sizeof (__tableaux_cell_t));
     }
   }
-  __sst_tableaux_t *_sst = __sst_tableaux_create ();
+  __sst_t *_sst = __sst_tableaux_create ();
   __sst_tableaux_read_from_compressed_tableaux (_sst, cells, count);
   return _sst;
 }
@@ -417,8 +413,7 @@ __sst_tableaux_write_compressed_file_iterator_function (__tableaux_cell_t cell,
 }
 
 void
-__sst_tableaux_write_compressed_file (const __sst_tableaux_t *_sst,
-                                      const char *            filename)
+__sst_tableaux_write_compressed_file (const __sst_t *_sst, const char *filename)
 {
   FILE *f = fopen (filename, "w");
   __sst_tableaux_iterate_tableaux (
@@ -427,7 +422,7 @@ __sst_tableaux_write_compressed_file (const __sst_tableaux_t *_sst,
 }
 
 void
-__sst_tableaux_print (const __sst_tableaux_t *_sst)
+__sst_tableaux_print (const __sst_t *_sst)
 {
   for (size_t i = 0; i < _sst->counter; i++)
   {
@@ -441,7 +436,7 @@ __sst_tableaux_print (const __sst_tableaux_t *_sst)
 }
 
 void
-__sst_tableaux_plain_print (const __sst_tableaux_t *_sst)
+__sst_tableaux_plain_print (const __sst_t *_sst)
 {
   for (size_t i = 0; i < _sst->counter; i++)
   {
@@ -457,7 +452,7 @@ __sst_tableaux_plain_print (const __sst_tableaux_t *_sst)
 }
 
 void
-__sst_tableaux_word_print (const __sst_word_tableaux_t *_sst)
+__sst_tableaux_word_print (const __sst_word_t *_sst)
 {
   for (size_t i = 0; i < _sst->counter; i++)
   {
@@ -467,7 +462,7 @@ __sst_tableaux_word_print (const __sst_word_tableaux_t *_sst)
 }
 
 void
-__sst_tableaux_plain_word_print (const __sst_word_tableaux_t *_sst)
+__sst_tableaux_plain_word_print (const __sst_word_t *_sst)
 {
   for (size_t i = 0; i < _sst->counter; i++)
   {
@@ -480,7 +475,7 @@ __sst_tableaux_plain_word_print (const __sst_word_tableaux_t *_sst)
 }
 
 bool
-__sst_tableaux_check (const __sst_tableaux_t *_sst)
+__sst_tableaux_check (const __sst_t *_sst)
 {
   bool ok = true;
 
@@ -525,10 +520,10 @@ __sst_tableaux_check (const __sst_tableaux_t *_sst)
 }
 
 size_t
-__sst_tableaux_fast_multiply (const __sst_tableaux_t *_sst_left,
-                              const __sst_tableaux_t *_sst_right,
-                              const size_t            sz_right,
-                              __sst_tableaux_t *      _sst_result)
+__sst_tableaux_fast_multiply (const __sst_t *_sst_left,
+                              const __sst_t *_sst_right,
+                              const size_t   sz_right,
+                              __sst_t *      _sst_result)
 {
   _sst_result->counter = 0;
   if (__builtin_expect (_sst_left->counter >= _sst_result->size, 0))
@@ -549,9 +544,9 @@ __sst_tableaux_fast_multiply (const __sst_tableaux_t *_sst_left,
 }
 
 void
-__sst_tableaux_multiply (const __sst_tableaux_t *_sst_left,
-                         const __sst_tableaux_t *_sst_right,
-                         __sst_tableaux_t *      _sst_result)
+__sst_tableaux_multiply (const __sst_t *_sst_left,
+                         const __sst_t *_sst_right,
+                         __sst_t *      _sst_result)
 {
   size_t sz_right = __sst_tableaux_storage_size (_sst_right);
   __sst_tableaux_fast_multiply (_sst_left, _sst_right, sz_right, _sst_result);

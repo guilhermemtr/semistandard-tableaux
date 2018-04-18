@@ -47,10 +47,10 @@ unit_test_1 ()
 void
 unit_test_2 ()
 {
-  __sst_tableaux_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1");
-  __sst_tableaux_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2");
+  __sst_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1");
+  __sst_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2");
 
-  __sst_tableaux_t *m_res = __sst_tableaux_create ();
+  __sst_t *m_res = __sst_tableaux_create ();
   __sst_tableaux_multiply (m1, m2, m_res);
 
 
@@ -65,13 +65,13 @@ unit_test_2 ()
 }
 
 static bool
-check_identity (size_t *x,
-                size_t  len_x,
-                size_t *y,
-                size_t  len_y,
-                size_t *assigns,
-                size_t  nr_vars,
-                void *  elems)
+check_identity_dummy (size_t *x,
+                      size_t  len_x,
+                      size_t *y,
+                      size_t  len_y,
+                      size_t *assigns,
+                      size_t  nr_vars,
+                      void *  elems)
 {
   printf ("Assignment:\t");
   for (size_t i = 0; i < nr_vars; i++)
@@ -83,12 +83,19 @@ check_identity (size_t *x,
 }
 
 void
-unit_test_3 (char identity[])
+unit_test_3 (char identity[], size_t nr_elems)
 {
-  __sst_tableaux_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1");
-  __sst_tableaux_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2");
+  __it_test_identity (identity, NULL, nr_elems, check_identity_dummy);
+}
 
-  __sst_tableaux_t *m_res = __sst_tableaux_create ();
+
+void
+unit_test_4 (char identity[])
+{
+  __sst_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1");
+  __sst_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2");
+
+  __sst_t *m_res = __sst_tableaux_create ();
 
   __sst_tableaux_multiply (m1, m2, m_res);
 
@@ -96,9 +103,9 @@ unit_test_3 (char identity[])
   size_t sz_m2    = __sst_tableaux_storage_size (m2);
   size_t sz_m_res = __sst_tableaux_storage_size (m_res);
 
-  __sst_word_tableaux_t w_m1;
-  __sst_word_tableaux_t w_m2;
-  __sst_word_tableaux_t w_m_res;
+  __sst_word_t w_m1;
+  __sst_word_t w_m2;
+  __sst_word_t w_m_res;
 
   __tableaux_cell_t m1_cells[sz_m1];
   __tableaux_cell_t m2_cells[sz_m2];
@@ -115,8 +122,8 @@ unit_test_3 (char identity[])
   w_m_res.counter = w_m_res.size =
     __sst_tableaux_read_to_compressed_tableaux (m_res, w_m_res.cells);
 
-  size_t                nr_elems = 3;
-  __sst_word_tableaux_t elems[nr_elems];
+  size_t       nr_elems = 3;
+  __sst_word_t elems[nr_elems];
   elems[0] = w_m1;
   elems[1] = w_m2;
   elems[2] = w_m_res;
@@ -136,9 +143,20 @@ unit_test_3 (char identity[])
 int
 main (int argc, char **argv)
 {
-  char id1[] = "x.y=y.x";
-  char id2[] = " x.y.z.w = x. y. z . w ";
-  unit_test_3 (id1);
-  unit_test_3 (id2);
+  unit_test_1 ();
+  unit_test_2 ();
+
+  char id1_3[] = "x.y=y.x";
+  char id2_3[] = " x.y.z.w = x. y. z . w ";
+
+  unit_test_3 (id1_3, 5L);
+  unit_test_3 (id2_3, 3L);
+
+  char id1_4[] = "x.y=y.x";
+  char id2_4[] = " x.y.z.w = x. y. z . w ";
+
+  unit_test_4 (id1_4);
+  unit_test_4 (id2_4);
+
   return 0;
 }
