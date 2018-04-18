@@ -247,10 +247,32 @@ __sst_tableaux_write_compressed_file (const __sst_tableaux_t *_sst,
 
 /** Prints the given semistandard tableaux into stdout.
  * Prints the given semistandard tableaux into stdout.
- * @param _sst the compressed semistandard tableaux to be written to a file.
+ * @param _sst the compressed semistandard tableaux to be printed.
  */
 void
 __sst_tableaux_print (const __sst_tableaux_t *_sst);
+
+/** Prints the given semistandard tableaux in plain format to stdout.
+ * Prints the given semistandard tableaux in plain format to stdout.
+ * @param _sst the compressed semistandard tableaux to be printed.
+ */
+void
+__sst_tableaux_plain_print (const __sst_tableaux_t *_sst);
+
+
+/** Prints the given semistandard tableaux in the word format into stdout.
+ * Prints the given semistandard tableaux in the word format into stdout.
+ * @param _sst the word format compressed semistandard tableaux to be printed.
+ */
+void
+__sst_tableaux_word_print (const __sst_word_tableaux_t *_sst);
+
+/** Prints the given semistandard tableaux in the plain word format into stdout.
+ * Prints the given semistandard tableaux in the plain word format into stdout.
+ * @param _sst the word format compressed semistandard tableaux to be printed.
+ */
+void
+__sst_tableaux_plain_word_print (const __sst_word_tableaux_t *_sst);
 
 
 #endif    // __SST_TABLEAUX__

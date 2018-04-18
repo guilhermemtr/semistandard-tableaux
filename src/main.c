@@ -83,15 +83,62 @@ check_identity (size_t *x,
 }
 
 void
-unit_test_3 ()
+unit_test_3 (char identity[])
 {
-  char identity[] = "x.y.z=z.x.x.y";
-  __it_test_identity (identity, NULL, 10L, check_identity);
+  __sst_tableaux_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1");
+  __sst_tableaux_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2");
+
+  __sst_tableaux_t *m_res = __sst_tableaux_create ();
+
+  __sst_tableaux_multiply (m1, m2, m_res);
+
+  size_t sz_m1    = __sst_tableaux_storage_size (m1);
+  size_t sz_m2    = __sst_tableaux_storage_size (m2);
+  size_t sz_m_res = __sst_tableaux_storage_size (m_res);
+
+  __sst_word_tableaux_t w_m1;
+  __sst_word_tableaux_t w_m2;
+  __sst_word_tableaux_t w_m_res;
+
+  __tableaux_cell_t m1_cells[sz_m1];
+  __tableaux_cell_t m2_cells[sz_m2];
+  __tableaux_cell_t m_res_cells[sz_m_res];
+
+  w_m1.cells    = m1_cells;
+  w_m2.cells    = m2_cells;
+  w_m_res.cells = m_res_cells;
+
+  w_m1.counter = w_m1.size =
+    __sst_tableaux_read_to_compressed_tableaux (m1, w_m1.cells);
+  w_m2.counter = w_m2.size =
+    __sst_tableaux_read_to_compressed_tableaux (m2, w_m2.cells);
+  w_m_res.counter = w_m_res.size =
+    __sst_tableaux_read_to_compressed_tableaux (m_res, w_m_res.cells);
+
+  size_t                nr_elems = 3;
+  __sst_word_tableaux_t elems[nr_elems];
+  elems[0] = w_m1;
+  elems[1] = w_m2;
+  elems[2] = w_m_res;
+
+  printf ("Verifying identity \"%s\".\n", identity);
+  bool res = __it_test_identity (
+    identity, elems, nr_elems, __sst_tableaux_check_identity);
+  if (res)
+  {
+    printf ("Identity verified.\n");
+  } else
+  {
+    printf ("Identity does not hold.\n");
+  }
 }
 
 int
 main (int argc, char **argv)
 {
-  unit_test_3 ();
+  char id1[] = "x.y=y.x";
+  char id2[] = " x.y.z.w = x. y. z . w ";
+  unit_test_3 (id1);
+  unit_test_3 (id2);
   return 0;
 }

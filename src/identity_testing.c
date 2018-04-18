@@ -2,6 +2,26 @@
 
 #ifdef __IDENTITY_TESTING__
 
+
+/* Function that trims the given string.
+ */
+static void
+trim (char *str)
+{
+  size_t b = 0;
+  size_t c = 0;
+  while (str[c] != '\0')
+  {
+    if (!isspace (str[c]))
+    {
+      str[b++] = str[c];
+    }
+    c++;
+  }
+  str[b] = '\0';
+}
+
+
 static void
 split_identity (char *identity, char **split1, char **split2)
 {
@@ -77,6 +97,8 @@ __it_test_identity (char *           identity,
                     size_t           nr_elems,
                     identity_testing fn)
 {
+  trim (identity);
+
   char *split_1;
   char *split_2;
 
@@ -115,7 +137,7 @@ __it_test_identity (char *           identity,
                  nr_splits_2,
                  id,
                  nr_vars,
-		 elems);
+                 elems);
     } else
     {
       size_t tests[nr_elems][beg + 1];
