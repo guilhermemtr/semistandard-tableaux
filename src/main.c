@@ -57,11 +57,11 @@ unit_test_2 ()
   __sst_tableaux_multiply (m1, m2, m_res);
 
 
-  __sst_tableaux_print (m1);
+  __sst_tableaux_plain_print (m1);
   printf ("\n\n");
-  __sst_tableaux_print (m2);
+  __sst_tableaux_plain_print (m2);
   printf ("\n\n");
-  __sst_tableaux_print (m_res);
+  __sst_tableaux_plain_print (m_res);
 
   __sst_tableaux_write_plain_file (m_res, "inputs/m_res.sst");
   __sst_tableaux_write_compressed_file (m_res, "inputs/m_res.sstc");

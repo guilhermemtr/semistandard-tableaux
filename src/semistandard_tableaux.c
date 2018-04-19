@@ -498,6 +498,31 @@ __sst_tableaux_get_max_len_tableaux (const __sst_t *_sst)
   return max;
 }
 
+// Different functions because of different types of return values
+static __tableaux_cell_val_t
+__sst_tableaux_word_get_max_val_tableaux (const __sst_word_t *_wsst)
+{
+  __tableaux_cell_val_t max = 0;
+  for (size_t i = 0; i < _wsst->counter; i++)
+  {
+    __tableaux_cell_val_t v = _wsst->cells[i].val;
+    max                     = max >= v ? max : v;
+  }
+  return max;
+}
+
+static __tableaux_cell_len_t
+__sst_tableaux_word_get_max_len_tableaux (const __sst_word_t *_wsst)
+{
+  __tableaux_cell_len_t max = 0;
+  for (size_t i = 0; i < _wsst->counter; i++)
+  {
+    __tableaux_cell_len_t v = _wsst->cells[i].len;
+    max                     = max >= v ? max : v;
+  }
+  return max;
+}
+
 static size_t
 __sst_tableaux_get_val_len (__tableaux_cell_val_t v)
 {
@@ -560,8 +585,6 @@ __sst_tableaux_print (const __sst_t *_sst)
       printf (",");
       __sst_tableaux_print_len (_sst->rows[i].array[j].len, max_len_len);
       printf (") ");
-      // printf (
-      // "(%lu,%lu) ", _sst->rows[i].array[j].val, _sst->rows[i].array[j].len);
     }
     printf ("\n");
   }
@@ -570,13 +593,16 @@ __sst_tableaux_print (const __sst_t *_sst)
 void
 __sst_tableaux_plain_print (const __sst_t *_sst)
 {
+  size_t max_val_len =
+    __sst_tableaux_get_val_len (__sst_tableaux_get_max_val_tableaux (_sst));
   for (size_t i = 0; i < _sst->counter; i++)
   {
     for (size_t j = 0; j < _sst->rows[i].counter; j++)
     {
       for (size_t k = 0; k < _sst->rows[i].array[j].len; k++)
       {
-        printf ("%lu ", _sst->rows[i].array[j].val);
+        __sst_tableaux_print_val (_sst->rows[i].array[j].val, max_val_len);
+        printf (" ");
       }
     }
     printf ("\n");
@@ -584,11 +610,19 @@ __sst_tableaux_plain_print (const __sst_t *_sst)
 }
 
 void
-__sst_tableaux_word_print (const __sst_word_t *_sst)
+__sst_tableaux_word_print (const __sst_word_t *_wsst)
 {
-  for (size_t i = 0; i < _sst->counter; i++)
+  size_t max_val_len = __sst_tableaux_get_val_len (
+    __sst_tableaux_word_get_max_val_tableaux (_wsst));
+  size_t max_len_len = __sst_tableaux_get_len_len (
+    __sst_tableaux_word_get_max_len_tableaux (_wsst));
+  for (size_t i = 0; i < _wsst->counter; i++)
   {
-    printf ("(%lu,%lu) ", _sst->cells[i].val, _sst->cells[i].len);
+    printf ("(");
+    __sst_tableaux_print_val (_wsst->cells[i].val, max_val_len);
+    printf (",");
+    __sst_tableaux_print_len (_wsst->cells[i].len, max_len_len);
+    printf (") ");
   }
   printf ("\n");
 }
@@ -597,19 +631,29 @@ void
 __sst_tableaux_word_to_table_print (const __sst_word_t *_wsst)
 {
   __sst_t *_sst = __sst_tableaux_table_create (_wsst);
-  printf ("SIZE: %lu\n", _wsst->counter);
   __sst_tableaux_print (_sst);
   __sst_tableaux_destroy (_sst);
 }
 
 void
-__sst_tableaux_plain_word_print (const __sst_word_t *_sst)
+__sst_tableaux_word_to_table_plain_print (const __sst_word_t *_wsst)
 {
-  for (size_t i = 0; i < _sst->counter; i++)
+  __sst_t *_sst = __sst_tableaux_table_create (_wsst);
+  __sst_tableaux_plain_print (_sst);
+  __sst_tableaux_destroy (_sst);
+}
+
+void
+__sst_tableaux_plain_word_print (const __sst_word_t *_wsst)
+{
+  size_t max_val_len = __sst_tableaux_get_val_len (
+    __sst_tableaux_word_get_max_val_tableaux (_wsst));
+  for (size_t i = 0; i < _wsst->counter; i++)
   {
-    for (size_t j = 0; j < _sst->cells[i].len; j++)
+    for (size_t j = 0; j < _wsst->cells[i].len; j++)
     {
-      printf ("%lu, ", _sst->cells[i].val);
+      __sst_tableaux_print_val (_wsst->cells[i].val, max_val_len);
+      printf (" ");
     }
   }
   printf ("\n");
