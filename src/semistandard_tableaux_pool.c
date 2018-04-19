@@ -2,7 +2,7 @@
 
 #ifdef __SST_POOL__
 
-__sst_t *
+__sst_word_t *
 __sst_pool_generate_random_tableaux (__tableaux_cell_val_t idx)
 {
   return NULL;
@@ -13,7 +13,7 @@ __sst_pool_resize_to (__sst_pool_t *p, size_t sz)
 {
   p->size = sz >= p->counter ? sz : p->counter;
   p->tableaux =
-    (__sst_t **) realloc (p->tableaux, p->size * sizeof (__sst_t *));
+    (__sst_word_t **) realloc (p->tableaux, p->size * sizeof (__sst_word_t *));
 }
 
 __sst_pool_t *
@@ -22,27 +22,24 @@ __sst_pool_create_sst_pool ()
   __sst_pool_t *p = malloc (sizeof (__sst_pool_t));
   p->size         = __SST_POOL_DEFAULT_SIZE;
   p->counter      = 0;
-  p->tableaux     = (__sst_t **) malloc (p->size * sizeof (__sst_t *));
+  p->tableaux = (__sst_word_t **) malloc (p->size * sizeof (__sst_word_t *));
   return p;
 }
 
 static __tableaux_cell_val_t
-get_tableaux_index (__sst_t *_sst)
+get_tableaux_index (__sst_word_t *_wsst)
 {
   __tableaux_cell_val_t max = 0;
-  for (size_t i = 0; i < _sst->counter; i++)
+  for (size_t i = 0; i < _wsst->counter; i++)
   {
-    for (size_t j = 0; j < _sst->rows[i].counter; j++)
-    {
-      __tableaux_cell_val_t v = _sst->rows[i].array[j].val;
-      max                     = max >= v ? max : v;
-    }
+    __tableaux_cell_val_t v = _wsst->cells[i].val;
+    max                     = max >= v ? max : v;
   }
   return max;
 }
 
 __sst_pool_t *
-__sst_pool_create_sst__index_pool (__sst_pool_t *p, __tableaux_cell_val_t idx)
+__sst_pool_create_sst_index_pool (__sst_pool_t *p, __tableaux_cell_val_t idx)
 {
   __sst_pool_t *idx_p = __sst_pool_create_sst_pool ();
   __sst_pool_remove_duplicates (p);
@@ -51,8 +48,8 @@ __sst_pool_create_sst__index_pool (__sst_pool_t *p, __tableaux_cell_val_t idx)
   {
     if (get_tableaux_index (p->tableaux[i]) <= idx)
     {
-      __sst_pool_add_tableaux (idx_p,
-                               __sst_tableaux_duplicate (p->tableaux[i]));
+      __sst_pool_add_word_tableaux (
+        idx_p, __sst_tableaux_word_duplicate (p->tableaux[i]));
     }
   }
   return idx_p;
@@ -63,14 +60,14 @@ __sst_pool_destroy_sst_pool (__sst_pool_t *p)
 {
   for (size_t i = 0; i < p->counter; i++)
   {
-    __sst_tableaux_destroy (p->tableaux[i]);
+    __sst_tableaux_word_destroy (p->tableaux[i]);
   }
   free (p->tableaux);
   free (p);
 }
 
 void
-__sst_pool_add_tableaux (__sst_pool_t *p, __sst_t *t)
+__sst_pool_add_word_tableaux (__sst_pool_t *p, __sst_word_t *t)
 {
   if (p->counter == p->size)
   {
@@ -79,18 +76,29 @@ __sst_pool_add_tableaux (__sst_pool_t *p, __sst_t *t)
   p->tableaux[p->counter++] = t;
 }
 
+bool
+__sst_pool_test_identity (__sst_pool_t *p, char *identity)
+{
+  return __it_test_identity (
+    identity, p->tableaux, p->counter, __sst_tableaux_check_identity);
+}
+
 void
 __sst_pool_add_tableaux_from_plain_file (__sst_pool_t *p, char *fn)
 {
-  __sst_t *t = __sst_tableaux_read_plain_file (fn);
-  __sst_pool_add_tableaux (p, t);
+  __sst_t *     t     = __sst_tableaux_read_plain_file (fn);
+  __sst_word_t *_wsst = __sst_tableaux_word_create (t);
+  __sst_tableaux_destroy (t);
+  __sst_pool_add_word_tableaux (p, _wsst);
 }
 
 void
 __sst_pool_add_tableaux_from_compressed_file (__sst_pool_t *p, char *fn)
 {
-  __sst_t *t = __sst_tableaux_read_compressed_file (fn);
-  __sst_pool_add_tableaux (p, t);
+  __sst_t *     t     = __sst_tableaux_read_compressed_file (fn);
+  __sst_word_t *_wsst = __sst_tableaux_word_create (t);
+  __sst_tableaux_destroy (t);
+  __sst_pool_add_word_tableaux (p, _wsst);
 }
 
 // copied from
@@ -98,12 +106,19 @@ __sst_pool_add_tableaux_from_compressed_file (__sst_pool_t *p, char *fn)
 static bool
 str_suffix_match (const char *str, const char *suffix)
 {
-  if (!str || !suffix)
+  if (str == NULL || suffix == NULL)
+  {
     return 0;
+  }
+
   size_t lenstr    = strlen (str);
   size_t lensuffix = strlen (suffix);
+
   if (lensuffix > lenstr)
+  {
     return 0;
+  }
+
   return strncmp (str + lenstr - lensuffix, suffix, lensuffix) == 0;
 }
 
@@ -147,7 +162,7 @@ __sst_pool_add_random_tableaux (__sst_pool_t *        p,
 {
   for (size_t i = 0; i < nr_random; i++)
   {
-    __sst_pool_add_tableaux (p, __sst_pool_generate_random_tableaux (idx));
+    __sst_pool_add_word_tableaux (p, __sst_pool_generate_random_tableaux (idx));
   }
 }
 
@@ -168,11 +183,17 @@ __sst_pool_remove_duplicates (__sst_pool_t *p)
         continue;
       }
 
-      if (__sst_tableaux_equals (p->tableaux[i], p->tableaux[j]))
+      __sst_t *l = __sst_tableaux_table_create (p->tableaux[i]);
+      __sst_t *r = __sst_tableaux_table_create (p->tableaux[j]);
+
+      if (__sst_tableaux_equals (l, r))
       {
-        __sst_tableaux_destroy (p->tableaux[j]);
+        __sst_tableaux_word_destroy (p->tableaux[j]);
         p->tableaux[j] = NULL;
       }
+
+      __sst_tableaux_destroy (l);
+      __sst_tableaux_destroy (r);
     }
   }
 
@@ -192,13 +213,13 @@ __sst_pool_remove_duplicates (__sst_pool_t *p)
 }
 
 void
-__sst_pool_print (__sst_pool_t *p, void (*print) (const __sst_t *))
+__sst_pool_print (__sst_pool_t *p, void (*print) (const __sst_word_t *))
 {
   printf ("Showing entries of tableaux pool %p\n", p);
 
   for (size_t i = 0; i < p->counter; i++)
   {
-    printf ("Entry %lu:\n", i);
+    printf ("Entry %lu:\tSize:%lu\n", i, p->tableaux[i]->counter);
     print (p->tableaux[i]);
     printf ("\n");
   }

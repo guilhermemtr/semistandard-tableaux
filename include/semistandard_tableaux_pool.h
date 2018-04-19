@@ -5,6 +5,7 @@
 #include <sys/types.h>
 
 #include "semistandard_tableaux.h"
+#include "identity_testing.h"
 
 #define __SST_POOL_DEFAULT_SIZE (1 << 5)
 
@@ -17,7 +18,7 @@ typedef struct
   size_t size;       //!< true size of the pool.
   size_t counter;    //!< size of the pool.
 
-  __sst_t **tableaux;    //!< entries of the pool.
+  __sst_word_t **tableaux;    //!< entries of the pool.
 } __sst_pool_t;
 
 /** Function that generates a random tableaux.
@@ -25,7 +26,7 @@ typedef struct
  * @param idx the index of the tableaux to be randomly generated.
  * @return the generated tableaux.
  */
-__sst_t *
+__sst_word_t *
 __sst_pool_generate_random_tableaux (__tableaux_cell_val_t idx);
 
 /** Creates a pool of semistandard tableaux.
@@ -59,7 +60,15 @@ __sst_pool_destroy_sst_pool (__sst_pool_t *p);
  * @param t the tableaux to be added to the pool.
  */
 void
-__sst_pool_add_tableaux (__sst_pool_t *p, __sst_t *t);
+__sst_pool_add_word_tableaux (__sst_pool_t *p, __sst_word_t *t);
+
+/** Function that tests an identity using the given pool of tableaux.
+ * Function that tests an identity using the given pool of tableaux.
+ * @param p the pool to which the tableaux is to be added.
+ * @param identity the identity to be verified.
+ */
+bool
+__sst_pool_test_identity (__sst_pool_t *p, char *identity);
 
 /** Function that adds a tableaux from a plain file to a tableaux pool.
  * Function that adds the non-shortened tableaux stored in the given filename,
@@ -113,6 +122,6 @@ __sst_pool_remove_duplicates (__sst_pool_t *p);
  * @param print the print function to be used.
  */
 void
-__sst_pool_print (__sst_pool_t *p, void (*print) (const __sst_t *));
+__sst_pool_print (__sst_pool_t *p, void (*print) (const __sst_word_t *));
 
 #endif    // __SST_POOL__

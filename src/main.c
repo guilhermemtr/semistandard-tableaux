@@ -127,18 +127,18 @@ unit_test_4 (char identity[])
   w_m_res.counter = w_m_res.size =
     __sst_tableaux_read_to_compressed_tableaux (m_res, w_m_res.cells);
 
-  size_t       nr_elems = 3;
-  __sst_word_t elems[nr_elems];
-  elems[0] = w_m1;
-  elems[1] = w_m2;
-  elems[2] = w_m_res;
+  size_t        nr_elems = 3;
+  __sst_word_t *elems[nr_elems];
+  elems[0] = &w_m1;
+  elems[1] = &w_m2;
+  elems[2] = &w_m_res;
 
   printf ("Verifying identity \"%s\".\n", identity);
   bool res = __it_test_identity (
     identity, elems, nr_elems, __sst_tableaux_check_identity);
   if (res)
   {
-    printf ("Identity verified.\n");
+    printf ("Identity passes tests.\n");
   } else
   {
     printf ("Identity does not hold.\n");
@@ -150,6 +150,31 @@ unit_test_5 ()
 {
   printf ("\n\n=== UNIT TEST 5 ===\n\n\n");
   __sst_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1.sst");
+
+  __sst_tableaux_print (m1);
+  printf ("\n");
+
+  __sst_pool_t *p = __sst_pool_create_sst_pool ();
+
+  __sst_pool_add_word_tableaux (p, __sst_tableaux_word_create (m1));
+
+  printf ("\n");
+  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
+  printf ("\n");
+
+  __sst_t *m11 = __sst_tableaux_table_create (p->tableaux[0]);
+  __sst_pool_add_word_tableaux (p, __sst_tableaux_word_create (m11));
+
+  printf ("\n");
+  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
+  printf ("\n");
+}
+
+void
+unit_test_6 ()
+{
+  printf ("\n\n=== UNIT TEST 6 ===\n\n\n");
+  __sst_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1.sst");
   __sst_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2.sst");
 
   __sst_t *m_res = __sst_tableaux_create ();
@@ -157,36 +182,85 @@ unit_test_5 ()
 
   __sst_pool_t *p = __sst_pool_create_sst_pool ();
 
-  __sst_pool_add_tableaux (p, m1);
-  __sst_pool_add_tableaux (p, __sst_tableaux_duplicate (m1));
-  __sst_pool_add_tableaux (p, m2);
-  __sst_pool_add_tableaux (p, __sst_tableaux_duplicate (m1));
-  __sst_pool_add_tableaux (p, __sst_tableaux_duplicate (m2));
-  __sst_pool_add_tableaux (p, m_res);
-  __sst_pool_add_tableaux (p, __sst_tableaux_duplicate (m_res));
-  __sst_pool_add_tableaux (p, __sst_tableaux_duplicate (m_res));
+  __sst_pool_add_word_tableaux (p, __sst_tableaux_word_create (m1));
+  __sst_pool_add_word_tableaux (
+    p, __sst_tableaux_word_create (__sst_tableaux_duplicate (m1)));
+  __sst_pool_add_word_tableaux (p, __sst_tableaux_word_create (m2));
+  __sst_pool_add_word_tableaux (
+    p, __sst_tableaux_word_create (__sst_tableaux_duplicate (m1)));
+  __sst_pool_add_word_tableaux (
+    p, __sst_tableaux_word_create (__sst_tableaux_duplicate (m2)));
+  __sst_pool_add_word_tableaux (p, __sst_tableaux_word_create (m_res));
+  __sst_pool_add_word_tableaux (
+    p, __sst_tableaux_word_create (__sst_tableaux_duplicate (m_res)));
+  __sst_pool_add_word_tableaux (
+    p, __sst_tableaux_word_create (__sst_tableaux_duplicate (m_res)));
 
-  __sst_pool_print (p, __sst_tableaux_print);
+  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
 
   __sst_pool_remove_duplicates (p);
 
-  __sst_pool_print (p, __sst_tableaux_print);
+  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
 }
 
 void
-unit_test_6 ()
+unit_test_7 ()
 {
-  printf ("\n\n=== UNIT TEST 6 ===\n\n\n");
+  printf ("\n\n=== UNIT TEST 7 ===\n\n\n");
 
   __sst_pool_t *p = __sst_pool_create_sst_pool ();
 
   __sst_pool_add_tableaux_from_directory (p, "./inputs/");
 
-  __sst_pool_print (p, __sst_tableaux_print);
+  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
 
   __sst_pool_remove_duplicates (p);
 
-  __sst_pool_print (p, __sst_tableaux_print);
+  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
+}
+
+void
+unit_test_8 ()
+{
+  printf ("\n\n=== UNIT TEST 8 ===\n\n\n");
+
+  __sst_pool_t *p = __sst_pool_create_sst_pool ();
+
+  __sst_pool_add_tableaux_from_directory (p, "./inputs/");
+
+  char id_2[] = "x=x";
+  char id_3[] = "x.y=y.x";
+
+  __sst_pool_remove_duplicates (p);
+  //  __sst_pool_t *p_2 = __sst_pool_create_sst_index_pool (p, 2);
+  //  __sst_pool_t *p_3 = __sst_pool_create_sst_index_pool (p, 3);
+
+  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
+
+  bool id_1_check = __sst_pool_test_identity (p, id_2);
+
+  if (id_1_check)
+  {
+    printf ("Identity 1 passes tests.\n");
+  } else
+  {
+    printf ("Identity 1 does not hold.\n");
+  }
+
+  bool id_2_check = __sst_pool_test_identity (p, id_3);
+
+  if (id_2_check)
+  {
+    printf ("Identity 2 passes tests.\n");
+  } else
+  {
+    printf ("Identity 2 does not hold.\n");
+  }
+
+  //__sst_pool_print (p, __sst_tableaux_word_to_table_print);
+
+
+  //__sst_pool_print (p, __sst_tableaux_word_to_table_print);
 }
 
 
@@ -211,6 +285,10 @@ main (int argc, char **argv)
   unit_test_5 ();
 
   unit_test_6 ();
+
+  unit_test_7 ();
+
+  unit_test_8 ();
 
   return 0;
 }

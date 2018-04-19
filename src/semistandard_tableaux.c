@@ -22,8 +22,28 @@ __sst_tableaux_create (void)
   return tableaux;
 }
 
+__sst_word_t *
+__sst_tableaux_word_create (const __sst_t *_sst)
+{
+  size_t        sz    = __sst_tableaux_storage_size (_sst);
+  __sst_word_t *_wsst = malloc (sizeof (__sst_word_t));
+  _wsst->cells        = malloc (sz * sizeof (__tableaux_cell_t));
+  _wsst->counter      = _wsst->size =
+    __sst_tableaux_read_to_compressed_tableaux (_sst, _wsst->cells);
+  return _wsst;
+}
+
 __sst_t *
-__sst_tableaux_duplicate (__sst_t *t)
+__sst_tableaux_table_create (const __sst_word_t *_wsst)
+{
+  __sst_t *t = __sst_tableaux_create ();
+  __sst_tableaux_read_from_compressed_tableaux (
+    t, _wsst->cells, _wsst->counter);
+  return t;
+}
+
+__sst_t *
+__sst_tableaux_duplicate (const __sst_t *t)
 {
   __sst_t *tableaux = malloc (sizeof (__sst_t));
   tableaux->size    = t->size;
@@ -37,6 +57,17 @@ __sst_tableaux_duplicate (__sst_t *t)
   return tableaux;
 }
 
+__sst_word_t *
+__sst_tableaux_word_duplicate (const __sst_word_t *t)
+{
+  __sst_word_t *t_dup = malloc (sizeof (__sst_word_t));
+  t_dup->size         = t->size;
+  t_dup->counter      = t->counter;
+  t_dup->cells        = malloc (t_dup->size * sizeof (__tableaux_cell_t));
+  memcpy (t_dup->cells, t->cells, t->counter * sizeof (__tableaux_cell_t));
+  return t_dup;
+}
+
 static void
 __sst_tableaux_resize_to (__sst_t *_sst, const size_t sz)
 {
@@ -47,9 +78,9 @@ __sst_tableaux_resize_to (__sst_t *_sst, const size_t sz)
 }
 
 static size_t
-__sst_tableaux_add_cells (__sst_t *          _sst,
-                          __tableaux_cell_t *cells,
-                          size_t             real_nr_cells)
+__sst_tableaux_add_cells (__sst_t *                _sst,
+                          const __tableaux_cell_t *cells,
+                          size_t                   real_nr_cells)
 {
   __tableaux_cell_t arr1[real_nr_cells];
   __tableaux_cell_t arr2[real_nr_cells];
@@ -113,6 +144,13 @@ __sst_tableaux_destroy (__sst_t *_sst)
   }
   free (_sst->rows);
   free (_sst);
+}
+
+void
+__sst_tableaux_word_destroy (__sst_word_t *_wsst)
+{
+  free (_wsst->cells);
+  free (_wsst);
 }
 
 size_t
@@ -204,7 +242,7 @@ __sst_tableaux_check_identity (size_t *x,
                                size_t  nr_vars,
                                void *  elems)
 {
-  __sst_word_t *tableaux = (__sst_word_t *) elems;
+  __sst_word_t **tableaux = (__sst_word_t **) elems;
 
   __sst_word_t left_side[len_x];
   __sst_word_t right_side[len_y];
@@ -214,14 +252,14 @@ __sst_tableaux_check_identity (size_t *x,
 
   for (size_t i = 0; i < len_x; i++)
   {
-    __sst_word_t curr = tableaux[assigns[x[i]]];
+    __sst_word_t curr = *(tableaux[assigns[x[i]]]);
     left_side[i]      = curr;
     len_left          = len_left + curr.counter;
   }
 
   for (size_t i = 0; i < len_y; i++)
   {
-    __sst_word_t curr = tableaux[assigns[y[i]]];
+    __sst_word_t curr = *(tableaux[assigns[y[i]]]);
     right_side[i]     = curr;
     len_right         = len_right + curr.counter;
   }
@@ -259,7 +297,12 @@ __sst_tableaux_check_identity (size_t *x,
   __sst_tableaux_read_from_compressed_tableaux (l, left.cells, left.counter);
   __sst_tableaux_read_from_compressed_tableaux (r, right.cells, right.counter);
 
-  return __sst_tableaux_equals (l, r);
+  bool ret = __sst_tableaux_equals (l, r);
+
+  __sst_tableaux_destroy (l);
+  __sst_tableaux_destroy (r);
+
+  return ret;
 }
 
 static ptrdiff_t
@@ -333,21 +376,7 @@ void
 __sst_tableaux_read_from_compressed_tableaux (
   __sst_t *_sst, const __tableaux_cell_t *_sst_tableaux_cells, const size_t len)
 {
-  __tableaux_cell_val_t curr  = len > 0 ? _sst_tableaux_cells[0].val : 0;
-  size_t                count = 0;
-  for (size_t i = 0; i < len; i++)
-  {
-    if (_sst_tableaux_cells[i].val == curr)
-    {
-      count += _sst_tableaux_cells[i].len;
-    } else
-    {
-      __tableaux_cell_t cell = {.val = curr, .len = count};
-      __sst_tableaux_add_cells (_sst, &cell, count);
-      curr  = _sst_tableaux_cells[i].val;
-      count = _sst_tableaux_cells[i].len;
-    }
-  }
+  __sst_tableaux_add_cells (_sst, _sst_tableaux_cells, len);
 }
 
 __sst_t *
@@ -438,15 +467,101 @@ __sst_tableaux_write_compressed_file (const __sst_t *_sst, const char *filename)
   fclose (f);
 }
 
-void
-__sst_tableaux_print (const __sst_t *_sst)
+// Different functions because of different types of return values
+static __tableaux_cell_val_t
+__sst_tableaux_get_max_val_tableaux (const __sst_t *_sst)
 {
+  __tableaux_cell_val_t max = 0;
   for (size_t i = 0; i < _sst->counter; i++)
   {
     for (size_t j = 0; j < _sst->rows[i].counter; j++)
     {
-      printf (
-        "(%lu,%lu), ", _sst->rows[i].array[j].val, _sst->rows[i].array[j].len);
+      __tableaux_cell_val_t v = _sst->rows[i].array[j].val;
+      max                     = max >= v ? max : v;
+    }
+  }
+  return max;
+}
+
+static __tableaux_cell_len_t
+__sst_tableaux_get_max_len_tableaux (const __sst_t *_sst)
+{
+  __tableaux_cell_len_t max = 0;
+  for (size_t i = 0; i < _sst->counter; i++)
+  {
+    for (size_t j = 0; j < _sst->rows[i].counter; j++)
+    {
+      __tableaux_cell_len_t l = _sst->rows[i].array[j].len;
+      max                     = max >= l ? max : l;
+    }
+  }
+  return max;
+}
+
+static size_t
+__sst_tableaux_get_val_len (__tableaux_cell_val_t v)
+{
+  size_t len = 0;
+  do
+  {
+    len++;
+    v = v / 10;
+  } while (v != 0);
+  return len;
+}
+
+static size_t
+__sst_tableaux_get_len_len (__tableaux_cell_len_t v)
+{
+  size_t len = 0;
+  do
+  {
+    len++;
+    v = v / 10;
+  } while (v != 0);
+  return len;
+}
+
+static void
+__sst_tableaux_print_val (__tableaux_cell_val_t v, size_t max_val_len)
+{
+  size_t v_len = __sst_tableaux_get_val_len (v);
+  for (size_t i = v_len; i < max_val_len; i++)
+  {
+    printf (" ");
+  }
+  printf (__TABLEAUX_CELL_VAL_FORMAT, v);
+}
+
+static void
+__sst_tableaux_print_len (__tableaux_cell_len_t l, size_t max_len_len)
+{
+  size_t l_len = __sst_tableaux_get_len_len (l);
+  for (size_t i = l_len; i < max_len_len; i++)
+  {
+    printf (" ");
+  }
+  printf (__TABLEAUX_CELL_LEN_FORMAT, l);
+}
+
+void
+__sst_tableaux_print (const __sst_t *_sst)
+{
+  size_t max_val_len =
+    __sst_tableaux_get_val_len (__sst_tableaux_get_max_val_tableaux (_sst));
+  size_t max_len_len =
+    __sst_tableaux_get_len_len (__sst_tableaux_get_max_len_tableaux (_sst));
+  for (size_t i = 0; i < _sst->counter; i++)
+  {
+    for (size_t j = 0; j < _sst->rows[i].counter; j++)
+    {
+      printf ("(");
+      __sst_tableaux_print_val (_sst->rows[i].array[j].val, max_val_len);
+      printf (",");
+      __sst_tableaux_print_len (_sst->rows[i].array[j].len, max_len_len);
+      printf (") ");
+      // printf (
+      // "(%lu,%lu) ", _sst->rows[i].array[j].val, _sst->rows[i].array[j].len);
     }
     printf ("\n");
   }
@@ -461,7 +576,7 @@ __sst_tableaux_plain_print (const __sst_t *_sst)
     {
       for (size_t k = 0; k < _sst->rows[i].array[j].len; k++)
       {
-        printf ("%lu, ", _sst->rows[i].array[j].val);
+        printf ("%lu ", _sst->rows[i].array[j].val);
       }
     }
     printf ("\n");
@@ -476,6 +591,15 @@ __sst_tableaux_word_print (const __sst_word_t *_sst)
     printf ("(%lu,%lu) ", _sst->cells[i].val, _sst->cells[i].len);
   }
   printf ("\n");
+}
+
+void
+__sst_tableaux_word_to_table_print (const __sst_word_t *_wsst)
+{
+  __sst_t *_sst = __sst_tableaux_table_create (_wsst);
+  printf ("SIZE: %lu\n", _wsst->counter);
+  __sst_tableaux_print (_sst);
+  __sst_tableaux_destroy (_sst);
 }
 
 void

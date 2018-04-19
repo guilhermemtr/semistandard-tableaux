@@ -95,7 +95,7 @@ bool
 __it_test_identity (char *           identity,
                     void *           elems,
                     size_t           nr_elems,
-                    identity_testing fn)
+                    identity_testing fn)    // TODO
 {
   trim (identity);
 

@@ -54,13 +54,37 @@ typedef ptrdiff_t (iteration_function) (__tableaux_cell_t cell,
 __sst_t *
 __sst_tableaux_create (void);
 
+/** Creates a new semistandard tableaux in the word format.
+ * Creates a new semistandard tableaux in the word format.
+ * @return the new semistandard tableaux in the word format.
+ */
+__sst_word_t *
+__sst_tableaux_word_create (const __sst_t *_sst);
+
+/** Creates a new semistandard tableaux in the word format, given one in the
+ * table format. Creates a new semistandard tableaux in the word format, given
+ * one in the table format.
+ * @param the semistandard tableaux in the table format.
+ * @return the new semistandard tableaux in the word format.
+ */
+__sst_t *
+__sst_tableaux_table_create (const __sst_word_t *_wsst);
+
 /** Duplicates a semistandard tableaux.
  * Duplicates the given semistandard tableaux.
  * @param t the tableaux to be duplicated.
  * @return the duplicated semistandard tableaux.
  */
 __sst_t *
-__sst_tableaux_duplicate (__sst_t *t);
+__sst_tableaux_duplicate (const __sst_t *t);
+
+/** Duplicates a semistandard tableaux in the word format.
+ * Duplicates the given semistandard tableaux in the word format.
+ * @param t the tableaux in the word format to be duplicated.
+ * @return the duplicated semistandard tableaux in the word format.
+ */
+__sst_word_t *
+__sst_tableaux_word_duplicate (const __sst_word_t *t);
 
 /** Initializes the semistandard tableaux.
  * Initializes the semistandard tableaux with the values passed as parameter.
@@ -79,6 +103,14 @@ __sst_tableaux_init (__sst_t *          _sst,
  */
 void
 __sst_tableaux_destroy (__sst_t *_sst);
+
+/** Destroys a semistandard tableaux in the word format. Destroys a semistandard
+ * tableaux in the word format, freeing all memory allocated by the tableaux.
+ * @param _sst the semistandard tableaux structure in the word format to be
+ * destroyed.
+ */
+void
+__sst_tableaux_word_destroy (__sst_word_t *_wsst);
 
 /** Iterates a semistandard tableaux using the column technique.
  * Iterates a semistandard tableaux using the column technique, invoking the
@@ -244,10 +276,18 @@ __sst_tableaux_plain_print (const __sst_t *_sst);
 /** Prints the given semistandard tableaux in the shortened word format into
  * stdout. Prints the given semistandard tableaux in the shortened word format
  * into stdout.
- * @param _sst the word format shortened semistandard tableaux to be printed.
+ * @param _wsst the word format shortened semistandard tableaux to be printed.
  */
 void
-__sst_tableaux_word_print (const __sst_word_t *_sst);
+__sst_tableaux_word_print (const __sst_word_t *_wsst);
+
+/** Prints the given semistandard tableaux in the shortened word format into
+ * stdout, as a table. Prints the given semistandard tableaux in the shortened
+ * word format into stdout, as a table.
+ * @param _wsst the word format shortened semistandard tableaux to be printed.
+ */
+void
+__sst_tableaux_word_to_table_print (const __sst_word_t *_wsst);
 
 /** Prints the given semistandard tableaux in the plain word format into stdout.
  * Prints the given semistandard tableaux in the plain word format into stdout.
