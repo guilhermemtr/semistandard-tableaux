@@ -52,6 +52,7 @@ unit_test_2 ()
   printf ("\n\n=== UNIT TEST 2 ===\n\n\n");
   __sst_t *m1 = __sst_tableaux_read_plain_file ("inputs/m1.sst");
   __sst_t *m2 = __sst_tableaux_read_plain_file ("inputs/m2.sst");
+  __sst_t *m3 = __sst_tableaux_read_table_file ("inputs/m3.sstt");
 
   __sst_t *m_res = __sst_tableaux_create ();
   __sst_tableaux_multiply (m1, m2, m_res);
@@ -62,7 +63,9 @@ unit_test_2 ()
   __sst_tableaux_plain_print (m2);
   printf ("\n\n");
   __sst_tableaux_plain_print (m_res);
-
+  printf ("\n\nPRINTING M3\n\n");
+  __sst_tableaux_plain_print (m3);
+  __sst_tableaux_write_table_file (m3, "m3.sstt");
   __sst_tableaux_write_plain_file (m_res, "inputs/m_res.sst");
   __sst_tableaux_write_compressed_file (m_res, "inputs/m_res.sstc");
 }
@@ -274,7 +277,7 @@ unit_test_8 ()
       printf ("%s set to:\n\n", counter_example_id_3->variables[i]);
       __sst_tableaux_word_to_table_plain_print (
         p->tableaux[counter_example_id_3->entries[i]]);
-      printf("\n");
+      printf ("\n");
     }
   }
 

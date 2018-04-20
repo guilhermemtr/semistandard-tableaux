@@ -259,6 +259,27 @@ __sst_tableaux_read_compressed_file (const char *filename);
 void
 __sst_tableaux_write_compressed_file (const __sst_t *_sst,
                                       const char *   filename);
+
+/** Reads a shortened semistandard tableaux from a file.
+ * Reads a shortened semistandard tableaux from the file with the given
+ * filename.
+ * @param filename the name of the file from which the shortened semistandard
+ * tableaux is to be read.
+ * @return _sst the shortened semistandard tableaux read.
+ */
+__sst_t *
+__sst_tableaux_read_table_file (const char *filename);
+
+/** Reads a shortened semistandard tableaux from a file.
+ * Reads a shortened semistandard tableaux from the file with the given
+ * filename.
+ * @param filename the name of the file from which the shortened semistandard
+ * tableaux is to be read.
+ * @return _sst the shortened semistandard tableaux read.
+ */
+void
+__sst_tableaux_write_table_file (const __sst_t *_sst, const char *filename);
+
 /** Prints the given shortened semistandard tableaux into stdout.
  * Prints the given shortened semistandard tableaux into stdout.
  * @param _sst the shortened semistandard tableaux to be printed.
