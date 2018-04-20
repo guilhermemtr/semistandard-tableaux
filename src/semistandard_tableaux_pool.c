@@ -91,7 +91,13 @@ __sst_pool_test_identity (__sst_pool_t *      p,
 void
 __sst_pool_add_tableaux_from_plain_file (__sst_pool_t *p, char *fn)
 {
-  __sst_t *     t     = __sst_tableaux_read_plain_file (fn);
+  __sst_t *t = __sst_tableaux_read_plain_file (fn);
+
+  if (t == NULL)
+  {
+    return;
+  }
+
   __sst_word_t *_wsst = __sst_tableaux_word_create (t);
   __sst_tableaux_destroy (t);
   __sst_pool_add_word_tableaux (p, _wsst);
@@ -101,6 +107,27 @@ void
 __sst_pool_add_tableaux_from_compressed_file (__sst_pool_t *p, char *fn)
 {
   __sst_t *     t     = __sst_tableaux_read_compressed_file (fn);
+  __sst_word_t *_wsst = __sst_tableaux_word_create (t);
+
+  if (t == NULL)
+  {
+    return;
+  }
+
+  __sst_tableaux_destroy (t);
+  __sst_pool_add_word_tableaux (p, _wsst);
+}
+
+void
+__sst_pool_add_tableaux_from_table_file (__sst_pool_t *p, char *fn)
+{
+  __sst_t *t = __sst_tableaux_read_table_file (fn);
+
+  if (t == NULL)
+  {
+    return;
+  }
+
   __sst_word_t *_wsst = __sst_tableaux_word_create (t);
   __sst_tableaux_destroy (t);
   __sst_pool_add_word_tableaux (p, _wsst);
@@ -154,6 +181,13 @@ __sst_pool_add_tableaux_from_directory (__sst_pool_t *p, char *dir_path)
         strcpy (concat, dir_path);
         strcpy (&(concat[len_dir_path]), ent->d_name);
         __sst_pool_add_tableaux_from_compressed_file (p, concat);
+      } else if (str_suffix_match (ent->d_name, ".sstt"))
+      {
+        size_t fn_len = strlen (ent->d_name);
+        char   concat[len_dir_path + fn_len + 1];
+        strcpy (concat, dir_path);
+        strcpy (&(concat[len_dir_path]), ent->d_name);
+        __sst_pool_add_tableaux_from_table_file (p, concat);
       }
     }
     closedir (dir);

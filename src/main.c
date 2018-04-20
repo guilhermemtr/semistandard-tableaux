@@ -63,7 +63,7 @@ unit_test_2 ()
   __sst_tableaux_plain_print (m2);
   printf ("\n\n");
   __sst_tableaux_plain_print (m_res);
-  printf ("\n\nPRINTING M3\n\n");
+  printf ("\n\n");
   __sst_tableaux_plain_print (m3);
   __sst_tableaux_write_table_file (m3, "m3.sstt");
   __sst_tableaux_write_plain_file (m_res, "inputs/m_res.sst");
@@ -287,11 +287,49 @@ unit_test_8 ()
   //__sst_pool_print (p, __sst_tableaux_word_to_table_print);
 }
 
+void
+unit_test_9 ()
+{
+  printf ("\n\n=== UNIT TEST 9 ===\n\n\n");
+
+  __sst_pool_t *p = __sst_pool_create_sst_pool ();
+
+  printf ("READING\n");
+  __sst_pool_add_tableaux_from_directory (p, "./inputs/random/");
+  printf ("%lu\n", p->counter);
+  printf ("REMOVING DUPS\n");
+  __sst_pool_remove_duplicates (p);
+  printf ("REDUCING TO INDEX 2\n");
+  __sst_pool_t *p2 = __sst_pool_create_sst_index_pool (p, 2);
+
+  printf ("%lu\n", p2->counter);
+
+  char               id_2[] = "p.q.p.q.p.q=p.q.q.p.p.q";
+  __it_assignment_t *counter_example_id_2;
+  bool id_2_check = __sst_pool_test_identity (p2, id_2, &counter_example_id_2);
+
+  if (id_2_check)
+  {
+    printf ("Identity 2 passes tests.\n");
+  } else
+  {
+    printf ("Identity 2 does not hold.\n\n");
+
+    printf ("Identity does not hold for values:\n\n\n");
+    for (size_t i = 0; i < counter_example_id_2->counter; i++)
+    {
+      printf ("%s set to:\n\n", counter_example_id_2->variables[i]);
+      __sst_tableaux_word_to_table_plain_print (
+        p2->tableaux[counter_example_id_2->entries[i]]);
+      printf ("\n");
+    }
+  }
+}
 
 int
 main (int argc, char **argv)
 {
-  unit_test_1 ();
+  /*unit_test_1 ();
   unit_test_2 ();
 
   char id1_3[] = "x.y=y.x";
@@ -312,7 +350,9 @@ main (int argc, char **argv)
 
   unit_test_7 ();
 
-  unit_test_8 ();
+  unit_test_8 ();*/
+
+  unit_test_9 ();
 
   return 0;
 }

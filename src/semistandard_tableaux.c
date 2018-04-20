@@ -382,7 +382,11 @@ __sst_tableaux_read_from_compressed_tableaux (
 __sst_t *
 __sst_tableaux_read_plain_file (const char *filename)
 {
-  FILE *                 f     = fopen (filename, "r");
+  FILE *f = fopen (filename, "r");
+  if (f == NULL)
+  {
+    return NULL;
+  }
   size_t                 sz    = (1 << 5);
   size_t                 count = 0;
   __tableaux_cell_val_t *plain = malloc (sz * sizeof (__tableaux_cell_val_t));
@@ -421,6 +425,10 @@ void
 __sst_tableaux_write_plain_file (const __sst_t *_sst, const char *filename)
 {
   FILE *f = fopen (filename, "w");
+  if (f == NULL)
+  {
+    return;
+  }
   __sst_tableaux_iterate_tableaux (
     _sst, __sst_tableaux_write_plain_file_iterator_function, f);
   fclose (f);
@@ -429,7 +437,13 @@ __sst_tableaux_write_plain_file (const __sst_t *_sst, const char *filename)
 __sst_t *
 __sst_tableaux_read_compressed_file (const char *filename)
 {
-  FILE *             f     = fopen (filename, "r");
+  FILE *f = fopen (filename, "r");
+
+  if (f == NULL)
+  {
+    return NULL;
+  }
+
   size_t             sz    = (1 << 5);
   size_t             count = 0;
   __tableaux_cell_t *cells = malloc (sz * sizeof (__tableaux_cell_t));
@@ -456,7 +470,13 @@ __sst_tableaux_read_compressed_file (const char *filename)
 __sst_t *
 __sst_tableaux_read_table_format_file (const char *filename)
 {
-  FILE *             f     = fopen (filename, "r");
+  FILE *f = fopen (filename, "r");
+
+  if (f == NULL)
+  {
+    return NULL;
+  }
+
   size_t             sz    = (1 << 5);
   size_t             count = 0;
   __tableaux_cell_t *cells = malloc (sz * sizeof (__tableaux_cell_t));
@@ -493,6 +513,12 @@ void
 __sst_tableaux_write_compressed_file (const __sst_t *_sst, const char *filename)
 {
   FILE *f = fopen (filename, "w");
+
+  if (f == NULL)
+  {
+    return;
+  }
+
   __sst_tableaux_iterate_tableaux (
     _sst, __sst_tableaux_write_compressed_file_iterator_function, f);
   fclose (f);
@@ -627,7 +653,13 @@ __sst_tableaux_plain_print_out (const __sst_t *_sst, FILE *out)
 __sst_t *
 __sst_tableaux_read_table_file (const char *filename)
 {
-  FILE *   f = fopen (filename, "r");
+  FILE *f = fopen (filename, "r");
+
+  if (f == NULL)
+  {
+    return NULL;
+  }
+
   ssize_t  read;
   char *   line     = NULL;
   size_t   len      = 0;
@@ -677,6 +709,10 @@ void
 __sst_tableaux_write_table_file (const __sst_t *_sst, const char *filename)
 {
   FILE *f = fopen (filename, "w");
+  if (f == NULL)
+  {
+    return;
+  }
   __sst_tableaux_plain_print_out (_sst, f);
   fclose (f);
 }

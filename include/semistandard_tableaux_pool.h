@@ -93,6 +93,15 @@ __sst_pool_add_tableaux_from_plain_file (__sst_pool_t *p, char *fn);
 void
 __sst_pool_add_tableaux_from_compressed_file (__sst_pool_t *p, char *fn);
 
+/** Function that adds a tableaux from a table file to a tableaux pool.
+ * Function that adds the table tableaux stored in the given filename, to
+ * the given tableaux pool.
+ * @param p the pool to which the tableaux is to be added.
+ * @param fn the filename of the file where the table tableaux is stored.
+ */
+void
+__sst_pool_add_tableaux_from_table_file (__sst_pool_t *p, char *fn);
+
 /** Function that adds all the tableaux that are stored in files within the
  * given directory. Function that adds all the tableaux that are stored in files
  * within the given directory, to the given tableaux pool.
