@@ -2,6 +2,57 @@
 
 #ifdef __IDENTITY_TESTING__
 
+__it_assignment_t *
+__it_create_variable_assignment ()
+{
+  __it_assignment_t *assig = malloc (sizeof (__it_assignment_t));
+  assig->size              = __IT_VARIABLE_ASSIGNMENT_DEFAULT_SIZE;
+  assig->counter           = 0;
+  assig->variables         = malloc (assig->size * sizeof (char *));
+  assig->entries           = malloc (assig->size * sizeof (size_t));
+  return assig;
+}
+
+static void
+__it_resize_to (__it_assignment_t *assig, size_t sz)
+{
+  if (assig->counter > sz)
+  {
+    sz = assig->counter;
+  }
+
+  assig->size      = sz;
+  assig->variables = realloc (assig->variables, assig->size * sizeof (char *));
+  assig->entries   = realloc (assig->entries, assig->size * sizeof (size_t));
+}
+
+void
+__it_add_variable_assignment (__it_assignment_t *_it_a, char *var, size_t idx)
+{
+  if (_it_a->counter == _it_a->size)
+  {
+    __it_resize_to (_it_a, (_it_a->size + 1) << 1);
+  }
+
+  char *str = malloc ((1 + strlen (var)) * sizeof (char));
+  strcpy (str, var);
+
+  _it_a->variables[_it_a->counter] = str;
+  _it_a->entries[_it_a->counter++] = idx;
+}
+
+void
+__it_destroy_variable_assignment (__it_assignment_t *_it_a)
+{
+  for (size_t i = 0; i < _it_a->counter; i++)
+  {
+    free (_it_a->variables[i]);
+  }
+
+  free (_it_a->entries);
+  free (_it_a->variables);
+  free (_it_a);
+}
 
 /* Function that trims the given string.
  */
@@ -43,7 +94,6 @@ split_identity_variables (char *side, char **splits, size_t *nr_splits)
   }
 }
 
-
 // TODO optimize for different sizes (specially smaller sizes)
 static size_t
 get_mapped_splits (char ** splits_1,
@@ -51,7 +101,8 @@ get_mapped_splits (char ** splits_1,
                    char ** splits_2,
                    size_t  nr_splits_2,
                    size_t *mapped_splits_1,
-                   size_t *mapped_splits_2)
+                   size_t *mapped_splits_2,
+                   char ** vars)
 {
   // create the mappings
   map_t  mappings = hashmap_new ();
@@ -81,21 +132,30 @@ get_mapped_splits (char ** splits_1,
   {
     assert (hashmap_get (mappings, splits_1[i], &tmp) == MAP_OK);
     mapped_splits_1[i] = (size_t) tmp;
+    if (vars != NULL)
+    {
+      vars[(size_t) tmp] = splits_1[i];
+    }
   }
 
   for (size_t i = 0; i < nr_splits_2; i++)
   {
     assert (hashmap_get (mappings, splits_2[i], &tmp) == MAP_OK);
     mapped_splits_2[i] = (size_t) tmp;
+    if (vars != NULL)
+    {
+      vars[(size_t) tmp] = splits_2[i];
+    }
   }
   return id;
 }
 
 bool
-__it_test_identity (char *           identity,
-                    void *           elems,
-                    size_t           nr_elems,
-                    identity_testing fn)    // TODO
+__it_test_identity (char *              identity,
+                    void *              elems,
+                    size_t              nr_elems,
+                    identity_testing    fn,
+                    __it_assignment_t **counter_example)
 {
   trim (identity);
 
@@ -119,12 +179,15 @@ __it_test_identity (char *           identity,
   size_t mapped_splits_1[nr_splits_1];
   size_t mapped_splits_2[nr_splits_2];
 
+  char *vars[nr_splits_1 + nr_splits_2];
+
   size_t nr_vars = get_mapped_splits (splits_1,
                                       nr_splits_1,
                                       splits_2,
                                       nr_splits_2,
                                       mapped_splits_1,
-                                      mapped_splits_2);
+                                      mapped_splits_2,
+                                      vars);
 
 
   bool test_identity (size_t beg, size_t * id)
@@ -160,12 +223,22 @@ __it_test_identity (char *           identity,
       for (size_t i = 0; i < nr_elems; i++)
       {
         ok &= oks[i];
+        if (counter_example != NULL && !oks[i] && beg + 1 == nr_vars)
+        {
+          *counter_example = __it_create_variable_assignment ();
+          for (size_t j = 0; j < nr_vars; j++)
+          {
+            __it_add_variable_assignment (
+              *counter_example, vars[j], tests[i][j]);
+          }
+          return ok;
+        }
       }
       return ok;
     }
   }
 
-  return test_identity (0, NULL);
+  return nr_vars == 0 || test_identity (0, NULL);
 }
 
 #endif    // __IDENTITY_TESTING__

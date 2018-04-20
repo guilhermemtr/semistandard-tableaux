@@ -89,7 +89,7 @@ void
 unit_test_3 (char identity[], size_t nr_elems)
 {
   printf ("\n\n=== UNIT TEST 3 ===\n\n\n");
-  __it_test_identity (identity, NULL, nr_elems, check_identity_dummy);
+  __it_test_identity (identity, NULL, nr_elems, check_identity_dummy, NULL);
 }
 
 
@@ -133,9 +133,11 @@ unit_test_4 (char identity[])
   elems[1] = &w_m2;
   elems[2] = &w_m_res;
 
+  __it_assignment_t *counter_example;
+
   printf ("Verifying identity \"%s\".\n", identity);
   bool res = __it_test_identity (
-    identity, elems, nr_elems, __sst_tableaux_check_identity);
+    identity, elems, nr_elems, __sst_tableaux_check_identity, &counter_example);
   if (res)
   {
     printf ("Identity passes tests.\n");
@@ -237,7 +239,8 @@ unit_test_8 ()
 
   __sst_pool_print (p, __sst_tableaux_word_to_table_print);
 
-  bool id_1_check = __sst_pool_test_identity (p, id_2);
+  __it_assignment_t *counter_example_id_2;
+  bool id_1_check = __sst_pool_test_identity (p, id_2, &counter_example_id_2);
 
   if (id_1_check)
   {
@@ -245,16 +248,34 @@ unit_test_8 ()
   } else
   {
     printf ("Identity 1 does not hold.\n");
+    printf ("Identity does not hold for values:\n");
+    for (size_t i = 0; i < counter_example_id_2->counter; i++)
+    {
+      printf ("%s set to:\n", counter_example_id_2->variables[i]);
+      __sst_tableaux_word_to_table_plain_print (
+        p->tableaux[counter_example_id_2->entries[i]]);
+    }
   }
 
-  bool id_2_check = __sst_pool_test_identity (p, id_3);
+  __it_assignment_t *counter_example_id_3;
+
+  bool id_2_check = __sst_pool_test_identity (p, id_3, &counter_example_id_3);
 
   if (id_2_check)
   {
     printf ("Identity 2 passes tests.\n");
   } else
   {
-    printf ("Identity 2 does not hold.\n");
+    printf ("Identity 2 does not hold.\n\n");
+
+    printf ("Identity does not hold for values:\n\n\n");
+    for (size_t i = 0; i < counter_example_id_3->counter; i++)
+    {
+      printf ("%s set to:\n\n", counter_example_id_3->variables[i]);
+      __sst_tableaux_word_to_table_plain_print (
+        p->tableaux[counter_example_id_3->entries[i]]);
+      printf("\n");
+    }
   }
 
   //__sst_pool_print (p, __sst_tableaux_word_to_table_print);

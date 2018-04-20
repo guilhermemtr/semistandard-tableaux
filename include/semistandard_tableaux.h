@@ -289,6 +289,14 @@ __sst_tableaux_word_print (const __sst_word_t *_wsst);
 void
 __sst_tableaux_word_to_table_print (const __sst_word_t *_wsst);
 
+/** Prints the given semistandard tableaux in the shortened word format into
+ * stdout, as a plain table. Prints the given semistandard tableaux in the
+ * shortened word format into stdout, as a plain table.
+ * @param _wsst the word format shortened semistandard tableaux to be printed.
+ */
+void
+__sst_tableaux_word_to_table_plain_print (const __sst_word_t *_wsst);
+
 /** Prints the given semistandard tableaux in the plain word format into stdout.
  * Prints the given semistandard tableaux in the plain word format into stdout.
  * @param _sst the word format shortened semistandard tableaux to be printed.

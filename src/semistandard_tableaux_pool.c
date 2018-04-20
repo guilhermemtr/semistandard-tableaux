@@ -77,10 +77,15 @@ __sst_pool_add_word_tableaux (__sst_pool_t *p, __sst_word_t *t)
 }
 
 bool
-__sst_pool_test_identity (__sst_pool_t *p, char *identity)
+__sst_pool_test_identity (__sst_pool_t *      p,
+                          char *              identity,
+                          __it_assignment_t **counter_example)
 {
-  return __it_test_identity (
-    identity, p->tableaux, p->counter, __sst_tableaux_check_identity);
+  return __it_test_identity (identity,
+                             p->tableaux,
+                             p->counter,
+                             __sst_tableaux_check_identity,
+                             counter_example);
 }
 
 void
