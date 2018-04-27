@@ -31,9 +31,9 @@ unit_test_1 ()
   __sst_ordered_array_t *arr = malloc (sizeof (__sst_ordered_array_t));
   __sst_ordered_array_create (arr);
 
-  print_array (arr);
+  __sst_ordered_array_print (arr);
   __sst_ordered_array_place (arr, to_place, to_place_sz, replaced, &sz);
-  print_array (arr);
+  __sst_ordered_array_print (arr);
 
   printf ("[");
   for (size_t j = 0; j < sz; j += replaced[j].len)

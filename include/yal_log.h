@@ -6,17 +6,19 @@
 
 #include <stdio.h>
 
-static int dbg_lvl = 0;
-static FILE * output;
+extern int   dbg_lvl;
+extern FILE *output;
 
-#define init_logger() do {			\
-    set_output(stdout);				\
-  } while(0)
+#define init_logger()                                                          \
+  do                                                                           \
+  {                                                                            \
+    set_output (stdout);                                                       \
+  } while (0)
 
 #define set_output(out) (output = out)
 
-#define set_log_file(file) (output = fopen(file,"a"))
-#define close_log_file() (fclose(output))
+#define set_log_file(file) (output = fopen (file, "a"))
+#define close_log_file() (fclose (output))
 
 #define set_lvl_err() (dbg_lvl = YAL_ERROR)
 #define set_lvl_warn() (dbg_lvl = YAL_WARN)
@@ -30,12 +32,16 @@ static FILE * output;
 
 
 #ifdef __YAL_ON__
-#define log(lvl,...) do {			\
-  if(dbg_lvl >= lvl)				\
-    fprintf(output, __VA_ARGS__);		\
-  } while(0)
+#define log(lvl, ...)                                                          \
+  do                                                                           \
+  {                                                                            \
+    if (dbg_lvl >= lvl)                                                        \
+      fprintf (output, __VA_ARGS__);                                           \
+  } while (0)
 #else
-#define log(...) {}
+#define log(...)                                                               \
+  {                                                                            \
+  }
 #endif
 
-#endif
+#endif    // __YAL_LOG__

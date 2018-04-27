@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "types.h"
+#include "yal_log.h"
 
 /** Structure that represents a row of a semistandard tableaux.
  * Structure that represents an ordered array, corresponding to a row of a
@@ -96,6 +97,15 @@ __sst_ordered_array_place (__sst_ordered_array_t *_sstoa,
  * @param _sstoa pointer to the array to be printed.
  */
 void
-print_array (__sst_ordered_array_t *_sstoa);
+__sst_ordered_array_print (__sst_ordered_array_t *_sstoa);
+
+/** Checks if the two ordered arrays are equal.
+ * Checks if the two given ordered arrays are equal, by checking if their values are equal.
+ * @param _sstoa_1 pointer to the first array.
+ * @param _sstoa_2 pointer to the second array.
+ * @return whether the two arrays are equal or not.
+ */
+bool
+__sst_ordered_array_equals (__sst_ordered_array_t *_sstoa_1, __sst_ordered_array_t *_sstoa_2);
 
 #endif    // __SST_ORDERED_ARRAY__

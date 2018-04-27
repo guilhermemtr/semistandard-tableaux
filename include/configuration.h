@@ -11,3 +11,7 @@
 #define spawn(X) cilk_spawn X
 #define sync cilk_sync
 #endif
+
+
+#define MAIL_ADDRESS "guilhermemtr@gmail.com"
+#define VERSION "version 0.1"
