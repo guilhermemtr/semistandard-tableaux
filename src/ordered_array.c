@@ -231,20 +231,20 @@ __sst_ordered_array_print (__sst_ordered_array_t *_sstoa)
 static void
 __sst_ordered_array_compress (__sst_ordered_array_t *_sstoa)
 {
-  __tableaux_cell_val_t curr_val = _sstoa->count > 0 ? _sstoa[0].val : 0;
+  __tableaux_cell_val_t curr_val = _sstoa->counter > 0 ? _sstoa->array[0].val : 0;
   __tableaux_cell_len_t count    = 0;
   size_t                base     = 0;
-  for (size_t i = 0; i < _sstoa->count; i++)
+  for (size_t i = 0; i < _sstoa->counter; i++)
   {
-    if (_sstoa[i] == curr_val)
+    if (_sstoa->array[i].val == curr_val)
     {
-      count += _sstoa[i].len;
+      count += _sstoa->array[i].len;
     } else
     {
       __tableaux_cell_t cell = {.val = curr_val, .len = count};
-      __sst_tableaux_add_cells (_sst, &cell, count);
-      curr_val = _sst_tableaux_cells[i].val;
-      count    = _sst_tableaux_cells[i].len;
+      //__sst_tableaux_add_cells (_sst, &cell, count);
+      //curr_val = _sst_tableaux_cells[i].val;
+      //count    = _sst_tableaux_cells[i].len;
     }
   }
 }
@@ -253,6 +253,9 @@ bool
 __sst_ordered_array_equals (__sst_ordered_array_t *_sstoa_1,
                             __sst_ordered_array_t *_sstoa_2)
 {
+  __sst_ordered_array_compress(_sstoa_1);
+  __sst_ordered_array_compress(_sstoa_2);
+  return false;
 }
 
 

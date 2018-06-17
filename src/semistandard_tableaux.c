@@ -826,11 +826,10 @@ __sst_tableaux_check (const __sst_t *_sst)
     {
       ok = ok
            && (i + 1 >= _sst->rows[j].counter
-               || _sst->rows[j].array[i].val < _sst->rows[j].array[i + 1].val);
-      ok =
-        ok
-        && (j + 1 >= _sst->counter
-            || _sst->rows[j + 1].array[i].val < _sst->rows[j + 1].array[i].val);
+               || _sst->rows[j].array[i].val <= _sst->rows[j].array[i + 1].val);
+      ok = ok
+           && (j + 1 >= _sst->counter || i >= _sst->rows[j].counter
+               || _sst->rows[j].array[i].val < _sst->rows[j + 1].array[i].val);
 
       if (!ok)
       {

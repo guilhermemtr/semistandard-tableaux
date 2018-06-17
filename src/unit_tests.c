@@ -323,6 +323,99 @@ unit_test_9 ()
   }
 }
 
+static void
+printf_tn (__tn_t n)
+{
+  if (__tn_is_infinite (n))
+  {
+    printf ("-inf");
+  } else
+  {
+    printf ("%lu", __tn_get_value (n));
+  }
+}
+
+static void
+unit_test_10 ()
+{
+  printf ("\n\n=== UNIT TEST 10 ===\n\n\n");
+
+  __tn_t n1 = 1000;
+  __tn_t n2 = 1001;
+  __tn_t i1 = __tn_t_infinite;
+  __tn_t i2 = i1 + n1;
+
+  printf ("n1:\n");
+  printf_tn (n1);
+  printf ("\n");
+  printf ("\n");
+
+  printf ("n2:\n");
+  printf_tn (n2);
+  printf ("\n");
+  printf ("\n");
+
+  printf ("i1:\n");
+  printf_tn (i1);
+  printf ("\n");
+  printf ("\n");
+
+  printf ("i2:\n");
+  printf_tn (i2);
+  printf ("\n");
+  printf ("\n");
+
+  __tn_t res1 = __tn_sum (n1, n2);
+
+  printf ("Sum n1 n2\n");
+  printf_tn (res1);
+  printf ("\n");
+  printf ("\n");
+
+  res1 = __tn_mult (n1, n2);
+
+  printf ("Mult n1 n2\n");
+  printf_tn (res1);
+  printf ("\n");
+  printf ("\n");
+
+  res1 = __tn_sum (n2, i1);
+
+  printf ("Sum n2 i1\n");
+  printf_tn (res1);
+  printf ("\n");
+  printf ("\n");
+
+  res1 = __tn_mult (n2, i1);
+
+  printf ("Mult n2 i1\n");
+  printf_tn (res1);
+  printf ("\n");
+  printf ("\n");
+
+  res1 = __tn_sum (i1, i2);
+
+  printf ("Sum i1 i2\n");
+  printf_tn (res1);
+  printf ("\n");
+  printf ("\n");
+
+  res1 = __tn_mult (i1, i2);
+
+  printf ("Mult i1 i2\n");
+  printf_tn (res1);
+  printf ("\n");
+  printf ("\n");
+}
+
+static void
+unit_test_11 ()
+{
+  printf ("\n\n=== UNIT TEST 11 ===\n\n\n");
+  __tm_t * t1 = __tm_read("inputs/m1.trmt");
+  __tm_write(t1,"out.txt");
+}
+
 int
 run_tests ()
 {
@@ -342,14 +435,14 @@ run_tests ()
   set_lvl_dbg();
   log(YAL_DBG, "Debug info now showing up %s\n", "debug info 2");
 
-  
+
   log(YAL_INFO, "Info not showing up %s\n", "info 1");
   set_lvl_info();
   log(YAL_INFO, "Info now showing up %s\n", "info 2");
   close_log_file();*/
 
-  
-  unit_test_1 ();
+
+  /*unit_test_1 ();
   unit_test_2 ();
 
   char id1_3[] = "x.y=y.x";
@@ -373,6 +466,10 @@ run_tests ()
   unit_test_8 ();
 
   unit_test_9 ();
+
+  unit_test_10 ();*/
+
+  unit_test_11 ();
 
   return 0;
 }
