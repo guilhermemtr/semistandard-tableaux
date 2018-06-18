@@ -342,7 +342,7 @@ unit_test_10 ()
 
   __tn_t n1 = 1000;
   __tn_t n2 = 1001;
-  __tn_t i1 = __tn_t_infinite;
+  __tn_t i1 = __tn_neg_inf;
   __tn_t i2 = i1 + n1;
 
   printf ("n1:\n");
@@ -413,7 +413,19 @@ unit_test_11 ()
 {
   printf ("\n\n=== UNIT TEST 11 ===\n\n\n");
   __tm_t * t1 = __tm_read("inputs/m1.trmt");
+  
   __tm_write(t1,"out.txt");
+
+  __tm_t * t2 = __tm_read("inputs/m2.trmt");
+
+  __tm_t * t3 = __tm_read("inputs/m3.trmt");
+
+  __tm_t * res = __tm_create(t3->columns, t3->rows);
+
+  __tm_mult(t2,t3,res);
+
+  __tm_write(res,"res.txt");
+  
 }
 
 int

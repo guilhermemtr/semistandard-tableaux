@@ -11,7 +11,7 @@ __tm_create (size_t columns, size_t rows)
   m->matrix  = malloc (m->columns * m->rows * sizeof (__tn_t));
   for (size_t i = 0; i < m->columns * m->rows; i++)
   {
-    m->matrix[i] = __tn_t_infinite;
+    m->matrix[i] = __tn_neg_inf;
   }
   return m;
 }
@@ -33,7 +33,7 @@ __tm_mult (__tm_t *m1, __tm_t *m2, __tm_t *res)
   {
     for (size_t j = 0; j < res->rows; j++)
     {
-      res->matrix[i + j * res->columns] = __tn_t_infinite;
+      res->matrix[i + j * res->columns] = __tn_neg_inf;
       for (size_t k = 0; k < m1->columns; k++)
       {
         res->matrix[i + j * res->columns] =
@@ -83,7 +83,7 @@ __tm_read (char *filename)
       __tn_t tn;
       if (strcmp ("-inf", res) == 0)
       {
-        tn = __tn_t_infinite;
+        tn = __tn_neg_inf;
       } else
       {
         if (sscanf (res, "%lu", &tn) < 0)

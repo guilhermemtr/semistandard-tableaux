@@ -16,7 +16,7 @@
  */
 typedef uint64_t __tn_t;
 
-#define __tn_t_infinite (1L << 32L)
+#define __tn_neg_inf (1L << 32L)
 
 
 
