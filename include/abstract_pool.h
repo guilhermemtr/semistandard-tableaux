@@ -81,10 +81,17 @@ typedef struct
 
 /** Creates a pool of mathematical objects.
  * Creates a pool of mathematical objects.
+ * @param tester function to be used to check an equality.
+ * @param equals function that checks if two elements are equal.
+ * @param destroy function that destroys an element.
+ * @param print function that prints an element.
  * @return the mathematical objects' pool created.
  */
 __ap_t *
-__ap_create_pool ();
+__ap_create_pool (__ap_identity_tester *tester,
+                  __ap_equals *         equals,
+                  __ap_op *             destroy,
+                  __ap_op *             print);
 
 /** Destroys a pool of mathematical objects.
  * Destroys a pool of mathematical objects.

@@ -11,12 +11,19 @@ __ap_resize_to (__ap_t *p, size_t sz)
 
 
 __ap_t *
-__ap_create_pool ()
+__ap_create_pool (__ap_identity_tester *tester,
+                  __ap_equals *         equals,
+                  __ap_op *             destroy,
+                  __ap_op *             print)
 {
   __ap_t *p       = malloc (sizeof (__ap_t));
   p->size         = __AP_DEFAULT_SIZE;
   p->counter      = 0;
   p->pool_entries = (void **) malloc (p->size * sizeof (void *));
+  p->tester       = tester;
+  p->equals       = equals;
+  p->destroy      = destroy;
+  p->print        = print;
   return p;
 }
 
