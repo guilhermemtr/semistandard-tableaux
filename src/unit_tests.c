@@ -1,5 +1,19 @@
 #include "unit_tests.h"
 
+/*static void
+test_ordered_array()
+{}
+
+static void
+test_tableaux()
+{}
+
+static void
+test_tropical_matrices()
+{}*/
+
+
+
 static void
 unit_test_1 ()
 {
@@ -29,7 +43,7 @@ unit_test_1 ()
   size_t            sz = 0;
 
   __sst_ordered_array_t *arr = malloc (sizeof (__sst_ordered_array_t));
-  __sst_ordered_array_create (arr);
+  __sst_ordered_array_init (arr);
 
   __sst_ordered_array_print (arr);
   __sst_ordered_array_place (arr, to_place, to_place_sz, replaced, &sz);
@@ -41,6 +55,42 @@ unit_test_1 ()
     printf ("{%lu,%lu},", replaced[j].val, replaced[j].len);
   }
   printf ("]\n");
+}
+
+static void
+unit_test_111 ()
+{
+  printf ("\n\n=== UNIT TEST TMP ===\n\n\n");
+  __tableaux_cell_t cells[10];
+  cells[0] = (__tableaux_cell_t){3L, 5L};
+  cells[1] = (__tableaux_cell_t){5L, 5L};
+  cells[2] = (__tableaux_cell_t){4L, 10L};
+  cells[3] = (__tableaux_cell_t){6L, 5L};
+  cells[4] = (__tableaux_cell_t){2L, 10L};
+  cells[5] = (__tableaux_cell_t){5L, 5L};
+  cells[6] = (__tableaux_cell_t){4L, 3L};
+
+  __tableaux_cell_t to_place[50];
+  size_t            to_place_sz = 43L;
+
+  to_place[0]  = cells[0];
+  to_place[5]  = cells[1];
+  to_place[10] = cells[2];
+  to_place[20] = cells[3];
+  to_place[25] = cells[4];
+  to_place[35] = cells[5];
+  to_place[40] = cells[6];
+
+
+  __tableaux_cell_t replaced[50];
+  size_t            sz = 0;
+
+  __sst_ordered_array_t *arr = malloc (sizeof (__sst_ordered_array_t));
+  __sst_ordered_array_init (arr);
+
+  __sst_ordered_array_print (arr);
+  __sst_ordered_array_place (arr, to_place, to_place_sz, replaced, &sz);
+  __sst_ordered_array_print (arr);
 }
 
 static void
@@ -137,7 +187,7 @@ unit_test_4 (char identity[])
 
   printf ("Verifying identity \"%s\".\n", identity);
   bool res = __it_test_identity (
-    identity, elems, nr_elems, __sst_tableaux_check_identity, &counter_example);
+    identity, elems, nr_elems, __sst_tableaux_word_check_identity, &counter_example);
   if (res)
   {
     printf ("Identity passes tests.\n");
@@ -412,20 +462,19 @@ static void
 unit_test_11 ()
 {
   printf ("\n\n=== UNIT TEST 11 ===\n\n\n");
-  __tm_t * t1 = __tm_read("inputs/m1.trmt");
-  
-  __tm_write(t1,"out.txt");
+  __tm_t *t1 = __tm_read ("inputs/m1.trmt");
 
-  __tm_t * t2 = __tm_read("inputs/m2.trmt");
+  __tm_write (t1, "out.txt");
 
-  __tm_t * t3 = __tm_read("inputs/m3.trmt");
+  __tm_t *t2 = __tm_read ("inputs/m2.trmt");
 
-  __tm_t * res = __tm_create(t3->columns, t3->rows);
+  __tm_t *t3 = __tm_read ("inputs/m3.trmt");
 
-  __tm_mult(t2,t3,res);
+  __tm_t *res = __tm_create (t3->columns, t3->rows);
 
-  __tm_write(res,"res.txt");
-  
+  __tm_mult (t2, t3, res);
+
+  __tm_write (res, "res.txt");
 }
 
 int

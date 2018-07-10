@@ -23,12 +23,12 @@ typedef struct
   __tableaux_cell_t *array;    //!< array.
 } __sst_ordered_array_t;
 
-/** Creates an ordered array to be used in semistandard tableaux.
- * Creates an ordered array to be used in semistandard tableaux.
- * @param _sstoa pointer to the structure where the array should be created.
+/** Initializes an ordered array to be used in semistandard tableaux.
+ * Initializes an ordered array to be used in semistandard tableaux.
+ * @param _sstoa pointer to the structure where the array should be initialized.
  */
 void
-__sst_ordered_array_create (__sst_ordered_array_t *_sstoa);
+__sst_ordered_array_init (__sst_ordered_array_t *_sstoa);
 
 /** Duplicates an ordered array.
  * Duplicates an ordered array.

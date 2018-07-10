@@ -84,7 +84,7 @@ __sst_pool_test_identity (__sst_pool_t *      p,
   return __it_test_identity (identity,
                              p->tableaux,
                              p->counter,
-                             __sst_tableaux_check_identity,
+                             __sst_tableaux_word_check_identity,
                              counter_example);
 }
 

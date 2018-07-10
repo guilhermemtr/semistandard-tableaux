@@ -3,7 +3,7 @@
 #ifdef __SST_ORDERED_ARRAY__
 
 void
-__sst_ordered_array_create (__sst_ordered_array_t *_sstoa)
+__sst_ordered_array_init (__sst_ordered_array_t *_sstoa)
 {
   _sstoa->size    = __SST_ORDERED_ARRAY_DEFAULT_SIZE;
   _sstoa->counter = 0;

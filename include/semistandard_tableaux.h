@@ -8,28 +8,20 @@
 
 #include "ordered_array.h"
 #include "types.h"
+#include "semistandard_tableaux_word.h"
 
 /** Structure that represents a semistandard tableaux.
  * Structure that represents a semistandard tableaux, in the two dimensional
  * form.
  */
-typedef struct
+typedef struct __sst
 {
   size_t size;       //!< number of rows.
   size_t counter;    //!< number of rows used. invariant: counter <= size.
   __sst_ordered_array_t *rows;    //!< tableaux rows.
 } __sst_t;
 
-/** Structure that represents a semistandard tableaux in the word format.
- * Structure that represents a semistandard tableaux in the word format.
- */
-typedef struct
-{
-  size_t size;       //!< size of the shortened tableaux.
-  size_t counter;    //!< counter of the shortened tableaux. invariant: counter
-                     //!< <= size.
-  __tableaux_cell_t *cells;    //!< tableaux cells.
-} __sst_word_t;
+typedef struct __sst_word __sst_word_t;
 
 /** Type of function that is called during iterations of tableaux.
  * Type of function that is called during iterations of tableaux.
@@ -54,13 +46,6 @@ typedef ptrdiff_t (iteration_function) (__tableaux_cell_t cell,
 __sst_t *
 __sst_tableaux_create (void);
 
-/** Creates a new semistandard tableaux in the word format.
- * Creates a new semistandard tableaux in the word format.
- * @return the new semistandard tableaux in the word format.
- */
-__sst_word_t *
-__sst_tableaux_word_create (const __sst_t *_sst);
-
 /** Creates a new semistandard tableaux in the word format, given one in the
  * table format. Creates a new semistandard tableaux in the word format, given
  * one in the table format.
@@ -77,14 +62,6 @@ __sst_tableaux_table_create (const __sst_word_t *_wsst);
  */
 __sst_t *
 __sst_tableaux_duplicate (const __sst_t *t);
-
-/** Duplicates a semistandard tableaux in the word format.
- * Duplicates the given semistandard tableaux in the word format.
- * @param t the tableaux in the word format to be duplicated.
- * @return the duplicated semistandard tableaux in the word format.
- */
-__sst_word_t *
-__sst_tableaux_word_duplicate (const __sst_word_t *t);
 
 /** Initializes the semistandard tableaux.
  * Initializes the semistandard tableaux with the values passed as parameter.
@@ -103,14 +80,6 @@ __sst_tableaux_init (__sst_t *          _sst,
  */
 void
 __sst_tableaux_destroy (__sst_t *_sst);
-
-/** Destroys a semistandard tableaux in the word format. Destroys a semistandard
- * tableaux in the word format, freeing all memory allocated by the tableaux.
- * @param _sst the semistandard tableaux structure in the word format to be
- * destroyed.
- */
-void
-__sst_tableaux_word_destroy (__sst_word_t *_wsst);
 
 /** Iterates a semistandard tableaux using the column technique.
  * Iterates a semistandard tableaux using the column technique, invoking the
@@ -150,27 +119,6 @@ __sst_tableaux_storage_size (const __sst_t *_sst);
  */
 bool
 __sst_tableaux_equals (const __sst_t *_sst_left, const __sst_t *_sst_right);
-
-/** Verifies the validity of an identity, given a variable assignment.
- * Verifies the validity of an identity, given a variable assignment and the
- * identity.
- * @param x the left side of the identity.
- * @param len_x the length of the left side of the identity.
- * @param y the right side of the identity.
- * @param len_y the length of the right side of the identity.
- * @param assigns the assignments to the variables.
- * @param nr_vars the number of variables.
- * @param elems the elements to which the variables can be set.
- * @return whether the identity was verified for the given assignment or not.
- */
-bool
-__sst_tableaux_check_identity (size_t *x,
-                               size_t  len_x,
-                               size_t *y,
-                               size_t  len_y,
-                               size_t *assigns,
-                               size_t  nr_vars,
-                               void *  elems);
 
 /** Reads a semistandard tableaux into a vector of numbers.
  * Reads a semistandard tableaux into a vector of numbers (or, in other words,
@@ -293,37 +241,6 @@ __sst_tableaux_print (const __sst_t *_sst);
  */
 void
 __sst_tableaux_plain_print (const __sst_t *_sst);
-
-/** Prints the given semistandard tableaux in the shortened word format into
- * stdout. Prints the given semistandard tableaux in the shortened word format
- * into stdout.
- * @param _wsst the word format shortened semistandard tableaux to be printed.
- */
-void
-__sst_tableaux_word_print (const __sst_word_t *_wsst);
-
-/** Prints the given semistandard tableaux in the shortened word format into
- * stdout, as a table. Prints the given semistandard tableaux in the shortened
- * word format into stdout, as a table.
- * @param _wsst the word format shortened semistandard tableaux to be printed.
- */
-void
-__sst_tableaux_word_to_table_print (const __sst_word_t *_wsst);
-
-/** Prints the given semistandard tableaux in the shortened word format into
- * stdout, as a plain table. Prints the given semistandard tableaux in the
- * shortened word format into stdout, as a plain table.
- * @param _wsst the word format shortened semistandard tableaux to be printed.
- */
-void
-__sst_tableaux_word_to_table_plain_print (const __sst_word_t *_wsst);
-
-/** Prints the given semistandard tableaux in the plain word format into stdout.
- * Prints the given semistandard tableaux in the plain word format into stdout.
- * @param _sst the word format shortened semistandard tableaux to be printed.
- */
-void
-__sst_tableaux_plain_word_print (const __sst_word_t *_sst);
 
 /** Verifies if the shortened semistandard tableaux given as input is in proper
  * form. Verifies if the shortened semistandard tableaux given as input is in
