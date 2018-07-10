@@ -231,9 +231,10 @@ __sst_ordered_array_print (__sst_ordered_array_t *_sstoa)
 static void
 __sst_ordered_array_compress (__sst_ordered_array_t *_sstoa)
 {
-  __tableaux_cell_val_t curr_val = _sstoa->counter > 0 ? _sstoa->array[0].val : 0;
-  __tableaux_cell_len_t count    = 0;
-  size_t                base     = 0;
+  __tableaux_cell_val_t curr_val =
+    _sstoa->counter > 0 ? _sstoa->array[0].val : 0;    // current value read
+  __tableaux_cell_len_t count = 0;    // number of repetitions of current value
+  size_t                counter = 0;    // current compressed counter
   for (size_t i = 0; i < _sstoa->counter; i++)
   {
     if (_sstoa->array[i].val == curr_val)
@@ -241,21 +242,35 @@ __sst_ordered_array_compress (__sst_ordered_array_t *_sstoa)
       count += _sstoa->array[i].len;
     } else
     {
-      __tableaux_cell_t cell = {.val = curr_val, .len = count};
-      //__sst_tableaux_add_cells (_sst, &cell, count);
-      //curr_val = _sst_tableaux_cells[i].val;
-      //count    = _sst_tableaux_cells[i].len;
+      __tableaux_cell_t cell   = {.val = curr_val, .len = count};
+      _sstoa->array[counter++] = cell;
+      curr_val                 = _sstoa->array[i].val;
+      count                    = _sstoa->array[i].len;
     }
   }
+  _sstoa->counter = counter;
 }
 
 bool
 __sst_ordered_array_equals (__sst_ordered_array_t *_sstoa_1,
                             __sst_ordered_array_t *_sstoa_2)
 {
-  __sst_ordered_array_compress(_sstoa_1);
-  __sst_ordered_array_compress(_sstoa_2);
-  return false;
+  __sst_ordered_array_compress (_sstoa_1);
+  __sst_ordered_array_compress (_sstoa_2);
+  if (_sstoa_1->counter != _sstoa_2->counter)
+  {
+    return false;
+  }
+
+  for (size_t i = 0; i < _sstoa_1->counter; i++)
+  {
+    if (_sstoa_1->array[i].val != _sstoa_2->array[i].val
+        || _sstoa_1->array[i].len != _sstoa_2->array[i].len)
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 
