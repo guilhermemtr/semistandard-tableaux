@@ -73,7 +73,7 @@ __sst_pool_add_word_tableaux (__sst_pool_t *p, __sst_word_t *t);
 bool
 __sst_pool_test_identity (__sst_pool_t *      p,
                           char *              identity,
-                          __it_assignment_t **counter_example);
+                          __va_assignment_t **counter_example);
 
 /** Function that adds a tableaux from a plain file to a tableaux pool.
  * Function that adds the non-shortened tableaux stored in the given filename,

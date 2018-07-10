@@ -1,12 +1,60 @@
 #ifndef __ABSTRACT_POOL__
 #define __ABSTRACT_POOL__
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+#include <string.h>
+#include <ctype.h>
+#include <assert.h>
 
 #include <dirent.h>
 #include <sys/types.h>
 
-#include "identity_testing.h"
 
-#define __ABSTRACT_POOL_DEFAULT_SIZE (1 << 5)
+#include "hashmap.h"
+#include "configuration.h"
+#include "variable_assignment.h"
+
+#define __AP_DEFAULT_SIZE (1 << 5)
+
+#define __AP_DELIMITER__ "="
+#define __AP_OP_SYMBOL__ "."
+
+/** Type of function that corresponds to functions that verify the validity of
+ * an identity, given two assignments. Type of function that corresponds to
+ * functions that verify the validity of an identity, given two assignments.
+ * @param x the left side of the identity.
+ * @param len_x the length of the left side of the identity.
+ * @param y the right side of the identity.
+ * @param len_y the length of the right side of the identity.
+ * @param assigns the assignments to the variables.
+ * @param nr_vars the number of variables.
+ * @param elems the domains of the variables.
+ * @return whether the identity was verified for the given assignment or not.
+ */
+typedef bool(__ap_identity_tester) (size_t *x,
+                                    size_t  len_x,
+                                    size_t *y,
+                                    size_t  len_y,
+                                    size_t *assigns,
+                                    size_t  nr_vars,
+                                    void *  elems);
+
+/** Type of function that corresponds to functions that verify if two elements
+ * are equal. Type of function that corresponds to functions that verify if two
+ * elements are equal.
+ * @param e1 the first element.
+ * @param e2 the second element.
+ * @return whether the elements are equal or not.
+ */
+typedef bool(__ap_equals) (void *e1, void *e2);
+
+/** Type of function that corresponds to functions that operate over an element.
+ * Type of function that corresponds to functions that operate over an element.
+ * @param e the element.
+ */
+typedef void (*__ap_op) (void *);
 
 /**Below we define a pool for abstract data structures, which are intended to
  * represent mathematical objects of some kind.
@@ -25,25 +73,25 @@ typedef struct
   size_t counter;         //!< size of the pool.
   void **pool_entries;    //!< entries of the pool.
 
-  void (*multiply) (void *, void *, void **);    //!< multiplies two elements
-  bool (*equals) (void *, void *);     //!< checks if two elements are equal
-  void (*destroy_element) (void *);    //!< destroys an element
-  void (*print_element) (void *);      //!< prints an element
-} __abstract_pool_t;
+  __ap_identity_tester *tester;     //!< multiplies two elements
+  __ap_equals *         equals;     //!< checks if two elements are equal
+  __ap_op *             destroy;    //!< destroys an element
+  __ap_op *             print;      //!< prints an element
+} __ap_t;
 
 /** Creates a pool of mathematical objects.
  * Creates a pool of mathematical objects.
  * @return the mathematical objects' pool created.
  */
-__abstract_pool_t *
-__abstract_pool_create_pool ();
+__ap_t *
+__ap_create_pool ();
 
 /** Destroys a pool of mathematical objects.
  * Destroys a pool of mathematical objects.
  * @param p the mathematical objects pool to be destroyed.
  */
 void
-__abstract_pool_destroy_pool (__abstract_pool_t *p);
+__ap_destroy_pool (__ap_t *p);
 
 /** Function that adds an element to the pool.
  * Function that adds an element to the pool.
@@ -51,7 +99,7 @@ __abstract_pool_destroy_pool (__abstract_pool_t *p);
  * @param e the element to be added to the pool.
  */
 void
-__abstract_pool_add_element (__abstract_pool_t *p, void *e);
+__ap_add_element (__ap_t *p, void *e);
 
 /** Function that tests an identity using the given pool of mathematical
  * objects. Function that tests an identity using the given pool of mathematical
@@ -63,9 +111,9 @@ __abstract_pool_add_element (__abstract_pool_t *p, void *e);
  * @return whether the identity holds or not.
  */
 bool
-__abstract_pool_test_identity (__abstract_pool_t * p,
-                               char *              identity,
-                               __it_assignment_t **counter_example);
+__ap_test_identity (__ap_t * p,
+                    char *              identity,
+                    __va_assignment_t **counter_example);
 
 /** Function that removes all duplicate mathematical object from a pool.
  * Function that removes all the duplicate mathematical object from the given
@@ -74,7 +122,7 @@ __abstract_pool_test_identity (__abstract_pool_t * p,
  * removed.
  */
 void
-__abstract_pool_remove_duplicates (__abstract_pool_t *p);
+__ap_remove_duplicates (__ap_t *p);
 
 /** Function that prints the mathematical objects of a pool.
  * Function that prints the mathematical objects of the given pool.
@@ -82,6 +130,6 @@ __abstract_pool_remove_duplicates (__abstract_pool_t *p);
  * @param print the print function to be used.
  */
 void
-__abstract_pool_print (__abstract_pool_t *p, void (*print) (void *));
+__ap_print (__ap_t *p);
 
 #endif    // __ABSTRACT_POOL__

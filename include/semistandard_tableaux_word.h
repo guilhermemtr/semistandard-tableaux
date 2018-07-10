@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-//#include <string.h>
 
 #include "types.h"
 #include "semistandard_tableaux.h"

@@ -49,12 +49,23 @@ __sst_tableaux_word_storage_size (const __sst_word_t *_wsst)
 }
 
 bool
-__sst_tableaux_word_equals (const __sst_word_t *_wsst_left,
-                            const __sst_word_t *_wsst_right)
+__sst_tableaux_word_equals (const __sst_word_t *w1, const __sst_word_t *w2)
 {
   // create tableaux
   // check if tableaux are equal
-  return false;
+
+  __sst_t *l = __sst_tableaux_create ();
+  __sst_t *r = __sst_tableaux_create ();
+
+  __sst_tableaux_read_from_compressed_tableaux (l, w1->cells, w1->counter);
+  __sst_tableaux_read_from_compressed_tableaux (r, w2->cells, w2->counter);
+
+  bool ret = __sst_tableaux_equals (l, r);
+
+  __sst_tableaux_destroy (l);
+  __sst_tableaux_destroy (r);
+
+  return ret;
 }
 
 bool
@@ -115,18 +126,7 @@ __sst_tableaux_word_check_identity (size_t *x,
     }
   }
 
-  __sst_t *l = __sst_tableaux_create ();
-  __sst_t *r = __sst_tableaux_create ();
-
-  __sst_tableaux_read_from_compressed_tableaux (l, left.cells, left.counter);
-  __sst_tableaux_read_from_compressed_tableaux (r, right.cells, right.counter);
-
-  bool ret = __sst_tableaux_equals (l, r);
-
-  __sst_tableaux_destroy (l);
-  __sst_tableaux_destroy (r);
-
-  return ret;
+  return __sst_tableaux_word_equals (&left, &right);
 }
 
 // Different functions because of different types of return values
