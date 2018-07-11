@@ -12,11 +12,11 @@ __sst_pool_t *
 __sst_pool_create_sst_pool ()
 {
   __sst_pool_t *p = malloc (sizeof (__sst_pool_t));
-  p->pool =
-    __ap_create_pool (__sst_tableaux_word_check_identity,
-                      __sst_tableaux_word_equals,
-                      __sst_tableaux_word_destroy,
-                      __sst_tableaux_word_to_table_print);
+  p->pool         = __ap_create_pool (
+    (__ap_identity_tester *) __sst_tableaux_word_check_identity,
+    (__ap_equals *) __sst_tableaux_word_equals,
+    (__ap_op *) __sst_tableaux_word_destroy,
+    (__ap_op *) __sst_tableaux_word_to_table_print);
   return p;
 }
 
@@ -114,27 +114,6 @@ __sst_pool_add_tableaux_from_table_file (__sst_pool_t *p, char *fn)
   __sst_word_t *_wsst = __sst_tableaux_word_create (t);
   __sst_tableaux_destroy (t);
   __sst_pool_add_word_tableaux (p, _wsst);
-}
-
-// copied from
-// https://stackoverflow.com/questions/744766/how-to-compare-ends-of-strings-in-c
-static bool
-str_suffix_match (const char *str, const char *suffix)
-{
-  if (str == NULL || suffix == NULL)
-  {
-    return 0;
-  }
-
-  size_t lenstr    = strlen (str);
-  size_t lensuffix = strlen (suffix);
-
-  if (lensuffix > lenstr)
-  {
-    return 0;
-  }
-
-  return strncmp (str + lenstr - lensuffix, suffix, lensuffix) == 0;
 }
 
 void

@@ -4,6 +4,7 @@
 #include <dirent.h>
 #include <sys/types.h>
 
+#include "utils.h"
 #include "semistandard_tableaux.h"
 #include "semistandard_tableaux_word.h"
 #include "abstract_pool.h"
@@ -60,7 +61,7 @@ __sst_pool_add_word_tableaux (__sst_pool_t *p, __sst_word_t *t);
 
 /** Function that tests an identity using the given pool of tableaux.
  * Function that tests an identity using the given pool of tableaux.
- * @param p the pool to which the tableaux is to be added.
+ * @param p the pool of semistandard tableaux.
  * @param identity the identity to be verified.
  * @param counter_example a counter example, if it exists, of a test for which
  * the identity does not hold.
