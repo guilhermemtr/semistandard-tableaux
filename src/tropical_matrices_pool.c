@@ -6,11 +6,10 @@ __tm_pool_t *
 __tm_pool_create_tm_pool ()
 {
   __tm_pool_t *p = malloc (sizeof (__tm_pool_t));
-  p->pool        = __ap_create_pool (
-    NULL, NULL, NULL, NULL); /*__sst_tableaux_word_check_identity,
-                     __sst_tableaux_word_equals,
-                     __sst_tableaux_word_destroy,
-                     __sst_tableaux_word_to_table_print);*/
+  p->pool = __ap_create_pool ((__ap_identity_tester *) __tm_check_identity,
+                              (__ap_equals *) __tm_equals,
+                              (__ap_op *) __tm_destroy,
+                              (__ap_op *) __tm_print);
   return p;
 }
 

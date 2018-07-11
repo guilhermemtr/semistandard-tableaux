@@ -44,6 +44,17 @@ __sst_tableaux_word_duplicate (const __sst_word_t *t);
 void
 __sst_tableaux_word_destroy (__sst_word_t *_wsst);
 
+/** Multiplies two semistandard tableaux in the word format.
+ * Multiplies two semistandard tableaux in the word format.
+ * @param _wsst_1 the first semistandard tableaux in the word format.
+ * @param _wsst_2 the second semistandard tableaux in the word format.
+ * @param _wsst_res the resulting semistandard tableaux in the word format.
+ */
+void
+__sst_tableaux_word_multiply (const __sst_word_t *_wsst_1,
+                              const __sst_word_t *_wsst_2,
+                              __sst_word_t *      _wsst_res);
+
 /** Returns the total number of cells of the shortened semistandard tableaux
  * word. Returns the total number of cells of the shortened semistandard
  * tableaux word.

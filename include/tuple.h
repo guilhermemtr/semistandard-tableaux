@@ -1,5 +1,5 @@
-#ifndef __TROPICAL_MATRICES__
-#define __TROPICAL_MATRICES__
+#ifndef __DIRECT_PRODUCT__
+#define __DIRECT_PRODUCT__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,17 +8,20 @@
 
 #include <assert.h>
 
-#include "tropical_numbers.h"
-
 /**
- * Represents a tropical matrix.
+ * Represents a tuple.
  */
 typedef struct
 {
-  size_t  rows;
-  size_t  columns;
+  void * l;
+  void * r;
+  //need multiplication for each side (void *l, void *r, void *res)
+  //need print for each side
+  //need equals for each side
+  //need identity testing for each side
+  //need destroy for each side
   __tn_t *matrix;
-} __tm_t;
+} __dp_t;
 
 /** Creates a new matrix.
  * Creates a new matrix, with all positions set to -inf.
@@ -107,4 +110,4 @@ __tm_write (__tm_t *m, char *filename);
 void
 __tm_print (__tm_t *_tm);
 
-#endif    // __TROPICAL_MATRICES__
+#endif    // __DIRECT_PRODUCT__

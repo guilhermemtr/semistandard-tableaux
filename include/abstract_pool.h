@@ -11,7 +11,7 @@
 #include <dirent.h>
 #include <sys/types.h>
 
-
+#include "types.h"
 #include "hashmap.h"
 #include "configuration.h"
 #include "variable_assignment.h"
@@ -20,41 +20,6 @@
 
 #define __AP_DELIMITER__ "="
 #define __AP_OP_SYMBOL__ "."
-
-/** Type of function that corresponds to functions that verify the validity of
- * an identity, given two assignments. Type of function that corresponds to
- * functions that verify the validity of an identity, given two assignments.
- * @param x the left side of the identity.
- * @param len_x the length of the left side of the identity.
- * @param y the right side of the identity.
- * @param len_y the length of the right side of the identity.
- * @param assigns the assignments to the variables.
- * @param nr_vars the number of variables.
- * @param elems the domains of the variables.
- * @return whether the identity was verified for the given assignment or not.
- */
-typedef bool(__ap_identity_tester) (size_t *x,
-                                    size_t  len_x,
-                                    size_t *y,
-                                    size_t  len_y,
-                                    size_t *assigns,
-                                    size_t  nr_vars,
-                                    void *  elems);
-
-/** Type of function that corresponds to functions that verify if two elements
- * are equal. Type of function that corresponds to functions that verify if two
- * elements are equal.
- * @param e1 the first element.
- * @param e2 the second element.
- * @return whether the elements are equal or not.
- */
-typedef bool(__ap_equals) (void *e1, void *e2);
-
-/** Type of function that corresponds to functions that operate over an element.
- * Type of function that corresponds to functions that operate over an element.
- * @param e the element.
- */
-typedef void(__ap_op) (void *e);
 
 /**Below we define a pool for abstract data structures, which are intended to
  * represent mathematical objects of some kind.

@@ -31,6 +31,44 @@ __sst_tableaux_word_destroy (__sst_word_t *_wsst)
   free (_wsst);
 }
 
+void
+__sst_tableaux_word_resize_to (__sst_word_t *_wsst, const size_t sz)
+{
+  _wsst->size = sz >= _wsst->counter ? sz : _wsst->counter;
+  _wsst->cells =
+    realloc (_wsst->cells, _wsst->size * sizeof (__tableaux_cell_t));
+}
+
+void
+__sst_tableaux_word_multiply (const __sst_word_t *_wsst_1,
+                              const __sst_word_t *_wsst_2,
+                              __sst_word_t *      _wsst_res)
+{
+  size_t req_sz = __sst_tableaux_word_storage_size (_wsst_1)
+                  + __sst_tableaux_word_storage_size (_wsst_2);
+  if (_wsst_res->size < req_sz)
+  {
+    __sst_tableaux_word_resize_to (
+      _wsst_res,
+      req_sz << 2);    // Just to leave some margin. And note that resizing to
+                       // something twice as large ensures that if it continues
+                       // growing, the number of resize operations will be low.
+  }
+
+  size_t counter = 0;
+  for (size_t i = 0; i < _wsst_1->counter; i++, counter++)
+  {
+    _wsst_res->cells[counter].val = _wsst_1->cells[i].val;
+    _wsst_res->cells[counter].len = _wsst_1->cells[i].len;
+  }
+
+  for (size_t i = 0; i < _wsst_2->counter; i++, counter++)
+  {
+    _wsst_res->cells[counter].val = _wsst_2->cells[i].val;
+    _wsst_res->cells[counter].len = _wsst_2->cells[i].len;
+  }
+}
+
 size_t
 __sst_tableaux_word_size (const __sst_word_t *_wsst)
 {

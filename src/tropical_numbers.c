@@ -44,4 +44,11 @@ __tn_mult (__tn_t n1, __tn_t n2)
   return n1 + n2;
 }
 
+bool
+__tn_equals (__tn_t n1, __tn_t n2)
+{
+  return (__tn_is_infinite (n1) && __tn_is_infinite (n2)) || (n1 == n2);
+}
+
+
 #endif    // __TROPICAL_NUMBERS__

@@ -18,8 +18,6 @@ typedef uint64_t __tn_t;
 
 #define __tn_neg_inf (1L << 32L)
 
-
-
 /** Returns if the number is infinite or not.
  * Returns if the number is infinite or not.
  * @param n the tropical number.
@@ -28,8 +26,6 @@ typedef uint64_t __tn_t;
 bool
 __tn_is_infinite (__tn_t n);
 
-
-
 /** Returns the value of the tropical number.
  * Returns the value of the tropical number.
  * @param n the tropical number.
@@ -37,8 +33,6 @@ __tn_is_infinite (__tn_t n);
  */
 __tn_t
 __tn_get_value (__tn_t n);
-
-
 
 /** Returns the sum of two tropical numbers.
  * Returns the sum of two tropical numbers.
@@ -58,6 +52,15 @@ __tn_sum (__tn_t n1, __tn_t n2);
  */
 __tn_t
 __tn_mult (__tn_t n1, __tn_t n2);
+
+/** Checks if two tropical numbers are equal.
+ * Checks if two tropical numbers are equal..
+ * @param n1 the first tropical number.
+ * @param n2 the second tropical number.
+ * @return whether the tropical numbers are equal or not.
+ */
+bool
+__tn_equals (__tn_t n1, __tn_t n2);
 
 /** Reads a tropical number from the given FILE stream.
  * Reads a tropical number from the given FILE stream.
