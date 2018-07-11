@@ -29,6 +29,13 @@ typedef struct
 __tm_t *
 __tm_create (size_t columns, size_t rows);
 
+/** Destroys the given matrix.
+ * Destroys the given matrix.
+ * @param _tm the matrix to be destroyed.
+ */
+void
+__tm_destroy (__tm_t *_tm);
+
 /** Sums two tropical matrices into the third tropical matrix.
  * Sums two tropical matrices into the third tropical matrix.
  * @param m1 the first tropical matrix.
@@ -47,6 +54,27 @@ __tm_sum (__tm_t *m1, __tm_t *m2, __tm_t *res);
 void
 __tm_mult (__tm_t *m1, __tm_t *m2, __tm_t *res);
 
+/** Verifies the validity of an identity, given a variable assignment.
+ * Verifies the validity of an identity, given a variable assignment and the
+ * identity.
+ * @param x the left side of the identity.
+ * @param len_x the length of the left side of the identity.
+ * @param y the right side of the identity.
+ * @param len_y the length of the right side of the identity.
+ * @param assigns the assignments to the variables.
+ * @param nr_vars the number of variables.
+ * @param elems the elements to which the variables can be set.
+ * @return whether the identity was verified for the given assignment or not.
+ */
+bool
+__tm_check_identity (size_t *x,
+                     size_t  len_x,
+                     size_t *y,
+                     size_t  len_y,
+                     size_t *assigns,
+                     size_t  nr_vars,
+                     void *  elems);
+
 /** Reads a tropical matrix from a file with the given filename.
  * Reads a tropical matrix from a file with the given filename.
  * @param filename the filename.
@@ -62,5 +90,12 @@ __tm_read (char *filename);
  */
 void
 __tm_write (__tm_t *m, char *filename);
+
+/** Prints the given matrix.
+ * Prints the given matrix.
+ * @param _tm the matrix to be printed.
+ */
+void
+__tm_print (__tm_t *_tm);
 
 #endif    // __TROPICAL_MATRICES__

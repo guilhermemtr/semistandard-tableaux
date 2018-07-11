@@ -8,9 +8,9 @@ __tm_pool_create_tm_pool ()
   __tm_pool_t *p = malloc (sizeof (__tm_pool_t));
   p->pool        = __ap_create_pool (
     NULL, NULL, NULL, NULL); /*__sst_tableaux_word_check_identity,
-       __sst_tableaux_word_equals,
-       __sst_tableaux_word_destroy,
-       __sst_tableaux_word_to_table_print);*/
+                     __sst_tableaux_word_equals,
+                     __sst_tableaux_word_destroy,
+                     __sst_tableaux_word_to_table_print);*/
   return p;
 }
 
@@ -44,7 +44,7 @@ __tm_pool_add_matrix_from_plain_file (__tm_pool_t *p, char *fn)
   {
     return;
   }
-  
+
   __tm_pool_add_tropical_matrix (p, t);
 }
 
@@ -61,41 +61,17 @@ __tm_pool_add_tableaux_from_directory (__tm_pool_t *p, char *dir_path)
     /* print all the files and directories within directory */
     while ((ent = readdir (dir)) != NULL)
     {
-      if (str_suffix_match (ent->d_name, ".sst"))
+      size_t fn_len = strlen (ent->d_name);
+      char   concat[len_dir_path + fn_len + 1];
+      strcpy (concat, dir_path);
+      strcpy (&(concat[len_dir_path]), ent->d_name);
+
+      if (str_suffix_match (ent->d_name, ".tm"))
       {
-        size_t fn_len = strlen (ent->d_name);
-        char   concat[len_dir_path + fn_len + 1];
-        strcpy (concat, dir_path);
-        strcpy (&(concat[len_dir_path]), ent->d_name);
-        __tm_pool_add_tableaux_from_plain_file (p, concat);
-      } else if (str_suffix_match (ent->d_name, ".sstc"))
-      {
-        size_t fn_len = strlen (ent->d_name);
-        char   concat[len_dir_path + fn_len + 1];
-        strcpy (concat, dir_path);
-        strcpy (&(concat[len_dir_path]), ent->d_name);
-        __tm_pool_add_tableaux_from_compressed_file (p, concat);
-      } else if (str_suffix_match (ent->d_name, ".sstt"))
-      {
-        size_t fn_len = strlen (ent->d_name);
-        char   concat[len_dir_path + fn_len + 1];
-        strcpy (concat, dir_path);
-        strcpy (&(concat[len_dir_path]), ent->d_name);
-        __tm_pool_add_tableaux_from_table_file (p, concat);
+        __tm_pool_add_matrix_from_plain_file (p, concat);
       }
     }
     closedir (dir);
-  }
-}
-
-void
-__tm_pool_add_random_tableaux (__tm_pool_t *         p,
-                               size_t                nr_random,
-                               __tableaux_cell_val_t idx)
-{
-  for (size_t i = 0; i < nr_random; i++)
-  {
-    __tm_pool_add_word_tableaux (p, __tm_pool_generate_random_tableaux (idx));
   }
 }
 
