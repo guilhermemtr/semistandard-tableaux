@@ -8,21 +8,15 @@ __sst_pool_generate_random_tableaux (__tableaux_cell_val_t idx)
   return NULL;
 }
 
-static void
-__sst_pool_resize_to (__sst_pool_t *p, size_t sz)
-{
-  p->size = sz >= p->counter ? sz : p->counter;
-  p->tableaux =
-    (__sst_word_t **) realloc (p->tableaux, p->size * sizeof (__sst_word_t *));
-}
-
 __sst_pool_t *
 __sst_pool_create_sst_pool ()
 {
   __sst_pool_t *p = malloc (sizeof (__sst_pool_t));
-  p->size         = __SST_POOL_DEFAULT_SIZE;
-  p->counter      = 0;
-  p->tableaux = (__sst_word_t **) malloc (p->size * sizeof (__sst_word_t *));
+  p->pool =
+    __ap_create_pool (__sst_tableaux_word_check_identity,
+                      __sst_tableaux_word_equals,
+                      __sst_tableaux_word_destroy,
+                      __sst_tableaux_word_to_table_print);
   return p;
 }
 
@@ -43,13 +37,14 @@ __sst_pool_create_sst_index_pool (__sst_pool_t *p, __tableaux_cell_val_t idx)
 {
   __sst_pool_t *idx_p = __sst_pool_create_sst_pool ();
   __sst_pool_remove_duplicates (p);
-
-  for (size_t i = 0; i < p->counter; i++)
+  __ap_t *pool = p->pool;
+  for (size_t i = 0; i < pool->counter; i++)
   {
-    if (get_tableaux_index (p->tableaux[i]) <= idx)
+    if (get_tableaux_index ((__sst_word_t *) (pool->pool_entries[i])) <= idx)
     {
-      __sst_pool_add_word_tableaux (
-        idx_p, __sst_tableaux_word_duplicate (p->tableaux[i]));
+      __sst_pool_add_word_tableaux (idx_p,
+                                    __sst_tableaux_word_duplicate ((
+                                      __sst_word_t *) (pool->pool_entries[i])));
     }
   }
   return idx_p;
@@ -58,22 +53,14 @@ __sst_pool_create_sst_index_pool (__sst_pool_t *p, __tableaux_cell_val_t idx)
 void
 __sst_pool_destroy_sst_pool (__sst_pool_t *p)
 {
-  for (size_t i = 0; i < p->counter; i++)
-  {
-    __sst_tableaux_word_destroy (p->tableaux[i]);
-  }
-  free (p->tableaux);
+  __ap_destroy_pool (p->pool);
   free (p);
 }
 
 void
 __sst_pool_add_word_tableaux (__sst_pool_t *p, __sst_word_t *t)
 {
-  if (p->counter == p->size)
-  {
-    __sst_pool_resize_to (p, (p->size + 1) << 1);
-  }
-  p->tableaux[p->counter++] = t;
+  __ap_add_element (p->pool, t);
 }
 
 bool
@@ -81,11 +68,7 @@ __sst_pool_test_identity (__sst_pool_t *      p,
                           char *              identity,
                           __va_assignment_t **counter_example)
 {
-  return true; /*__it_test_identity (identity,
-                             p->tableaux,
-                             p->counter,
-                             __sst_tableaux_word_check_identity,
-                             counter_example);*/
+  return __ap_test_identity (p->pool, identity, counter_example);
 }
 
 void
@@ -208,61 +191,23 @@ __sst_pool_add_random_tableaux (__sst_pool_t *        p,
 void
 __sst_pool_remove_duplicates (__sst_pool_t *p)
 {
-  for (size_t i = 0; i < p->counter; i++)
-  {
-    if (p->tableaux[i] == NULL)
-    {
-      continue;
-    }
-
-    for (size_t j = i + 1; j < p->counter; j++)
-    {
-      if (p->tableaux[j] == NULL)
-      {
-        continue;
-      }
-
-      __sst_t *l = __sst_tableaux_table_create (p->tableaux[i]);
-      __sst_t *r = __sst_tableaux_table_create (p->tableaux[j]);
-
-      if (__sst_tableaux_equals (l, r))
-      {
-        __sst_tableaux_word_destroy (p->tableaux[j]);
-        p->tableaux[j] = NULL;
-      }
-
-      __sst_tableaux_destroy (l);
-      __sst_tableaux_destroy (r);
-    }
-  }
-
-  size_t ctr = p->counter;
-  for (size_t i = 0; i < ctr; i++)
-  {
-    if (p->tableaux[i] == NULL)
-    {
-      while (p->tableaux[--ctr] == NULL && i < ctr)
-      {
-        ;
-      }
-      p->tableaux[i] = p->tableaux[ctr];
-    }
-  }
-  p->counter = ctr;
+  __ap_remove_duplicates (p->pool);
 }
 
 void
-__sst_pool_print (__sst_pool_t *p, void (*print) (const __sst_word_t *))
+__sst_pool_print (__sst_pool_t *p)
 {
-  printf ("Showing entries of tableaux pool %p\n", p);
-
-  for (size_t i = 0; i < p->counter; i++)
-  {
-    printf ("Entry %lu:\tSize:%lu\n", i, p->tableaux[i]->counter);
-    print (p->tableaux[i]);
-    printf ("\n");
-  }
+  __ap_print (p->pool);
 }
 
+void
+__sst_pool_custom_print (__sst_pool_t *p, void (*print) (const __sst_word_t *))
+{
+  __ap_t *pool = p->pool;
+  for (size_t i = 0; i < pool->counter; i++)
+  {
+    (*print) ((__sst_word_t *) (pool->pool_entries[i]));
+  }
+}
 
 #endif    // __SST_POOL__

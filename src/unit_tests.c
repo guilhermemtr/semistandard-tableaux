@@ -141,7 +141,7 @@ unit_test_3 (char identity[], size_t nr_elems)
   printf ("\n\n=== UNIT TEST 3 ===\n\n\n");
   //TODO: create a pool and add dummy objects (such as NULL)
   // After that, make the call to the test identity to the pool.
-  //test_identity (identity, NULL, nr_elems, check_identity_dummy, NULL);
+  // test_identity (identity, NULL, nr_elems, check_identity_dummy, NULL);
 }
 
 
@@ -188,11 +188,11 @@ unit_test_4 (char identity[])
   //__va_assignment_t *counter_example;
 
   printf ("Verifying identity \"%s\".\n", identity);
-  bool res = true;/* __it_test_identity (identity,
-                                 elems,
-                                 nr_elems,
-                                 __sst_tableaux_word_check_identity,
-                                 &counter_example);*/
+  bool res = true; /* __it_test_identity (identity,
+                                  elems,
+                                  nr_elems,
+                                  __sst_tableaux_word_check_identity,
+                                  &counter_example);*/
   if (res)
   {
     printf ("Identity passes tests.\n");
@@ -216,14 +216,14 @@ unit_test_5 ()
   __sst_pool_add_word_tableaux (p, __sst_tableaux_word_create (m1));
 
   printf ("\n");
-  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
+  __sst_pool_custom_print (p, __sst_tableaux_word_to_table_print);
   printf ("\n");
 
-  __sst_t *m11 = __sst_tableaux_table_create (p->tableaux[0]);
+  __sst_t *m11 = __sst_tableaux_table_create (p->pool->pool_entries[0]);
   __sst_pool_add_word_tableaux (p, __sst_tableaux_word_create (m11));
 
   printf ("\n");
-  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
+  __sst_pool_custom_print (p, __sst_tableaux_word_to_table_print);
   printf ("\n");
 }
 
@@ -253,11 +253,12 @@ unit_test_6 ()
   __sst_pool_add_word_tableaux (
     p, __sst_tableaux_word_create (__sst_tableaux_duplicate (m_res)));
 
-  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
+  //__sst_pool_custom_print (p, __sst_tableaux_word_to_table_print);
+  __sst_pool_print (p);
 
   __sst_pool_remove_duplicates (p);
 
-  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
+  __sst_pool_custom_print (p, __sst_tableaux_word_to_table_print);
 }
 
 static void
@@ -269,11 +270,11 @@ unit_test_7 ()
 
   __sst_pool_add_tableaux_from_directory (p, "./inputs/");
 
-  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
+  __sst_pool_custom_print (p, __sst_tableaux_word_to_table_print);
 
   __sst_pool_remove_duplicates (p);
 
-  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
+  __sst_pool_custom_print (p, __sst_tableaux_word_to_table_print);
 }
 
 static void
@@ -292,7 +293,7 @@ unit_test_8 ()
   //  __sst_pool_t *p_2 = __sst_pool_create_sst_index_pool (p, 2);
   //  __sst_pool_t *p_3 = __sst_pool_create_sst_index_pool (p, 3);
 
-  __sst_pool_print (p, __sst_tableaux_word_to_table_print);
+  __sst_pool_custom_print (p, __sst_tableaux_word_to_table_print);
 
   __va_assignment_t *counter_example_id_2;
   bool id_1_check = __sst_pool_test_identity (p, id_2, &counter_example_id_2);
@@ -308,7 +309,8 @@ unit_test_8 ()
     {
       printf ("%s set to:\n", counter_example_id_2->variables[i]);
       __sst_tableaux_word_to_table_plain_print (
-        p->tableaux[counter_example_id_2->entries[i]]);
+        (__sst_word_t *) (p->pool
+                            ->pool_entries[counter_example_id_2->entries[i]]));
     }
   }
 
@@ -328,7 +330,8 @@ unit_test_8 ()
     {
       printf ("%s set to:\n\n", counter_example_id_3->variables[i]);
       __sst_tableaux_word_to_table_plain_print (
-        p->tableaux[counter_example_id_3->entries[i]]);
+        (__sst_word_t *) (p->pool
+                            ->pool_entries[counter_example_id_3->entries[i]]));
       printf ("\n");
     }
   }
@@ -348,13 +351,13 @@ unit_test_9 ()
 
   printf ("READING\n");
   __sst_pool_add_tableaux_from_directory (p, "./inputs/random/");
-  printf ("%lu\n", p->counter);
+  printf ("%lu\n", p->pool->counter);
   printf ("REMOVING DUPS\n");
   __sst_pool_remove_duplicates (p);
   printf ("REDUCING TO INDEX 2\n");
   __sst_pool_t *p2 = __sst_pool_create_sst_index_pool (p, 2);
 
-  printf ("%lu\n", p2->counter);
+  printf ("%lu\n", p2->pool->counter);
 
   char               id_2[] = "p.q.p.q.p.q=p.q.q.p.p.q";
   __va_assignment_t *counter_example_id_2;
@@ -371,8 +374,7 @@ unit_test_9 ()
     for (size_t i = 0; i < counter_example_id_2->counter; i++)
     {
       printf ("%s set to:\n\n", counter_example_id_2->variables[i]);
-      __sst_tableaux_word_to_table_plain_print (
-        p2->tableaux[counter_example_id_2->entries[i]]);
+      __sst_tableaux_word_to_table_plain_print ((__sst_word_t *) (p2->pool->pool_entries[counter_example_id_2->entries[i]]));
       printf ("\n");
     }
   }
@@ -508,7 +510,7 @@ run_tests ()
   close_log_file();*/
 
 
-  unit_test_1 ();
+  /*unit_test_1 ();
   unit_test_2 ();
 
   char id1_3[] = "x.y=y.x";
@@ -523,7 +525,7 @@ run_tests ()
   unit_test_4 (id1_4);
   unit_test_4 (id2_4);
 
-  unit_test_5 ();
+  unit_test_5 ();*/
 
   unit_test_6 ();
 

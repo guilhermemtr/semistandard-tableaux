@@ -5,10 +5,10 @@
 static void
 __ap_resize_to (__ap_t *p, size_t sz)
 {
-  p->size         = sz >= p->counter ? sz : p->counter;
-  p->pool_entries = (void **) realloc (p->pool_entries, p->size);
+  p->size = sz >= p->counter ? sz : p->counter;
+  p->pool_entries =
+    (void **) realloc (p->pool_entries, p->size * sizeof (void *));
 }
-
 
 __ap_t *
 __ap_create_pool (__ap_identity_tester *tester,

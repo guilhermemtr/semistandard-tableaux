@@ -5,9 +5,8 @@
 #include <sys/types.h>
 
 #include "semistandard_tableaux.h"
-#include "identity_testing.h"
-
-#define __SST_POOL_DEFAULT_SIZE (1 << 5)
+#include "semistandard_tableaux_word.h"
+#include "abstract_pool.h"
 
 
 /** Structure that represents a pool of semistandard tableaux.
@@ -15,10 +14,7 @@
  */
 typedef struct
 {
-  size_t size;       //!< true size of the pool.
-  size_t counter;    //!< size of the pool.
-
-  __sst_word_t **tableaux;    //!< entries of the pool.
+  __ap_t *pool;    //!< the pool.
 } __sst_pool_t;
 
 /** Function that generates a random tableaux.
@@ -136,6 +132,14 @@ __sst_pool_remove_duplicates (__sst_pool_t *p);
  * @param print the print function to be used.
  */
 void
-__sst_pool_print (__sst_pool_t *p, void (*print) (const __sst_word_t *));
+__sst_pool_print (__sst_pool_t *p);
+
+/** Function that prints the tableaux of a pool.
+ * Function that prints the tableaux of the given pool.
+ * @param p the pool whose tableaux will be printed.
+ * @param print the print function to be used.
+ */
+void
+__sst_pool_custom_print (__sst_pool_t *p, void (*print) (const __sst_word_t *));
 
 #endif    // __SST_POOL__

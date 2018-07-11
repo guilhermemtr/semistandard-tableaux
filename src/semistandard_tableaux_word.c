@@ -51,9 +51,6 @@ __sst_tableaux_word_storage_size (const __sst_word_t *_wsst)
 bool
 __sst_tableaux_word_equals (const __sst_word_t *w1, const __sst_word_t *w2)
 {
-  // create tableaux
-  // check if tableaux are equal
-
   __sst_t *l = __sst_tableaux_create ();
   __sst_t *r = __sst_tableaux_create ();
 

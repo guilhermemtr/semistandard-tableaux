@@ -160,8 +160,9 @@ __sst_tableaux_read_to_compressed_tableaux (
  * (or, in other words, returns a shortened semistandard tableaux given its
  * shortened word).
  * @param _sst the shortened semistandard tableaux.
- * @param the shortened vector of cells corresponding to the semistandard
- * tableaux.
+ * @param _sst_tableaux_cells the shortened vector of cells corresponding to the
+ * semistandard tableaux.
+ * @param len the (shortened) length of the vector of cells.
  */
 void
 __sst_tableaux_read_from_compressed_tableaux (

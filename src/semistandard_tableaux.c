@@ -275,7 +275,12 @@ void
 __sst_tableaux_read_from_compressed_tableaux (
   __sst_t *_sst, const __tableaux_cell_t *_sst_tableaux_cells, const size_t len)
 {
-  __sst_tableaux_add_cells (_sst, _sst_tableaux_cells, len);
+  size_t real_len = 0;
+  for (size_t i = 0; i < len; i++)
+  {
+    real_len += _sst_tableaux_cells[i].len;
+  }
+  __sst_tableaux_add_cells (_sst, _sst_tableaux_cells, real_len);
 }
 
 __sst_t *
@@ -348,9 +353,10 @@ __sst_tableaux_read_compressed_file (const char *filename)
   __tableaux_cell_t *cells = malloc (sz * sizeof (__tableaux_cell_t));
 
   int read = 0;
-  while (read != EOF)
+  while (
+    (read = fscanf (f, "%lu %lu", &(cells[count].val), &(cells[count].len)))
+    != EOF)
   {
-    read = fscanf (f, "%lu %lu", &(cells[count].val), &(cells[count].len));
     count++;
     if (count == sz)
     {
@@ -381,9 +387,10 @@ __sst_tableaux_read_table_format_file (const char *filename)
   __tableaux_cell_t *cells = malloc (sz * sizeof (__tableaux_cell_t));
 
   int read = 0;
-  while (read != EOF)
+  while (
+    (read = fscanf (f, "%lu %lu", &(cells[count].val), &(cells[count].len)))
+    != EOF)
   {
-    read = fscanf (f, "%lu %lu", &(cells[count].val), &(cells[count].len));
     count++;
     if (count == sz)
     {

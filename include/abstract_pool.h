@@ -54,7 +54,7 @@ typedef bool(__ap_equals) (void *e1, void *e2);
  * Type of function that corresponds to functions that operate over an element.
  * @param e the element.
  */
-typedef void (*__ap_op) (void *);
+typedef void(__ap_op) (void *e);
 
 /**Below we define a pool for abstract data structures, which are intended to
  * represent mathematical objects of some kind.
@@ -74,9 +74,9 @@ typedef struct
   void **pool_entries;    //!< entries of the pool.
 
   __ap_identity_tester *tester;     //!< multiplies two elements
-  __ap_equals *         equals;     //!< checks if two elements are equal
-  __ap_op *             destroy;    //!< destroys an element
-  __ap_op *             print;      //!< prints an element
+  __ap_equals          *equals;     //!< checks if two elements are equal
+  __ap_op              *destroy;    //!< destroys an element
+  __ap_op              *print;      //!< prints an element
 } __ap_t;
 
 /** Creates a pool of mathematical objects.
@@ -118,7 +118,7 @@ __ap_add_element (__ap_t *p, void *e);
  * @return whether the identity holds or not.
  */
 bool
-__ap_test_identity (__ap_t * p,
+__ap_test_identity (__ap_t *            p,
                     char *              identity,
                     __va_assignment_t **counter_example);
 
