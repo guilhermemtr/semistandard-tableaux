@@ -57,7 +57,7 @@ __tm_mult (__tm_t *m1, __tm_t *m2, __tm_t *res);
 /** Verifies if two tropical matrices are equal.
  * Verifies if two tropical matrices are equal.
  * @param l the first tropical matrix.
- * @param y the second tropical matrix.
+ * @param r the second tropical matrix.
  * @return whether the tropical matrices are equal or not.
  */
 bool

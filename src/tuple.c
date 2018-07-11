@@ -1,222 +1,119 @@
-#include "tropical_matrix.h"
+#include "tuple.h"
 
-#ifdef __TROPICAL_MATRICES__
+#ifdef __TUPLE__
 
-__tm_t *
-__tm_create (size_t columns, size_t rows)
+__tuple_t *
+__tuple_create (__tuple_entry_data *entries, size_t len)
 {
-  __tm_t *m  = malloc (sizeof (__tm_t));
-  m->columns = columns;
-  m->rows    = rows;
-  m->matrix  = malloc (m->columns * m->rows * sizeof (__tn_t));
-  for (size_t i = 0; i < m->columns * m->rows; i++)
+  __tuple_t *t = malloc (sizeof (__tuple_t));
+  t->entries   = malloc (len * sizeof (__tuple_entry_data));
+  t->len       = len;
+  for (size_t i = 0; i < len; i++)
   {
-    m->matrix[i] = __tn_neg_inf;
+    t->entries[i].e       = entries[i].e;
+    t->entries[i].tester  = entries[i].tester;
+    t->entries[i].equals  = entries[i].equals;
+    t->entries[i].destroy = entries[i].destroy;
+    t->entries[i].print   = entries[i].print;
+    t->entries[i].mult    = entries[i].mult;
   }
-  return m;
+  return t;
 }
 
 void
-__tm_destroy (__tm_t *_tm)
+__tuple_destroy (__tuple_t *t)
 {
-  free (_tm->matrix);
-  free (_tm);
-}
-
-void
-__tm_sum (__tm_t *m1, __tm_t *m2, __tm_t *res)
-{
-  for (size_t i = 0; i < m1->rows * m1->columns; i++)
+  for (size_t i = 0; i < t->len; i++)
   {
-    res->matrix[i] = __tn_sum (m1->matrix[i], m2->matrix[i]);
+    (*t->entries[i].destroy) (t->entries[i].e);
   }
+  free (t->entries);
+  free (t);
 }
 
-
-void
-__tm_mult (__tm_t *m1, __tm_t *m2, __tm_t *res)
+/** Checks if two tuples seem to be of the same type.
+ * Checks if two tuples seem to be of the same type.
+ * @param l the first tuple.
+ * @param r the second tuple.
+ * @return whether the two tuples seem of the same type or not.
+ */
+static bool
+__tuple_same_type (__tuple_t *l, __tuple_t *r)
 {
-  for (size_t i = 0; i < res->columns; i++)
-  {
-    for (size_t j = 0; j < res->rows; j++)
-    {
-      res->matrix[i + j * res->columns] = __tn_neg_inf;
-      for (size_t k = 0; k < m1->columns; k++)
-      {
-        res->matrix[i + j * res->columns] =
-          __tn_sum (res->matrix[i + j * res->columns],
-                    __tn_mult (m1->matrix[k + j * m1->rows],
-                               m2->matrix[i + k * m2->rows]));
-      }
-    }
-  }
-}
-
-bool
-__tm_equals (__tm_t *l, __tm_t *r)
-{
-  if (l->rows != r->rows || l->columns != r->columns)
+  if (l->len != r->len)
   {
     return false;
   }
 
-  for (size_t i = 0; i < l->rows * l->columns; i++)
+  for (size_t counter = 0; counter < l->len; counter++)
   {
-    if (!__tn_equals (l->matrix[i], r->matrix[i]))
+    // check if the elements seem of the same type, by checking if the
+    // multiplication algorithm is the same
+    bool same_mult   = l->entries[counter].mult == r->entries[counter].mult;
+    bool same_equals = l->entries[counter].equals == r->entries[counter].equals;
+    if (!same_mult || !same_equals)
     {
       return false;
     }
   }
+  return true;
+}
 
+void
+__tuple_mult (__tuple_t *t_1, __tuple_t *t_2, __tuple_t *t_res)
+{
+  if (!(__tuple_same_type (t_1, t_2) && __tuple_same_type (t_2, t_res)))
+  {
+    return;    // should actually exit, because the multiplication is not well
+               // defined if the tuples are of different length.
+  }
+  for (size_t i = 0; i < t_1->len; i++)
+  {
+    (*t_1->entries[i].mult) (
+      t_1->entries[i].e, t_2->entries[i].e, t_res->entries[i].e);
+  }
+}
+
+bool
+__tuple_equals (__tuple_t *l, __tuple_t *r)
+{
+  if (!__tuple_same_type (l, r))
+  {
+    return false;
+  }
+  for (size_t counter = 0; counter < l->len; counter++)
+  {
+    if (!(*l->entries[counter].equals) (l->entries[counter].e,
+                                        r->entries[counter].e))
+    {
+      return false;
+    }
+  }
   return true;
 }
 
 bool
-__tm_check_identity (size_t *x,
-                     size_t  len_x,
-                     size_t *y,
-                     size_t  len_y,
-                     size_t *assigns,
-                     size_t  nr_vars,
-                     void *  elems)
+__tuple_check_identity (size_t *x,
+                        size_t  len_x,
+                        size_t *y,
+                        size_t  len_y,
+                        size_t *assigns,
+                        size_t  nr_vars,
+                        void *  elems)
 {
-  __tm_t **matrices = (__tm_t **) elems;
-  // It is assumed that all matrices in the pool are of the same size
-  size_t  cols           = matrices[0]->columns;
-  size_t  rows           = matrices[0]->rows;
-  __tm_t *left_side_curr = __tm_create (cols, rows);
-  __tm_t *left_side_res  = __tm_create (cols, rows);
-
-  __tm_t *right_side_curr = __tm_create (cols, rows);
-  __tm_t *right_side_res  = __tm_create (cols, rows);
-
-  for (size_t i = 0; i < len_x; i++)
-  {
-    __tm_mult (left_side_curr, matrices[assigns[x[i]]], left_side_res);
-    __tm_t *tmp    = left_side_res;
-    left_side_res  = left_side_curr;
-    left_side_curr = tmp;
-  }
-
-  for (size_t i = 0; i < len_y; i++)
-  {
-    __tm_mult (right_side_curr, matrices[assigns[x[i]]], right_side_res);
-    __tm_t *tmp     = right_side_res;
-    right_side_res  = right_side_curr;
-    right_side_curr = tmp;
-  }
-
-  return __tm_equals (left_side_res, right_side_res);
-}
-
-__tm_t *
-__tm_read (char *filename)
-{
-  FILE *f = fopen (filename, "r");
-
-  if (f == NULL)
-  {
-    return NULL;
-  }
-
-  ssize_t read;
-  char *  line     = NULL;
-  size_t  len      = 0;
-  char *  save_ptr = NULL;
-
-  size_t  sz      = 32L;
-  __tn_t *tns     = malloc (sz * sizeof (__tn_t));
-  size_t  entries = 0;
-  size_t  rows    = 0;
-
-
-  while ((read = getline (&line, &len, f)) != -1)
-  {
-    char *tmp = line;
-    char *res;
-    while ((res = strtok_r (tmp, " ", &save_ptr)) != NULL)
-    {
-      tmp = NULL;
-
-      if (entries == sz)
-      {
-        sz  = sz * 2;
-        tns = realloc (tns, sz * sizeof (__tn_t));
-      }
-
-      __tn_t tn;
-      if (strcmp ("-inf", res) == 0)
-      {
-        tn = __tn_neg_inf;
-      } else
-      {
-        if (sscanf (res, "%lu", &tn) < 0)
-        {
-          // failed reading an entry.
-          free (tns);
-          return NULL;
-        }
-      }
-      tns[entries++] = tn;
-    }
-
-    free (line);
-    line = NULL;
-    rows++;
-  }
-
-  fclose (f);
-  __tm_t *tm  = malloc (sizeof (__tm_t));
-  tm->matrix  = tns;
-  tm->rows    = rows;
-  tm->columns = entries / rows;
-  return tm;
-}
-
-static void
-__tn_write (__tn_t n, FILE *f)
-{
-  printf ("%lu \n", n);
-  if (__tn_is_infinite (n))
-  {
-    fprintf (f, "-inf ");
-  } else
-  {
-    fprintf (f, "%lu ", __tn_get_value (n));
-  }
-}
-
-static void
-__tm_write_file (__tm_t *m, FILE *f)
-{
-  if (f == NULL)
-  {
-    return;
-  }
-
-  for (size_t i = 0; i < m->rows; i++)
-  {
-    for (size_t j = 0; j < m->columns; j++)
-    {
-      __tn_write (m->matrix[i * m->columns + j], f);
-    }
-    fprintf (f, "\n");
-  }
+  return false;
 }
 
 void
-__tm_write (__tm_t *m, char *filename)
+__tuple_print (__tuple_t *_tuple)
 {
-  FILE *f = fopen (filename, "w");
-
-  __tm_write_file (m, f);
-  fclose (f);
+  printf ("Tuple: {\n");
+  for (size_t counter = 0; counter < _tuple->len; counter++)
+  {
+    printf ("[%lu]:\n", counter);
+    (*_tuple->entries[counter].print) (_tuple->entries[counter].e);
+  }
+  printf ("}\n");
 }
 
-void
-__tm_print (__tm_t *m)
-{
-  __tm_write_file (m, stdout);
-}
-
-#endif    // __TROPICAL_MATRICES__
+#endif    // __TUPLE__
