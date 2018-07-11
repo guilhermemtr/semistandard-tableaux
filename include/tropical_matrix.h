@@ -29,6 +29,14 @@ typedef struct
 __tm_t *
 __tm_create (size_t columns, size_t rows);
 
+/** Performs a deep clone of a tropical matrix.
+ * Performs a deep clone of a tropical matrix.
+ * @param m the matrix to be cloned.
+ * @return the cloned matrix.
+ */
+__tm_t *
+__tm_duplicate (__tm_t * m);
+
 /** Destroys the given matrix.
  * Destroys the given matrix.
  * @param _tm the matrix to be destroyed.

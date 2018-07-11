@@ -16,8 +16,17 @@ __tuple_create (__tuple_entry_data *entries, size_t len)
     t->entries[i].destroy = entries[i].destroy;
     t->entries[i].print   = entries[i].print;
     t->entries[i].mult    = entries[i].mult;
+    t->entries[i].clone   = entries[i].clone;
+    t->entries[i].read    = entries[i].read;
+    t->entries[i].write   = entries[i].write;
   }
   return t;
+}
+
+__tuple_t *
+__tuple_duplicate (__tuple_t *t)
+{
+  return __tuple_create (t->entries, t->len);
 }
 
 void
@@ -101,6 +110,34 @@ __tuple_check_identity (size_t *x,
                         size_t  nr_vars,
                         void *  elems)
 {
+  __tuple_t **tuples = (__tuple_t **) elems;
+  // It is assumed that all given tuples are of the same size
+  size_t len = tuples[0]->len;
+  //TODO Use the clone
+
+  /*  __tm_t *left_side_curr = __tm_create (cols, rows);
+  __tm_t *left_side_res  = __tm_create (cols, rows);
+
+  __tm_t *right_side_curr = __tm_create (cols, rows);
+  __tm_t *right_side_res  = __tm_create (cols, rows);
+
+  for (size_t i = 0; i < len_x; i++)
+  {
+    __tm_mult (left_side_curr, matrices[assigns[x[i]]], left_side_res);
+    __tm_t *tmp    = left_side_res;
+    left_side_res  = left_side_curr;
+    left_side_curr = tmp;
+  }
+
+  for (size_t i = 0; i < len_y; i++)
+  {
+    __tm_mult (right_side_curr, matrices[assigns[x[i]]], right_side_res);
+    __tm_t *tmp     = right_side_res;
+    right_side_res  = right_side_curr;
+    right_side_curr = tmp;
+  }
+
+  return __tm_equals (left_side_res, right_side_res);*/
   return false;
 }
 
@@ -114,6 +151,19 @@ __tuple_print (__tuple_t *_tuple)
     (*_tuple->entries[counter].print) (_tuple->entries[counter].e);
   }
   printf ("}\n");
+}
+
+__tuple_t *
+__tuple_read (char *fn)
+{
+  // TO IMPLEMENT
+  return NULL;
+}
+
+void
+__tuple_write (__tuple_t *t, char *fn)
+{
+  // TO IMPLEMENT
 }
 
 #endif    // __TUPLE__

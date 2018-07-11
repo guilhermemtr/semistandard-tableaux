@@ -18,6 +18,9 @@ typedef struct
   __ap_op *             destroy;
   __ap_op *             print;
   __ap_mult *           mult;
+  __ap_clone *          clone;
+  __ap_read *           read;
+  __ap_write *          write;
 } __tuple_entry_data;
 
 /**
@@ -37,6 +40,14 @@ typedef struct
  */
 __tuple_t *
 __tuple_create (__tuple_entry_data *entries, size_t len);
+
+/** Duplicates a tuple.
+ * Duplicates a tuple.
+ * @param t the tuple to be duplicated.
+ * @return the clone of the tuple.
+ */
+__tuple_t *
+__tuple_duplicate (__tuple_t *t);
 
 /** Destroys the given tuple.
  * Destroys the given tuple.
@@ -93,5 +104,21 @@ __tuple_check_identity (size_t *x,
  */
 void
 __tuple_print (__tuple_t *_tuple);
+
+/** Reads a tuple from a file.
+ * Reads a tuple from a file.
+ * @param fn the filename.
+ * @return the tuple read.
+ */
+__tuple_t *
+__tuple_read (char *fn);
+
+/** Writes the tuple into a file.
+ * Writes the tuple into a file.
+ * @param t the tuple to be written.
+ * @param fn the filename.
+ */
+void
+__tuple_write (__tuple_t *t, char *fn);
 
 #endif    // __TUPLE__

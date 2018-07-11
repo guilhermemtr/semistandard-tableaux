@@ -16,6 +16,20 @@ __tm_create (size_t columns, size_t rows)
   return m;
 }
 
+__tm_t *
+__tm_duplicate (__tm_t *m)
+{
+  __tm_t *clone  = malloc (sizeof (__tm_t));
+  clone->columns = m->columns;
+  clone->rows    = m->rows;
+  clone->matrix  = malloc (clone->columns * clone->rows * sizeof (__tn_t));
+  for (size_t i = 0; i < clone->columns * clone->rows; i++)
+  {
+    clone->matrix[i] = m->matrix[i];
+  }
+  return clone;
+}
+
 void
 __tm_destroy (__tm_t *_tm)
 {
@@ -81,7 +95,7 @@ __tm_check_identity (size_t *x,
                      void *  elems)
 {
   __tm_t **matrices = (__tm_t **) elems;
-  // It is assumed that all matrices in the pool are of the same size
+  // It is assumed that all the given matrices are of the same size
   size_t  cols           = matrices[0]->columns;
   size_t  rows           = matrices[0]->rows;
   __tm_t *left_side_curr = __tm_create (cols, rows);

@@ -63,6 +63,14 @@ typedef bool(__ap_equals) (void *e1, void *e2);
  */
 typedef void(__ap_op) (void *e);
 
+/** Type of function that corresponds to functions that perform a deep-clone of
+ * an element. Type of function that corresponds to functions that perform a
+ * deep-clone of an element.
+ * @param e the element.
+ * @return the deep clone.
+ */
+typedef void *(__ap_clone) (void *e);
+
 /** Type of function that corresponds to functions that multiply two elements,
  * being that the result is stored in the third argument. Type of function that
  * corresponds to functions that multiply two elements, being that the result is
@@ -72,5 +80,22 @@ typedef void(__ap_op) (void *e);
  * @param res the return.
  */
 typedef void(__ap_mult) (void *e1, void *e2, void *res);
+
+/** Type of function that corresponds to functions that read an element from a
+ * file. Type of function that corresponds to functions that read an element
+ * from a file.
+ * @param fn the filename of the file where the element is stored.
+ * @return the element read.
+ */
+typedef void *(__ap_read) (char *fn);
+
+/** Type of function that corresponds to functions that write an element to a
+ * file. Type of function that corresponds to functions that write an element to
+ * a file.
+ * @param e the element.
+ * @param fn the filename of the file where the element is to be stored.
+ * @return the element read.
+ */
+typedef void(__ap_write) (void *e, char *fn);
 
 #endif    // __SST_TYPES__
