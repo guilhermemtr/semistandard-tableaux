@@ -111,34 +111,38 @@ __tuple_check_identity (size_t *x,
                         void *  elems)
 {
   __tuple_t **tuples = (__tuple_t **) elems;
-  // It is assumed that all given tuples are of the same size
-  size_t len = tuples[0]->len;
-  //TODO Use the clone
 
-  /*  __tm_t *left_side_curr = __tm_create (cols, rows);
-  __tm_t *left_side_res  = __tm_create (cols, rows);
+  __tuple_t *left_curr = __tuple_duplicate (tuples[assigns[x[0]]]);
+  __tuple_t *left_res  = __tuple_duplicate (tuples[assigns[x[0]]]);
 
-  __tm_t *right_side_curr = __tm_create (cols, rows);
-  __tm_t *right_side_res  = __tm_create (cols, rows);
+  __tuple_t *right_curr = __tuple_duplicate (tuples[assigns[y[0]]]);
+  __tuple_t *right_res  = __tuple_duplicate (tuples[assigns[y[0]]]);
 
-  for (size_t i = 0; i < len_x; i++)
+
+  for (size_t i = 1; i < len_x; i++)
   {
-    __tm_mult (left_side_curr, matrices[assigns[x[i]]], left_side_res);
-    __tm_t *tmp    = left_side_res;
-    left_side_res  = left_side_curr;
-    left_side_curr = tmp;
+    __tuple_mult (left_curr, tuples[assigns[x[i]]], left_res);
+    __tuple_t *tmp = left_res;
+    left_res       = left_curr;
+    left_curr      = tmp;
   }
 
-  for (size_t i = 0; i < len_y; i++)
+  for (size_t i = 1; i < len_y; i++)
   {
-    __tm_mult (right_side_curr, matrices[assigns[x[i]]], right_side_res);
-    __tm_t *tmp     = right_side_res;
-    right_side_res  = right_side_curr;
-    right_side_curr = tmp;
+    __tuple_mult (right_curr, tuples[assigns[y[i]]], right_res);
+    __tuple_t *tmp = right_res;
+    right_res      = right_curr;
+    right_curr     = tmp;
   }
 
-  return __tm_equals (left_side_res, right_side_res);*/
-  return false;
+  bool identity_checks = __tuple_equals (left_res, right_res);
+
+  __tuple_destroy (left_curr);
+  __tuple_destroy (left_res);
+  __tuple_destroy (right_curr);
+  __tuple_destroy (right_res);
+
+  return identity_checks;
 }
 
 void

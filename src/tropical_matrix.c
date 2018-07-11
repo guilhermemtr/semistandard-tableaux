@@ -96,31 +96,38 @@ __tm_check_identity (size_t *x,
 {
   __tm_t **matrices = (__tm_t **) elems;
   // It is assumed that all the given matrices are of the same size
-  size_t  cols           = matrices[0]->columns;
-  size_t  rows           = matrices[0]->rows;
-  __tm_t *left_side_curr = __tm_create (cols, rows);
-  __tm_t *left_side_res  = __tm_create (cols, rows);
+  size_t  cols      = matrices[0]->columns;
+  size_t  rows      = matrices[0]->rows;
+  __tm_t *left_curr = __tm_duplicate (matrices[assigns[x[0]]]);
+  __tm_t *left_res  = __tm_create (cols, rows);
 
-  __tm_t *right_side_curr = __tm_create (cols, rows);
-  __tm_t *right_side_res  = __tm_create (cols, rows);
+  __tm_t *right_curr = __tm_duplicate (matrices[assigns[y[0]]]);
+  __tm_t *right_res  = __tm_create (cols, rows);
 
-  for (size_t i = 0; i < len_x; i++)
+  for (size_t i = 1; i < len_x; i++)
   {
-    __tm_mult (left_side_curr, matrices[assigns[x[i]]], left_side_res);
-    __tm_t *tmp    = left_side_res;
-    left_side_res  = left_side_curr;
-    left_side_curr = tmp;
+    __tm_mult (left_curr, matrices[assigns[x[i]]], left_res);
+    __tm_t *tmp = left_res;
+    left_res    = left_curr;
+    left_curr   = tmp;
   }
 
-  for (size_t i = 0; i < len_y; i++)
+  for (size_t i = 1; i < len_y; i++)
   {
-    __tm_mult (right_side_curr, matrices[assigns[x[i]]], right_side_res);
-    __tm_t *tmp     = right_side_res;
-    right_side_res  = right_side_curr;
-    right_side_curr = tmp;
+    __tm_mult (right_curr, matrices[assigns[y[i]]], right_res);
+    __tm_t *tmp = right_res;
+    right_res   = right_curr;
+    right_curr  = tmp;
   }
 
-  return __tm_equals (left_side_res, right_side_res);
+  bool identity_checks = __tm_equals (left_res, right_res);
+
+  __tm_destroy (left_curr);
+  __tm_destroy (left_res);
+  __tm_destroy (right_curr);
+  __tm_destroy (right_res);
+
+  return identity_checks;
 }
 
 __tm_t *
