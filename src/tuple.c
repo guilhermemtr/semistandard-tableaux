@@ -310,4 +310,11 @@ __tuple_write (__tuple_t *t, char *filename)
   free (fn);
 }
 
+__tuple_entry_data_t *
+__tuple_tuple_entry_data_create (const __tuple_t *t)
+{
+  // NOT IMPLEMENTED
+  return NULL;
+}
+
 #endif    // __TUPLE__

@@ -18,7 +18,7 @@
 typedef struct
 {
   __tuple_entry_data_t *entries;
-  size_t              len;
+  size_t                len;
 } __tuple_t;
 
 /** Creates a new tuple.
@@ -127,5 +127,13 @@ __tuple_read (char *fn);
  */
 void
 __tuple_write (__tuple_t *t, char *fn);
+
+/** Creates a tuple entry given a tuple.
+ * Creates a tuple entry given a tuple.
+ * @param t the tuple.
+ * @return the tuple entry data.
+ */
+__tuple_entry_data_t *
+__tuple_tuple_entry_data_create (const __tuple_t *t);
 
 #endif    // __TUPLE__

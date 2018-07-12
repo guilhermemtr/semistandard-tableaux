@@ -304,4 +304,12 @@ __sst_tableaux_read (const char *filename);
 void
 __sst_tableaux_write (const __sst_t *_sst, const char *filename);
 
+/** Creates a tuple entry given a semistandard tableaux in the table format.
+ * Creates a tuple entry given a semistandard tableaux in the table format.
+ * @param _sst the semistandard tableaux in the table format.
+ * @return the tuple entry data.
+ */
+__tuple_entry_data_t *
+__sst_tuple_entry_data_create (__sst_t *m);
+
 #endif    // __SST_TABLEAUX__

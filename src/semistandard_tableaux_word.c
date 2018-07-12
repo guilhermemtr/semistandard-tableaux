@@ -303,11 +303,30 @@ __sst_tableaux_word_read (const char *filename)
 void
 __sst_tableaux_word_write (const __sst_word_t *_wsst, const char *filename)
 {
-  char *   fn = __utils_get_filename (filename, sst);
-  __sst_t * _sst = __sst_tableaux_table_create (_wsst);
+  char *   fn   = __utils_get_filename (filename, sst);
+  __sst_t *_sst = __sst_tableaux_table_create (_wsst);
   __sst_tableaux_write_plain_file (_sst, fn);
   __sst_tableaux_destroy (_sst);
   free (fn);
+}
+
+__tuple_entry_data_t *
+__sst_tableaux_word_tuple_entry_data_create (const __sst_word_t *m)
+{
+  __tuple_entry_data_t *entry = malloc (sizeof (__tuple_entry_data_t));
+  entry->e                    = __sst_tableaux_word_duplicate (m);
+  entry->type                 = sst;
+  entry->tester  = (__ap_identity_tester *) __sst_tableaux_word_check_identity;
+  entry->equals  = (__ap_equals *) __sst_tableaux_word_equals;
+  entry->destroy = (__ap_op *) __sst_tableaux_word_destroy;
+  entry->print   = (__ap_op *) __sst_tableaux_word_to_table_plain_print;
+  entry->mult    = (__ap_mult *) __sst_tableaux_word_multiply;
+  entry->clone   = (__ap_clone *) __sst_tableaux_word_duplicate;
+  entry->read    = (__ap_read *) __sst_tableaux_word_read;
+  entry->write   = (__ap_write *) __sst_tableaux_word_write;
+  entry->entry_generator = (__ap_tuple_entry_data_create *)
+    __sst_tableaux_word_tuple_entry_data_create;
+  return entry;
 }
 
 #endif    // __SST_TABLEAUX_WORD__

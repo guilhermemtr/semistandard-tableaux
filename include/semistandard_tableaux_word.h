@@ -159,5 +159,12 @@ __sst_tableaux_word_read (const char *filename);
 void
 __sst_tableaux_word_write (const __sst_word_t *_wsst, const char *filename);
 
+/** Creates a tuple entry given a semistandard tableaux in the word format.
+ * Creates a tuple entry given a semistandard tableaux in the word format.
+ * @param _sst the semistandard tableaux in the word format.
+ * @return the tuple entry data.
+ */
+__tuple_entry_data_t *
+__sst_tableaux_word_tuple_entry_data_create (const __sst_word_t *m);
 
 #endif    // __SST_TABLEAUX_WORD__

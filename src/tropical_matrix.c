@@ -257,4 +257,11 @@ __tm_write (__tm_t *m, char *filename)
   free (fn);
 }
 
+__tuple_entry_data_t *
+__tm_tuple_entry_data_create (__tm_t *m)
+{
+  //NOT IMPLEMENTED
+  return NULL;
+}
+
 #endif    // __TROPICAL_MATRICES__

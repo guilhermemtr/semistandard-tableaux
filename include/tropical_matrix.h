@@ -139,4 +139,12 @@ __tm_read (char *filename);
 void
 __tm_write (__tm_t *m, char *filename);
 
+/** Creates a tuple entry given a tropical matrix.
+ * Creates a tuple entry given a tropical matrix.
+ * @param m the tropical matrix.
+ * @return the tuple entry data.
+ */
+__tuple_entry_data_t *
+__tm_tuple_entry_data_create (__tm_t *m);
+
 #endif    // __TROPICAL_MATRICES__

@@ -721,4 +721,11 @@ __sst_tableaux_write (const __sst_t *_sst, const char *filename)
   free (fn);
 }
 
+__tuple_entry_data_t *
+__sst_tuple_entry_data_create (__sst_t *m)
+{
+  // NOT IMPLEMENTED
+  return NULL;
+}
+
 #endif    // __SST_TABLEAUX__

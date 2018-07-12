@@ -1,3 +1,8 @@
+implement the create tuple entry for all data types.
+implement a "this suffix is mine" function for each of the data types.
+finish implementing the read and write of tuples.
+
+
 To do now:
 1) Reading and Writing tuples from and to files
 2) Create a tuple_entry_create for each of the types of element.
