@@ -313,8 +313,20 @@ __tuple_write (__tuple_t *t, char *filename)
 __tuple_entry_data_t *
 __tuple_tuple_entry_data_create (const __tuple_t *t)
 {
-  // NOT IMPLEMENTED
-  return NULL;
+  __tuple_entry_data_t *entry = malloc (sizeof (__tuple_entry_data_t));
+  entry->e                    = __tuple_duplicate (t);
+  entry->type                 = tup;
+  entry->tester               = (__ap_identity_tester *) __tuple_check_identity;
+  entry->equals               = (__ap_equals *) __tuple_equals;
+  entry->destroy              = (__ap_op *) __tuple_destroy;
+  entry->print                = (__ap_op *) __tuple_print;
+  entry->mult                 = (__ap_mult *) __tuple_mult;
+  entry->clone                = (__ap_clone *) __tuple_duplicate;
+  entry->read                 = (__ap_read *) __tuple_read;
+  entry->write                = (__ap_write *) __tuple_write;
+  entry->entry_generator =
+    (__ap_tuple_entry_data_create *) __tuple_tuple_entry_data_create;
+  return entry;
 }
 
 #endif    // __TUPLE__

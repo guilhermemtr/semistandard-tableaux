@@ -123,6 +123,27 @@ __sst_tableaux_storage_size (const __sst_t *_sst);
 bool
 __sst_tableaux_equals (const __sst_t *_sst_left, const __sst_t *_sst_right);
 
+/** Verifies the validity of an identity, given a variable assignment.
+ * Verifies the validity of an identity, given a variable assignment and the
+ * identity.
+ * @param x the left side of the identity.
+ * @param len_x the length of the left side of the identity.
+ * @param y the right side of the identity.
+ * @param len_y the length of the right side of the identity.
+ * @param assigns the assignments to the variables.
+ * @param nr_vars the number of variables.
+ * @param elems the elements to which the variables can be set.
+ * @return whether the identity was verified for the given assignment or not.
+ */
+bool
+__sst_tableaux_check_identity (size_t *x,
+                               size_t  len_x,
+                               size_t *y,
+                               size_t  len_y,
+                               size_t *assigns,
+                               size_t  nr_vars,
+                               void *  elems);
+
 /** Reads a semistandard tableaux into a vector of numbers.
  * Reads a semistandard tableaux into a vector of numbers (or, in other words,
  * returns a semistandard tableaux's non-shortened word).
