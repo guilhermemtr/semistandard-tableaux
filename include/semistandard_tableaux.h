@@ -6,8 +6,11 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "ordered_array.h"
+
 #include "types.h"
+#include "utils.h"
+
+#include "ordered_array.h"
 #include "semistandard_tableaux_word.h"
 
 /** Structure that represents a semistandard tableaux.
@@ -278,5 +281,27 @@ void
 __sst_tableaux_multiply (const __sst_t *_sst_left,
                          const __sst_t *_sst_right,
                          __sst_t *      _sst_result);
+
+/** Reads a shortened semistandard tableaux from a file, given the filename
+ * without the suffix (which is assumed to be .sstt). Reads a shortened
+ * semistandard tableaux from a file, given the filename without the suffix
+ * (which is assumed to be .sstt).
+ * @param filename the name of the file from which the semistandard tableaux is
+ * to be read (and is stored in the table format).
+ * @return the shortened semistandard tableaux read.
+ */
+__sst_t *
+__sst_tableaux_read (const char *filename);
+
+/** Writes the given shortened semistandard tableaux into a plain file, given
+ * the filename without the suffix (which is assumed to be .sstt). Writes the
+ * given shortened semistandard tableaux into a plain file, given the filename
+ * without the suffix (which is assumed to be .sstt).
+ * @param _sst the shortened semistandard tableaux to be written to the file.
+ * @param filename the filename of the file where the shortened semistandard
+ * tableaux will be stored in the table format.
+ */
+void
+__sst_tableaux_write (const __sst_t *_sst, const char *filename);
 
 #endif    // __SST_TABLEAUX__

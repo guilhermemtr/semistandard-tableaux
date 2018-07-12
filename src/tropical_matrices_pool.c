@@ -65,7 +65,7 @@ __tm_pool_add_tableaux_from_directory (__tm_pool_t *p, char *dir_path)
       strcpy (concat, dir_path);
       strcpy (&(concat[len_dir_path]), ent->d_name);
 
-      if (str_suffix_match (ent->d_name, ".tm"))
+      if (__utils_str_suffix_match (ent->d_name, ".trmt"))
       {
         __tm_pool_add_matrix_from_plain_file (p, concat);
       }

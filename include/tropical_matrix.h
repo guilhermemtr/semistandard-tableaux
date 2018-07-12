@@ -8,6 +8,9 @@
 
 #include <assert.h>
 
+#include "types.h"
+#include "utils.h"
+
 #include "tropical_numbers.h"
 
 /**
@@ -35,7 +38,7 @@ __tm_create (size_t columns, size_t rows);
  * @return the cloned matrix.
  */
 __tm_t *
-__tm_duplicate (__tm_t * m);
+__tm_duplicate (__tm_t *m);
 
 /** Destroys the given matrix.
  * Destroys the given matrix.
@@ -92,13 +95,20 @@ __tm_check_identity (size_t *x,
                      size_t  nr_vars,
                      void *  elems);
 
+/** Prints the given matrix.
+ * Prints the given matrix.
+ * @param _tm the matrix to be printed.
+ */
+void
+__tm_print (__tm_t *_tm);
+
 /** Reads a tropical matrix from a file with the given filename.
  * Reads a tropical matrix from a file with the given filename.
  * @param filename the filename.
  * @return the matrix read.
  */
 __tm_t *
-__tm_read (char *filename);
+__tm_read_plain_file (char *filename);
 
 /** Writes a tropical matrix to a file with the given filename.
  * Writes a tropical matrix to a file with the given filename.
@@ -106,13 +116,27 @@ __tm_read (char *filename);
  * @param filename the filename.
  */
 void
-__tm_write (__tm_t *m, char *filename);
+__tm_write_plain_file (__tm_t *m, char *filename);
 
-/** Prints the given matrix.
- * Prints the given matrix.
- * @param _tm the matrix to be printed.
+/** Reads a tropical matrix from a file with the given filename, given the
+ * filename without the suffix (which is assumed to be .trmt). Reads a tropical
+ * matrix from a file with the given filename, given the filename without the
+ * suffix (which is assumed to be .trmt).
+ * @param filename the filename without the suffix from which the matrix is to
+ * be read.
+ * @return the matrix read.
+ */
+__tm_t *
+__tm_read (char *filename);
+
+/** Writes a tropical matrix to a file with the given filename, given the
+ * filename without the suffix (which is assumed to be .trmt). Writes a tropical
+ * matrix to a file with the given filename, given the filename without the
+ * suffix (which is assumed to be .trmt).
+ * @param m the tropical matrix.
+ * @param filename the filename.
  */
 void
-__tm_print (__tm_t *_tm);
+__tm_write (__tm_t *m, char *filename);
 
 #endif    // __TROPICAL_MATRICES__

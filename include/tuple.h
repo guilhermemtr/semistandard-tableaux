@@ -5,30 +5,19 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include <assert.h>
 
 #include "types.h"
-
-typedef struct
-{
-  void *                e;
-  __ap_identity_tester *tester;
-  __ap_equals *         equals;
-  __ap_op *             destroy;
-  __ap_op *             print;
-  __ap_mult *           mult;
-  __ap_clone *          clone;
-  __ap_read *           read;
-  __ap_write *          write;
-} __tuple_entry_data;
+#include "utils.h"
 
 /**
  * Represents a tuple.
  */
 typedef struct
 {
-  __tuple_entry_data *entries;
+  __tuple_entry_data_t *entries;
   size_t              len;
 } __tuple_t;
 
@@ -39,7 +28,7 @@ typedef struct
  * @return a new tuple with the given entries.
  */
 __tuple_t *
-__tuple_create (__tuple_entry_data *entries, size_t len);
+__tuple_create (__tuple_entry_data_t *entries, size_t len);
 
 /** Duplicates a tuple.
  * Duplicates a tuple.
@@ -111,12 +100,30 @@ __tuple_print (__tuple_t *_tuple);
  * @return the tuple read.
  */
 __tuple_t *
-__tuple_read (char *fn);
+__tuple_read_plain (char *fn);
 
 /** Writes the tuple into a file.
  * Writes the tuple into a file.
  * @param t the tuple to be written.
  * @param fn the filename.
+ */
+void
+__tuple_write_plain (__tuple_t *t, char *fn);
+
+/** Reads a tuple from a file, given the filename without the suffix (which is
+ * assumed to be .tup). Reads a tuple from a file, given the filename without
+ * the suffix (which is assumed to be .tup).
+ * @param fn the filename without the suffix.
+ * @return the tuple read.
+ */
+__tuple_t *
+__tuple_read (char *fn);
+
+/** Writes the tuple into a file, given the filename without the suffix (which
+ * is assumed to be .tup). Writes the tuple into a file, given the filename
+ * without the suffix (which is assumed to be .tup).
+ * @param t the tuple to be written.
+ * @param fn the filename without the suffix.
  */
 void
 __tuple_write (__tuple_t *t, char *fn);

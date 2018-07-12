@@ -131,7 +131,7 @@ __tm_check_identity (size_t *x,
 }
 
 __tm_t *
-__tm_read (char *filename)
+__tm_read_plain_file (char *filename)
 {
   FILE *f = fopen (filename, "r");
 
@@ -208,7 +208,7 @@ __tn_write (__tn_t n, FILE *f)
 }
 
 static void
-__tm_write_file (__tm_t *m, FILE *f)
+__tm_write_stream (__tm_t *m, FILE *f)
 {
   if (f == NULL)
   {
@@ -226,18 +226,35 @@ __tm_write_file (__tm_t *m, FILE *f)
 }
 
 void
-__tm_write (__tm_t *m, char *filename)
+__tm_write_plain_file (__tm_t *m, char *filename)
 {
   FILE *f = fopen (filename, "w");
 
-  __tm_write_file (m, f);
+  __tm_write_stream (m, f);
   fclose (f);
 }
 
 void
 __tm_print (__tm_t *m)
 {
-  __tm_write_file (m, stdout);
+  __tm_write_stream (m, stdout);
+}
+
+__tm_t *
+__tm_read (char *filename)
+{
+  char *  fn  = __utils_get_filename (filename, trmt);
+  __tm_t *res = __tm_read_plain_file (fn);
+  free (fn);
+  return res;
+}
+
+void
+__tm_write (__tm_t *m, char *filename)
+{
+  char *fn = __utils_get_filename (filename, trmt);
+  __tm_write_plain_file (m, fn);
+  free (fn);
 }
 
 #endif    // __TROPICAL_MATRICES__

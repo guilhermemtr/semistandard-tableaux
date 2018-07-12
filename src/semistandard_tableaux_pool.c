@@ -133,13 +133,13 @@ __sst_pool_add_tableaux_from_directory (__sst_pool_t *p, char *dir_path)
       char   concat[len_dir_path + fn_len + 1];
       strcpy (concat, dir_path);
       strcpy (&(concat[len_dir_path]), ent->d_name);
-      if (str_suffix_match (ent->d_name, ".sst"))
+      if (__utils_str_suffix_match (ent->d_name, ".sst"))
       {
         __sst_pool_add_tableaux_from_plain_file (p, concat);
-      } else if (str_suffix_match (ent->d_name, ".sstc"))
+      } else if (__utils_str_suffix_match (ent->d_name, ".sstc"))
       {
         __sst_pool_add_tableaux_from_compressed_file (p, concat);
-      } else if (str_suffix_match (ent->d_name, ".sstt"))
+      } else if (__utils_str_suffix_match (ent->d_name, ".sstt"))
       {
         __sst_pool_add_tableaux_from_table_file (p, concat);
       }

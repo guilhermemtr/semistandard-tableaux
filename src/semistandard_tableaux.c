@@ -704,4 +704,21 @@ __sst_tableaux_multiply (const __sst_t *_sst_left,
   __sst_tableaux_fast_multiply (_sst_left, _sst_right, sz_right, _sst_result);
 }
 
+__sst_t *
+__sst_tableaux_read (const char *filename)
+{
+  char *   fn  = __utils_get_filename (filename, sstt);
+  __sst_t *res = __sst_tableaux_read_table_format_file (fn);
+  free (fn);
+  return res;
+}
+
+void
+__sst_tableaux_write (const __sst_t *_sst, const char *filename)
+{
+  char *fn = __utils_get_filename (filename, sstt);
+  __sst_tableaux_write_table_file (_sst, fn);
+  free (fn);
+}
+
 #endif    // __SST_TABLEAUX__

@@ -2,23 +2,27 @@
 
 #ifdef __TUPLE__
 
+static const char *dir_suffix = ".entries";
+
 __tuple_t *
-__tuple_create (__tuple_entry_data *entries, size_t len)
+__tuple_create (__tuple_entry_data_t *entries, size_t len)
 {
   __tuple_t *t = malloc (sizeof (__tuple_t));
-  t->entries   = malloc (len * sizeof (__tuple_entry_data));
+  t->entries   = malloc (len * sizeof (__tuple_entry_data_t));
   t->len       = len;
   for (size_t i = 0; i < len; i++)
   {
-    t->entries[i].e       = entries[i].e;
-    t->entries[i].tester  = entries[i].tester;
-    t->entries[i].equals  = entries[i].equals;
-    t->entries[i].destroy = entries[i].destroy;
-    t->entries[i].print   = entries[i].print;
-    t->entries[i].mult    = entries[i].mult;
-    t->entries[i].clone   = entries[i].clone;
-    t->entries[i].read    = entries[i].read;
-    t->entries[i].write   = entries[i].write;
+    t->entries[i].e               = entries[i].e;
+    t->entries[i].type            = entries[i].type;
+    t->entries[i].tester          = entries[i].tester;
+    t->entries[i].equals          = entries[i].equals;
+    t->entries[i].destroy         = entries[i].destroy;
+    t->entries[i].print           = entries[i].print;
+    t->entries[i].mult            = entries[i].mult;
+    t->entries[i].clone           = entries[i].clone;
+    t->entries[i].read            = entries[i].read;
+    t->entries[i].write           = entries[i].write;
+    t->entries[i].entry_generator = entries[i].entry_generator;
   }
   return t;
 }
@@ -40,7 +44,8 @@ __tuple_destroy (__tuple_t *t)
   free (t);
 }
 
-/** Checks if two tuples seem to be of the same type.
+/** TODO: Change this to take into account the suffixes instead of doing this hack.
+ * Checks if two tuples seem to be of the same type.
  * Checks if two tuples seem to be of the same type.
  * @param l the first tuple.
  * @param r the second tuple.
@@ -56,11 +61,7 @@ __tuple_same_type (__tuple_t *l, __tuple_t *r)
 
   for (size_t counter = 0; counter < l->len; counter++)
   {
-    // check if the elements seem of the same type, by checking if the
-    // multiplication algorithm is the same
-    bool same_mult   = l->entries[counter].mult == r->entries[counter].mult;
-    bool same_equals = l->entries[counter].equals == r->entries[counter].equals;
-    if (!same_mult || !same_equals)
+    if (!(l->entries[counter].type == r->entries[counter].type))
     {
       return false;
     }
@@ -121,6 +122,7 @@ __tuple_check_identity (size_t *x,
 
   for (size_t i = 1; i < len_x; i++)
   {
+    assert (__tuple_same_type (left_curr, tuples[assigns[x[i]]]));
     __tuple_mult (left_curr, tuples[assigns[x[i]]], left_res);
     __tuple_t *tmp = left_res;
     left_res       = left_curr;
@@ -129,6 +131,7 @@ __tuple_check_identity (size_t *x,
 
   for (size_t i = 1; i < len_y; i++)
   {
+    assert (__tuple_same_type (right_curr, tuples[assigns[y[i]]]));
     __tuple_mult (right_curr, tuples[assigns[y[i]]], right_res);
     __tuple_t *tmp = right_res;
     right_res      = right_curr;
@@ -157,17 +160,154 @@ __tuple_print (__tuple_t *_tuple)
   printf ("}\n");
 }
 
-__tuple_t *
-__tuple_read (char *fn)
+static __tuple_entry_data_t *
+__tuple_read_entries (char *filenames[], size_t count)
 {
+  // Open each of the tuples
+  // Check what type of tuple it is.
+  //
+  /*
+  DIR *          dir;
+  struct dirent *ent;
+  dir = opendir (dir_path);
+
+  if (dir != NULL)
+  {
+    size_t len_dir_path = strlen (dir_path);
+    // print all the files and directories within directory
+    while ((ent = readdir (dir)) != NULL)
+    {
+      size_t fn_len = strlen (ent->d_name);
+      char   concat[len_dir_path + fn_len + 1];
+      strcpy (concat, dir_path);
+      strcpy (&(concat[len_dir_path]), ent->d_name);
+      if (__utils_str_suffix_match (ent->d_name, ".sst"))
+      {
+        __sst_pool_add_tableaux_from_plain_file (p, concat);
+      } else if (__utils_str_suffix_match (ent->d_name, ".sstc"))
+      {
+        __sst_pool_add_tableaux_from_compressed_file (p, concat);
+      } else if (__utils_str_suffix_match (ent->d_name, ".sstt"))
+      {
+        __sst_pool_add_tableaux_from_table_file (p, concat);
+      }
+    }
+    closedir (dir);
+    }*/
+
   // TO IMPLEMENT
+  // Implement with the filenames:
+  //   1) Implement for each type of math element a function that stores adding
+  //   a specific suffix for that type. 2) Have a function that tells which type
+  //   if is by reading the suffix. 3) Have a list of suffixes for the different
+  //   types of math elements.
+  // Implement specifically for tuples of tropical matrices
   return NULL;
 }
 
-void
-__tuple_write (__tuple_t *t, char *fn)
+__tuple_t *
+__tuple_read_plain (char *fn)
 {
-  // TO IMPLEMENT
+  size_t sz        = (1 << 5);
+  size_t count     = 0;
+  char **filenames = calloc (sz, sizeof (char *));
+
+  FILE *f = fopen (fn, "r");
+  if (f == NULL)
+  {
+    return NULL;
+  }
+
+  int    read;
+  size_t len = 0;
+
+  while ((read = getline (&(filenames[count++]), &len, f)) != -1)
+  {
+    if (count == sz)
+    {
+      sz        = sz << 1;
+      filenames = realloc (filenames, sz * sizeof (char *));
+      for (size_t i = count; i < sz; i++)
+      {
+        filenames[i] = NULL;
+      }
+    }
+  }
+
+  fclose (f);
+
+  __tuple_entry_data_t *entries = __tuple_read_entries (filenames, count);
+
+  for (size_t i = 0; i < count; i++)
+  {
+    free (filenames[i]);
+  }
+  free (filenames);
+
+
+  __tuple_t *t = malloc (sizeof (__tuple_t));
+  t->len       = count;
+  t->entries   = entries;
+  return t;
+}
+
+void
+__tuple_write_plain (__tuple_t *t, char *fn)
+{
+  char *dir_path = __utils_concat_strings (2, fn, dir_suffix);
+  if (mkdir (dir_path, 0644) != 0)
+  {
+    // Failed to create the directory.
+    return;
+  }
+
+  char *base_path = __utils_concat_strings (2, dir_path, "/");
+  free (dir_path);
+
+  char *filenames[t->len];
+  for (size_t i = 0; i < t->len; i++)
+  {
+    char id[t->len];    // log of t->len would be enough, but I'm too lazy and
+                        // it should work anyway :)
+    sprintf (id, "%lu", i);
+    char *fn_ext  = __utils_get_filename (id, t->entries[i].type);
+    char *full_fn = __utils_concat_strings (2, base_path, fn_ext);
+    free (fn_ext);
+    filenames[i] = full_fn;
+  }
+
+  free (base_path);
+
+  FILE *f = fopen (fn, "w");
+  if (f == NULL)
+  {
+    return;
+  }
+
+  for (size_t i = 0; i < t->len; i++)
+  {
+    fprintf (f, "%s\n", filenames[i]);
+    free (filenames[i]);
+  }
+
+  fclose (f);
+}
+
+__tuple_t *
+__tuple_read (char *filename)
+{
+  char *     fn  = __utils_get_filename (filename, tup);
+  __tuple_t *res = __tuple_read_plain (fn);
+  free (fn);
+  return res;
+}
+
+void
+__tuple_write (__tuple_t *t, char *filename)
+{
+  char *fn = __utils_get_filename (filename, tup);
+  __tuple_write_plain (t, fn);
+  free (fn);
 }
 
 #endif    // __TUPLE__

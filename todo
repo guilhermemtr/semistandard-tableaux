@@ -1,0 +1,14 @@
+To do now:
+1) Reading and Writing tuples from and to files
+2) Create a tuple_entry_create for each of the types of element.
+3) Create a "this suffix is mine" function for each tye of element (and use it to load elements?). [How to load arbitrary type of input files? See how I did it in the semistandard tableaux pool when reading from a directory]
+3) Test of homomorphisms
+4) Reading and (Writing?) of Homomorphisms from and to files
+
+To do:
+1) Implement the "special" read/write of tuples (tuples of tropical matrices)
+2) Unit testing
+3) Rename variables (include the project name "Plactic Identities" -> "PlacId" -> "plac_id")
+4) Parsing arguments
+5) Improving the performance of identity testing (Leave for C++ implementation)
+6) Generating random tableaux (which for now is done in Python)

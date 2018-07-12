@@ -289,4 +289,25 @@ __sst_tableaux_word_plain_print (const __sst_word_t *_wsst)
   printf ("\n");
 }
 
+__sst_word_t *
+__sst_tableaux_word_read (const char *filename)
+{
+  char *        fn   = __utils_get_filename (filename, sst);
+  __sst_t *     _sst = __sst_tableaux_read_plain_file (fn);
+  __sst_word_t *res  = __sst_tableaux_word_create (_sst);
+  __sst_tableaux_destroy (_sst);
+  free (fn);
+  return res;
+}
+
+void
+__sst_tableaux_word_write (const __sst_word_t *_wsst, const char *filename)
+{
+  char *   fn = __utils_get_filename (filename, sst);
+  __sst_t * _sst = __sst_tableaux_table_create (_wsst);
+  __sst_tableaux_write_plain_file (_sst, fn);
+  __sst_tableaux_destroy (_sst);
+  free (fn);
+}
+
 #endif    // __SST_TABLEAUX_WORD__

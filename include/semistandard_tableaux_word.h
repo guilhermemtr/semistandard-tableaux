@@ -136,4 +136,28 @@ __sst_tableaux_word_to_table_plain_print (const __sst_word_t *_wsst);
 void
 __sst_tableaux_word_plain_print (const __sst_word_t *_sst);
 
+/** Reads a shortened semistandard tableaux word from a file, given the filename
+ * without the suffix (which is assumed to be .sst). Reads a shortened
+ * semistandard tableaux word from a file, given the filename without the suffix
+ * (which is assumed to be .sst).
+ * @param filename the name of the file from which the semistandard tableaux
+ * word is to be read (and is stored in the word format).
+ * @return the shortened semistandard tableaux read in the word format.
+ */
+__sst_word_t *
+__sst_tableaux_word_read (const char *filename);
+
+/** Writes the given shortened semistandard tableaux word into a plain file,
+ * given the filename without the suffix (which is assumed to be .sst). Writes
+ * the given shortened semistandard tableaux word into a plain file, given the
+ * filename without the suffix (which is assumed to be .sst).
+ * @param _wsst the shortened semistandard tableaux word to be written to the
+ * file.
+ * @param filename the filename of the file where the shortened semistandard
+ * tableaux word will be stored in the word format.
+ */
+void
+__sst_tableaux_word_write (const __sst_word_t *_wsst, const char *filename);
+
+
 #endif    // __SST_TABLEAUX_WORD__

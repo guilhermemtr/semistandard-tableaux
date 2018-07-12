@@ -7,6 +7,26 @@
 #include <stddef.h>
 #include <assert.h>
 
+
+#define FOREACH_STRUCTURE_TYPE(ELEMENT_TYPE)                                   \
+  ELEMENT_TYPE (sst)                                                           \
+  ELEMENT_TYPE (sstt)                                                          \
+  ELEMENT_TYPE (trmt)                                                          \
+  ELEMENT_TYPE (tup)
+
+#define GENERATE_ENUM(ENUM) ENUM,
+#define GENERATE_STRING(STRING) #STRING,
+
+enum structure_type
+{
+  FOREACH_STRUCTURE_TYPE (GENERATE_ENUM)
+};
+
+const char *
+get_structure_type_string (enum structure_type t);
+
+
+
 typedef uint64_t
   __tableaux_cell_val_t;    //!< type of the value stored in tableaux cells.
 
@@ -26,7 +46,6 @@ typedef struct
   __tableaux_cell_val_t val;    //!< value of the tableaux cell.
   __tableaux_cell_len_t len;    //!< tableaux cell's sequence length.
 } __tableaux_cell_t;
-
 
 /** Type of function that corresponds to functions that verify the validity of
  * an identity, given two assignments. Type of function that corresponds to
@@ -97,5 +116,35 @@ typedef void *(__ap_read) (char *fn);
  * @return the element read.
  */
 typedef void(__ap_write) (void *e, char *fn);
+
+struct __tuple_entry_data;
+
+/** Type of function that corresponds to functions that create a tuple entry
+ * data for an element. Type of function that corresponds to functions that
+ * create a tuple entry data for an element.
+ * @param e the element.
+ * @return the tuple entry created element read.
+ */
+typedef struct __tuple_entry_data *(__ap_tuple_entry_data_create) (void *e);
+
+/** Type that represents an abstract type of element.
+ * TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+ * TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+ * Document this
+ */
+typedef struct __tuple_entry_data
+{
+  void *                        e;
+  enum structure_type           type;
+  __ap_identity_tester *        tester;
+  __ap_equals *                 equals;
+  __ap_op *                     destroy;
+  __ap_op *                     print;
+  __ap_mult *                   mult;
+  __ap_clone *                  clone;
+  __ap_read *                   read;
+  __ap_write *                  write;
+  __ap_tuple_entry_data_create *entry_generator;
+} __tuple_entry_data_t;
 
 #endif    // __SST_TYPES__
