@@ -286,7 +286,9 @@ __tuple_write_plain (__tuple_t *t, char *fn)
     char id[t->len];    // log of t->len would be enough, but I'm too lazy and
                         // it should work anyway :)
     sprintf (id, "%lu", i);
-    char *fn_ext  = __utils_get_filename (id, t->entries[i]->type);
+    char *fn_ext = id;    //__utils_get_filename (id, t->entries[i]->type); //
+                          //The custom write function should already
+                          //automatically append the file type suffix.
     char *full_fn = __utils_concat_strings (2, base_path, fn_ext);
     free (fn_ext);
     filenames[i] = full_fn;
@@ -302,6 +304,7 @@ __tuple_write_plain (__tuple_t *t, char *fn)
 
   for (size_t i = 0; i < t->len; i++)
   {
+    (t->entries[i]->write) (t->entries[i]->e, filenames[i]);
     fprintf (f, "%s\n", filenames[i]);
     free (filenames[i]);
   }
