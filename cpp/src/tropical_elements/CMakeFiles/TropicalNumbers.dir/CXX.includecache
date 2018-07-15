@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp/src/tropical_elements/tropical_number.cc
+tropical_number.hpp
+/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp/src/tropical_elements/tropical_number.hpp
+
+include/tropical_elements/tropical_number.hpp
+cstdint
+-
+cassert
+-
+
