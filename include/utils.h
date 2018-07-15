@@ -28,7 +28,6 @@ __utils_str_suffix_match (const char *str, const char *suffix);
 char *
 __utils_concat_strings (const size_t n, ...);
 
-
 /** Given a filename and the type of the structure, returns a (newly allocated)
  * string with the filename appended with the default suffix of the structure.
  * Given a filename and the type of the structure, returns a (newly allocated)

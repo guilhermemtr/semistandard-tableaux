@@ -5,24 +5,25 @@
 static const char *dir_suffix = ".entries";
 
 __tuple_t *
-__tuple_create (__tuple_entry_data_t *entries, size_t len)
+__tuple_create (__tuple_entry_data_t **entries, size_t len)
 {
   __tuple_t *t = malloc (sizeof (__tuple_t));
-  t->entries   = malloc (len * sizeof (__tuple_entry_data_t));
+  t->entries   = malloc (len * sizeof (__tuple_entry_data_t *));
   t->len       = len;
   for (size_t i = 0; i < len; i++)
   {
-    t->entries[i].e               = entries[i].e;
-    t->entries[i].type            = entries[i].type;
-    t->entries[i].tester          = entries[i].tester;
-    t->entries[i].equals          = entries[i].equals;
-    t->entries[i].destroy         = entries[i].destroy;
-    t->entries[i].print           = entries[i].print;
-    t->entries[i].mult            = entries[i].mult;
-    t->entries[i].clone           = entries[i].clone;
-    t->entries[i].read            = entries[i].read;
-    t->entries[i].write           = entries[i].write;
-    t->entries[i].entry_generator = entries[i].entry_generator;
+    t->entries[i]                  = malloc (sizeof (__tuple_entry_data_t));
+    t->entries[i]->e               = (*entries[i]->clone) (entries[i]->e);
+    t->entries[i]->type            = entries[i]->type;
+    t->entries[i]->tester          = entries[i]->tester;
+    t->entries[i]->equals          = entries[i]->equals;
+    t->entries[i]->destroy         = entries[i]->destroy;
+    t->entries[i]->print           = entries[i]->print;
+    t->entries[i]->mult            = entries[i]->mult;
+    t->entries[i]->clone           = entries[i]->clone;
+    t->entries[i]->read            = entries[i]->read;
+    t->entries[i]->write           = entries[i]->write;
+    t->entries[i]->entry_generator = entries[i]->entry_generator;
   }
   return t;
 }
@@ -38,14 +39,13 @@ __tuple_destroy (__tuple_t *t)
 {
   for (size_t i = 0; i < t->len; i++)
   {
-    (*t->entries[i].destroy) (t->entries[i].e);
+    (*t->entries[i]->destroy) (t->entries[i]->e);
   }
   free (t->entries);
   free (t);
 }
 
-/** TODO: Change this to take into account the suffixes instead of doing this hack.
- * Checks if two tuples seem to be of the same type.
+/** Checks if two tuples seem to be of the same type.
  * Checks if two tuples seem to be of the same type.
  * @param l the first tuple.
  * @param r the second tuple.
@@ -61,7 +61,7 @@ __tuple_same_type (__tuple_t *l, __tuple_t *r)
 
   for (size_t counter = 0; counter < l->len; counter++)
   {
-    if (!(l->entries[counter].type == r->entries[counter].type))
+    if (!(l->entries[counter]->type == r->entries[counter]->type))
     {
       return false;
     }
@@ -79,8 +79,8 @@ __tuple_mult (__tuple_t *t_1, __tuple_t *t_2, __tuple_t *t_res)
   }
   for (size_t i = 0; i < t_1->len; i++)
   {
-    (*t_1->entries[i].mult) (
-      t_1->entries[i].e, t_2->entries[i].e, t_res->entries[i].e);
+    (*t_1->entries[i]->mult) (
+      t_1->entries[i]->e, t_2->entries[i]->e, t_res->entries[i]->e);
   }
 }
 
@@ -93,8 +93,8 @@ __tuple_equals (__tuple_t *l, __tuple_t *r)
   }
   for (size_t counter = 0; counter < l->len; counter++)
   {
-    if (!(*l->entries[counter].equals) (l->entries[counter].e,
-                                        r->entries[counter].e))
+    if (!(*l->entries[counter]->equals) (l->entries[counter]->e,
+                                         r->entries[counter]->e))
     {
       return false;
     }
@@ -155,54 +155,70 @@ __tuple_print (__tuple_t *_tuple)
   for (size_t counter = 0; counter < _tuple->len; counter++)
   {
     printf ("[%lu]:\n", counter);
-    (*_tuple->entries[counter].print) (_tuple->entries[counter].e);
+    (*_tuple->entries[counter]->print) (_tuple->entries[counter]->e);
   }
   printf ("}\n");
 }
 
-static __tuple_entry_data_t *
+static __tuple_entry_data_t **
 __tuple_read_entries (char *filenames[], size_t count)
 {
   // Open each of the tuples
   // Check what type of tuple it is.
   //
-  /*
-  DIR *          dir;
-  struct dirent *ent;
-  dir = opendir (dir_path);
+  __tuple_entry_data_t **entries =
+    malloc (count * sizeof (__tuple_entry_data_t *));
 
-  if (dir != NULL)
+  size_t num_types = 4;
+  char * suffixes[num_types];
+  for (size_t i = 0; i < num_types; i++)
   {
-    size_t len_dir_path = strlen (dir_path);
-    // print all the files and directories within directory
-    while ((ent = readdir (dir)) != NULL)
-    {
-      size_t fn_len = strlen (ent->d_name);
-      char   concat[len_dir_path + fn_len + 1];
-      strcpy (concat, dir_path);
-      strcpy (&(concat[len_dir_path]), ent->d_name);
-      if (__utils_str_suffix_match (ent->d_name, ".sst"))
-      {
-        __sst_pool_add_tableaux_from_plain_file (p, concat);
-      } else if (__utils_str_suffix_match (ent->d_name, ".sstc"))
-      {
-        __sst_pool_add_tableaux_from_compressed_file (p, concat);
-      } else if (__utils_str_suffix_match (ent->d_name, ".sstt"))
-      {
-        __sst_pool_add_tableaux_from_table_file (p, concat);
-      }
-    }
-    closedir (dir);
-    }*/
+    suffixes[i] =
+      __utils_concat_strings (2, get_structure_type_string (i), ".");
+  }
 
-  // TO IMPLEMENT
-  // Implement with the filenames:
-  //   1) Implement for each type of math element a function that stores adding
-  //   a specific suffix for that type. 2) Have a function that tells which type
-  //   if is by reading the suffix. 3) Have a list of suffixes for the different
-  //   types of math elements.
-  // Implement specifically for tuples of tropical matrices
-  return NULL;
+  for (size_t i = 0; i < count; i++)
+  {
+    // check for each element of the enum, if the filename ends that way.
+    //   for each type, pre-pend a . to the suffix
+    //   check if the suffix match
+    //   if no suffix matches, free everything and just return NULL
+    if (__utils_str_suffix_match (filenames[i], suffixes[0]))
+    {    // sst
+      __sst_t *t = __sst_tableaux_read (filenames[i]);
+      entries[i] = __sst_tableaux_entry_data_create (t);
+      __sst_tableaux_destroy (t);
+    } else if (__utils_str_suffix_match (filenames[i], suffixes[1]))
+    {    // sstt
+      __sst_word_t *w = __sst_tableaux_word_read (filenames[i]);
+      entries[i]      = __sst_tableaux_word_tuple_entry_data_create (w);
+      __sst_tableaux_word_destroy (w);
+    } else if (__utils_str_suffix_match (filenames[i], suffixes[2]))
+    {    // trmt
+      __tm_t *tm = __tm_read (filenames[i]);
+      entries[i] = __tm_tuple_entry_data_create (tm);
+      __tm_destroy (tm);
+    } else if (__utils_str_suffix_match (filenames[i], suffixes[3]))
+    {
+      __tuple_t *t = __tuple_read_plain (filenames[i]);
+      entries[i]   = __tuple_tuple_entry_data_create (t);
+      __tuple_destroy (t);
+    } else
+    {
+      // There are more things that should be freed, but since this should never
+      // happen, we do not deal with that.
+      // In particular, everything with index < i should be freed.
+      return NULL;
+    }
+  }
+
+  // Should never happen
+  for (size_t i = 0; i < num_types; i++)
+  {
+    free (suffixes[i]);
+  }
+
+  return entries;
 }
 
 __tuple_t *
@@ -236,7 +252,7 @@ __tuple_read_plain (char *fn)
 
   fclose (f);
 
-  __tuple_entry_data_t *entries = __tuple_read_entries (filenames, count);
+  __tuple_entry_data_t **entries = __tuple_read_entries (filenames, count);
 
   for (size_t i = 0; i < count; i++)
   {
@@ -270,7 +286,7 @@ __tuple_write_plain (__tuple_t *t, char *fn)
     char id[t->len];    // log of t->len would be enough, but I'm too lazy and
                         // it should work anyway :)
     sprintf (id, "%lu", i);
-    char *fn_ext  = __utils_get_filename (id, t->entries[i].type);
+    char *fn_ext  = __utils_get_filename (id, t->entries[i]->type);
     char *full_fn = __utils_concat_strings (2, base_path, fn_ext);
     free (fn_ext);
     filenames[i] = full_fn;
@@ -311,7 +327,7 @@ __tuple_write (__tuple_t *t, char *filename)
 }
 
 __tuple_entry_data_t *
-__tuple_tuple_entry_data_create (const __tuple_t *t)
+__tuple_tuple_entry_data_create (__tuple_t *t)
 {
   __tuple_entry_data_t *entry = malloc (sizeof (__tuple_entry_data_t));
   entry->e                    = __tuple_duplicate (t);

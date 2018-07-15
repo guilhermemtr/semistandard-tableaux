@@ -331,6 +331,6 @@ __sst_tableaux_write (const __sst_t *_sst, const char *filename);
  * @return the tuple entry data.
  */
 __tuple_entry_data_t *
-__sst_tuple_entry_data_create (__sst_t *m);
+__sst_tableaux_entry_data_create (__sst_t *m);
 
 #endif    // __SST_TABLEAUX__

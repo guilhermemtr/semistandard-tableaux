@@ -260,8 +260,20 @@ __tm_write (__tm_t *m, char *filename)
 __tuple_entry_data_t *
 __tm_tuple_entry_data_create (__tm_t *m)
 {
-  //NOT IMPLEMENTED
-  return NULL;
+  __tuple_entry_data_t *entry = malloc (sizeof (__tuple_entry_data_t));
+  entry->e                    = __tm_duplicate (m);
+  entry->type                 = trmt;
+  entry->tester               = (__ap_identity_tester *) __tm_check_identity;
+  entry->equals               = (__ap_equals *) __tm_equals;
+  entry->destroy              = (__ap_op *) __tm_destroy;
+  entry->print                = (__ap_op *) __tm_print;
+  entry->mult                 = (__ap_mult *) __tm_mult;
+  entry->clone                = (__ap_clone *) __tm_duplicate;
+  entry->read                 = (__ap_read *) __tm_read;
+  entry->write                = (__ap_write *) __tm_write;
+  entry->entry_generator =
+    (__ap_tuple_entry_data_create *) __tm_tuple_entry_data_create;
+  return entry;
 }
 
 #endif    // __TROPICAL_MATRICES__

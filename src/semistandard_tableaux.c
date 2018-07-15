@@ -213,8 +213,38 @@ __sst_tableaux_check_identity (size_t *x,
                                size_t  nr_vars,
                                void *  elems)
 {
-  // TO IMPLEMENT
-  return false;
+  __sst_t **tableaux = (__sst_t **) elems;
+
+  __sst_t *left_curr = __sst_tableaux_duplicate (tableaux[assigns[x[0]]]);
+  __sst_t *left_res  = __sst_tableaux_create ();
+
+  __sst_t *right_curr = __sst_tableaux_duplicate (tableaux[assigns[y[0]]]);
+  __sst_t *right_res  = __sst_tableaux_create ();
+
+  for (size_t i = 1; i < len_x; i++)
+  {
+    __sst_tableaux_multiply (left_curr, tableaux[assigns[x[i]]], left_res);
+    __sst_t *tmp = left_res;
+    left_res     = left_curr;
+    left_curr    = tmp;
+  }
+
+  for (size_t i = 1; i < len_y; i++)
+  {
+    __sst_tableaux_multiply (right_curr, tableaux[assigns[y[i]]], right_res);
+    __sst_t *tmp = right_res;
+    right_res    = right_curr;
+    right_curr   = tmp;
+  }
+
+  bool identity_checks = __sst_tableaux_equals (left_res, right_res);
+
+  __sst_tableaux_destroy (left_curr);
+  __sst_tableaux_destroy (left_res);
+  __sst_tableaux_destroy (right_curr);
+  __sst_tableaux_destroy (right_res);
+
+  return identity_checks;
 }
 
 static ptrdiff_t
@@ -735,12 +765,12 @@ __sst_tableaux_write (const __sst_t *_sst, const char *filename)
 }
 
 __tuple_entry_data_t *
-__sst_tuple_entry_data_create (__sst_t *m)
+__sst_tableaux_entry_data_create (__sst_t *m)
 {
-   __tuple_entry_data_t *entry = malloc (sizeof (__tuple_entry_data_t));
+  __tuple_entry_data_t *entry = malloc (sizeof (__tuple_entry_data_t));
   entry->e                    = __sst_tableaux_duplicate (m);
   entry->type                 = sstt;
-  entry->tester  = (__ap_identity_tester *) __sst_tableaux_word_check_identity;
+  entry->tester  = (__ap_identity_tester *) __sst_tableaux_check_identity;
   entry->equals  = (__ap_equals *) __sst_tableaux_equals;
   entry->destroy = (__ap_op *) __sst_tableaux_destroy;
   entry->print   = (__ap_op *) __sst_tableaux_print;
@@ -748,8 +778,8 @@ __sst_tuple_entry_data_create (__sst_t *m)
   entry->clone   = (__ap_clone *) __sst_tableaux_duplicate;
   entry->read    = (__ap_read *) __sst_tableaux_read;
   entry->write   = (__ap_write *) __sst_tableaux_write;
-  entry->entry_generator = (__ap_tuple_entry_data_create *)
-    __sst_tuple_entry_data_create;
+  entry->entry_generator =
+    (__ap_tuple_entry_data_create *) __sst_tableaux_entry_data_create;
   return entry;
 }
 

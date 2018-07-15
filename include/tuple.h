@@ -12,13 +12,17 @@
 #include "types.h"
 #include "utils.h"
 
+#include "semistandard_tableaux.h"
+#include "semistandard_tableaux_word.h"
+#include "tropical_matrix.h"
+
 /**
  * Represents a tuple.
  */
 typedef struct
 {
-  __tuple_entry_data_t *entries;
-  size_t                len;
+  __tuple_entry_data_t **entries;
+  size_t                 len;
 } __tuple_t;
 
 /** Creates a new tuple.
@@ -28,7 +32,7 @@ typedef struct
  * @return a new tuple with the given entries.
  */
 __tuple_t *
-__tuple_create (__tuple_entry_data_t *entries, size_t len);
+__tuple_create (__tuple_entry_data_t **entries, size_t len);
 
 /** Duplicates a tuple.
  * Duplicates a tuple.
@@ -134,6 +138,6 @@ __tuple_write (__tuple_t *t, char *fn);
  * @return the tuple entry data.
  */
 __tuple_entry_data_t *
-__tuple_tuple_entry_data_create (const __tuple_t *t);
+__tuple_tuple_entry_data_create (__tuple_t *t);
 
 #endif    // __TUPLE__
