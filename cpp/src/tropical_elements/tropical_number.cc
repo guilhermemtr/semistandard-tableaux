@@ -41,18 +41,20 @@ namespace __placid
   {
     return tropical_number (this->n + o.n);
   }
-
+  
+    #include<stdio.h>
   tropical_number
   tropical_number::operator+ (tropical_number &o)
   {
     tn_t res;
-    if (!*this || !o)
-    {
-      res = this->n > o.n ? o.n : this->n;
-    } else
+    if (!*this && !o)
     {
       res = this->n > o.n ? this->n : o.n;
+    } else
+    {
+      res = this->n > o.n ? o.n : this->n;
     }
+    printf("%lu\n",res);
     return tropical_number (res);
   }
 
@@ -65,7 +67,7 @@ namespace __placid
   tropical_number
   tropical_number::get_infinite ()
   {
-    return tropical_number(1L << 32L);
+    return tropical_number (1L << 32L);
   }
 
 }    // namespace __placid

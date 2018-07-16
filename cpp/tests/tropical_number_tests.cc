@@ -25,15 +25,18 @@ TEST (tropical_number, test_sum)
   tropical_number ti1 (i1);
   tropical_number ti2 (i2);
 
-  tropical_number tn_res = tn1 + tn2;
-  ASSERT_EQ (tn_res.get (), n2);
+  tropical_number tn_res1 = tn1 + tn2;
+  ASSERT_EQ (tn_res1.get (), n2);
 
-  tn_res = tn1 + ti1;
-  ASSERT_EQ (tn_res.get (), n1);
+  tropical_number tn_res2 = tn1 + ti1;
+  ASSERT_EQ (tn_res2.get (), n1);
 
-  tn_res = i1 + i2;
-  bool valid_outcome =
-    (tn_res.get () == i1 && i1 <= i2) || (tn_res.get () == i2 && i2 <= i1);
+  tropical_number tn_res3 = i1 + i2;
+  bool valid_outcome      = (tn_res3.get () == i1) || (tn_res3.get () == i2);
+  printf ("%lu\n", ti1.get ());
+  printf ("%lu\n", ti2.get ());
+  
+  printf ("%lu\n", tn_res3.get ());
   ASSERT_TRUE (valid_outcome);
 }
 
