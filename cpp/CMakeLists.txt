@@ -1,4 +1,4 @@
-
+# Project name and CMake version requirements
 cmake_minimum_required (VERSION 2.6)
 project (Plactic_Identities)
 
@@ -8,34 +8,31 @@ project (Plactic_Identities)
 set (Plactic_Identities_VERSION_MAJOR 0)
 set (Plactic_Identities_VERSION_MINOR 1)
 
-# configure a header file to pass some of the CMake settings
-# to the source code
 configure_file (
   "${PROJECT_SOURCE_DIR}/include/version.hpp.in"
   "${PROJECT_BINARY_DIR}/include/version.hpp"
-  )
+)
 
 
 
-# add the binary tree to the search path for include files
+# add the include directory to the search path for include files
 include_directories("${PROJECT_BINARY_DIR}/include")
 
 
 
-
+# add the tropical elements path to the search path for include files
+# load the cmake lists from that directory
 include_directories("${PROJECT_BINARY_DIR}/src/tropical_elements")
 add_subdirectory (src/tropical_elements)
 
-# should we use our own math functions?
+# whether using or not debugging utils
 option (USE_DEBUGGING_UTILS
-        "Use debugging utils." ON) 
+        "Use debugging utils." ON)
 
-# add the Debugging utilities to the library?
-#
 if (USE_DEBUGGING_UTILS)
   include_directories("${PROJECT_BINARY_DIR}/src/logger")
   add_subdirectory (src/logger)
-  set (EXTRA_LIBS ${EXTRA_LIBS} Logger)
+  set (DBG_LIBS ${DBG_LIBS} Logger)
 endif (USE_DEBUGGING_UTILS)
 
 
@@ -44,21 +41,28 @@ endif (USE_DEBUGGING_UTILS)
 
 
 
-
+# include the gtest suite to allow unit tests
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 
 
+
+# template for the installation commands
 #install (TARGETS MathFunctions DESTINATION bin)
 #install (FILES MathFunctions.h DESTINATION include)
 
 
 
 
+# add executable
+add_executable(placid main.cc tests/tests.cc tests/tropical_number_tests.cc)
 
-add_executable(placid main.cc tests/tests.cc)
-
+# add required libraries
 target_link_libraries (placid TropicalNumbers)
-target_link_libraries (placid  ${EXTRA_LIBS})
+
+# add debugging libraries (if used)
+target_link_libraries (placid  ${DBG_LIBS})
+
+# add GTest libraries
 target_link_libraries(placid ${GTEST_BOTH_LIBRARIES})

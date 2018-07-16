@@ -9,13 +9,13 @@ namespace __placid
     this->n = n;
   }
 
-  bool tropical_number::operator! ()
-  {
-    return !(!(this->n >> (sizeof (tn_t) * 8 / 2)));
-  }
-
   tropical_number::~tropical_number ()
   {
+  }
+
+  bool tropical_number::operator! ()
+  {
+    return !(this->n >> (sizeof (tn_t) * 8 / 2));
   }
 
   tropical_number
@@ -28,11 +28,7 @@ namespace __placid
   bool
   tropical_number::operator== (tropical_number &o)
   {
-    if (!(!*this) && !(!o))
-    {
-      return true;
-    }
-    return this->n == o.n;
+    return (!*this && !o) || (this->n == o.n);
   }
 
   bool
@@ -69,7 +65,7 @@ namespace __placid
   tropical_number
   tropical_number::get_infinite ()
   {
-    return 1;
+    return tropical_number(1L << 32L);
   }
 
 }    // namespace __placid
