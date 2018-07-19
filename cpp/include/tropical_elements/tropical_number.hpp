@@ -1,8 +1,11 @@
 #ifndef __PLACID_TROPICAL_NUMBER__
 #define __PLACID_TROPICAL_NUMBER__
 
+#include <string>
+
 #include <cstdint>
 #include <cassert>
+#include <cstring>
 
 #include "ring_element.hpp"
 
@@ -17,11 +20,13 @@ namespace __placid
    * is infinite. On the other hand, if none is infinite, then the result
    * outputs the multiplication of the numbers correctly too.
    */
-  typedef uint64_t tn_t;
+  typedef uint64_t   tn_t;
+  extern const std::string tn_str_format;
+  extern const std::string tn_str_infinite;
 
   const tn_t tn_infinite (1L << 32L);
 
-  struct tropical_number : ring_element
+  struct tropical_number : public ring_element<tropical_number>
   {
     tn_t n;
 
@@ -36,60 +41,6 @@ namespace __placid
      */
     virtual ~tropical_number ();
 
-    /** Checks if the tropical number if infinite.
-     * Checks if the tropical number if infinite.
-     * @return true if the number is finite, and false otherwise.
-     */
-    bool operator! ();
-
-    /** Makes an assignment of tropical numbers, given a tropical number.
-     * Makes an assignment of tropical numbers, given a tropical number.
-     * @param &o the tropical number to assign.
-     * @return the tropical number value assigned.
-     */
-    tropical_number
-    operator= (tropical_number &o);
-
-    /** Makes an assignment of tropical numbers, given a tropical number integer
-     * value. Makes an assignment of tropical numbers, given a tropical number
-     * integer value.
-     * @param &o the tropical number integer value to assign.
-     * @return the tropical number value assigned.
-     */
-    tropical_number
-    operator= (tn_t &o);
-
-    /** Checks if two tropical numbers are equal.
-     * Checks if two tropical numbers are equal.
-     * @param &o the second argument of the equality.
-     * @return whether the tropical numbers are equal or not.
-     */
-    bool
-    operator== (tropical_number &o);
-
-    /** Checks if two tropical numbers are different.
-     * Checks if two tropical numbers are different.
-     * @param &o the second argument of the inequality.
-     * @return whether the tropical numbers are different or not.
-     */
-    bool
-    operator!= (tropical_number &o);
-
-    /** Returns the multiplication of two tropical numbers.
-     * Returns the multiplication of two tropical numbers.
-     * @param &o the second argument of the multiplication.
-     * @return the multiplication of the two given tropical numbers.
-     */
-    tropical_number operator* (tropical_number &o);
-
-    /** Returns the sum of two tropical numbers.
-     * Returns the sum of two tropical numbers.
-     * @param &o the second argument of the sum.
-     * @return the sum of the two given tropical numbers.
-     */
-    tropical_number
-    operator+ (tropical_number &o);
-
     /** Returns the value of the tropical number.
      * Returns the value of the tropical number.
      * @return the value of the tropical number.
@@ -103,6 +54,47 @@ namespace __placid
      */
     static tropical_number
     get_infinite ();
+
+    /** Checks if the tropical number if infinite.
+     * Checks if the tropical number if infinite.
+     * @return true if the number is finite, and false otherwise.
+     */
+    bool operator! ();
+
+    tropical_number
+    operator= (tropical_number &o);
+
+    /** Makes an assignment of tropical numbers, given a tropical number integer
+     * value. Makes an assignment of tropical numbers, given a tropical number
+     * integer value.
+     * @param &o the tropical number integer value to assign.
+     * @return the tropical number value assigned.
+     */
+    tropical_number
+    operator= (tn_t &o);
+
+    bool
+    operator== (tropical_number &o);
+
+    bool
+    operator!= (tropical_number &o);
+
+    tropical_number operator* (tropical_number &o);
+
+    tropical_number
+    operator+ (tropical_number &o);
+
+    tropical_number
+    read (FILE *f);
+
+    tropical_number
+    read (std::string fn);
+
+    void
+    write (FILE *f);
+
+    void
+    write (std::string fn);
   };
 
 }    // namespace __placid

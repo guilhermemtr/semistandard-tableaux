@@ -5,7 +5,8 @@
 
 namespace __placid
 {
-  class ring_element : public magma_element
+  template <typename T>
+  class ring_element : public magma_element<T>
   {
       public:
     /** Returns the sum of two ring elements.
@@ -13,8 +14,8 @@ namespace __placid
      * @param &o the second argument of the sum.
      * @return the sum of the two given ring elements.
      */
-    magma_element
-    operator+ (magma_element &o);
+    virtual T
+    operator+ (T &o) = 0;
   };
 
 }    // namespace __placid

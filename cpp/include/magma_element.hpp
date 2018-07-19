@@ -4,9 +4,11 @@
 #include <string>
 
 #include <cstdio>
+#include <cerrno>
 
 namespace __placid
 {
+  template <typename T>
   class magma_element
   {
       public:
@@ -15,69 +17,61 @@ namespace __placid
      * @param &o the magma element to assign.
      * @return the magma element value assigned.
      */
-    magma_element
-    operator= (magma_element &o);
+    virtual T
+    operator= (T &o) = 0;
 
     /** Checks if magma elements are equal.
      * Checks if magma elements are equal.
      * @param &o the second argument of the equality.
      * @return whether the magma elements are equal or not.
      */
-    bool
-    operator== (magma_element &o);
+    virtual bool
+    operator== (T &o) = 0;
 
     /** Checks if magma elements are different.
      * Checks if magma elements are different.
      * @param &o the second argument of the inequality.
      * @return whether the magma elements are different or not.
      */
-    bool
-    operator!= (magma_element &o);
+    virtual bool
+    operator!= (T &o) = 0;
 
     /** Returns the multiplication of two magma elements.
      * Returns the multiplication of two magma elements.
      * @param &o the second argument of the multiplication.
      * @return the multiplication of the two given magma elements.
      */
-    magma_element operator* (magma_element &o);
-
-    /** Returns the sum of two ring elements.
-     * Returns the sum of two ring elements.
-     * @param &o the second argument of the sum.
-     * @return the sum of the two given ring elements.
-     */
-    magma_element
-    operator+ (magma_element &o);
+    virtual T operator* (T &o) = 0;
 
     /** Reads a magma element from a file, given the file stream, returning it.
      * Reads a magma element from a file, given the file stream, returning it.
      * @param f the file stream.
      * @return the magma element read.
      */
-    magma_element
-    read (FILE *f);
+    virtual T
+    read (FILE *f) = 0;
 
     /** Reads a magma element from a file, given the filename, returning it.
      * Reads a magma element from a file, given the filename, returning it.
      * @param fn the filename.
      * @return the magma element read.
      */
-    magma_element
-    read (std::string fn);
+    virtual T
+    read (std::string fn) = 0;
 
     /** Writes a magma element into a file, given the file stream.
      * Writes a magma element into a file, given the file stream.
      * @param f the file stream.
      */
-    void
-    write (FILE *f);
+    virtual void
+    write (FILE *f) = 0;
 
     /** Writes a magma element into a file, given the filename.
      * Writes a magma element into a file, given the filename.
      * @param fn the filename.
      */
-    void
-    write (std::string fn);
+    virtual void
+    write (std::string fn) = 0;
   };
 
 }    // namespace __placid
