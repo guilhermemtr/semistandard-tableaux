@@ -85,13 +85,7 @@ namespace __placid
     read (FILE *f);
 
     void
-    read (std::string fn);
-
-    void
     write (FILE *f);
-
-    void
-    write (std::string fn);
   };
 
 }    // namespace __placid

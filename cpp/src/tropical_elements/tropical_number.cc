@@ -92,21 +92,6 @@ namespace __placid
   }
 
   void
-  tropical_number::read (std::string fn)
-  {
-    FILE *f = fopen (fn.c_str (), "r");
-
-    if (f == NULL)
-    {
-      throw errno;
-    }
-
-    this->read (f);
-
-    fclose (f);
-  }
-
-  void
   tropical_number::write (FILE *f)
   {
     if (!*this)
@@ -116,21 +101,6 @@ namespace __placid
     {
       fprintf (f, (tn_str_infinite + " ").c_str ());
     }
-  }
-
-  void
-  tropical_number::write (std::string fn)
-  {
-    FILE *f = fopen (fn.c_str (), "w");
-
-    if (f == NULL)
-    {
-      throw errno;
-    }
-
-    this->write (f);
-
-    fclose (f);
   }
 
 }    // namespace __placid

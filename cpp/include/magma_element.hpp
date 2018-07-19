@@ -57,8 +57,20 @@ namespace __placid
      * Reads a magma element from a file, given the filename.
      * @param fn the filename.
      */
-    virtual void
-    read (std::string fn) = 0;
+    void
+    read (std::string fn)
+    {
+      FILE *f = fopen (fn.c_str (), "r");
+
+      if (f == NULL)
+      {
+        throw errno;
+      }
+
+      this->read (f);
+
+      fclose (f);
+    }
 
     /** Writes a magma element into a file, given the file stream.
      * Writes a magma element into a file, given the file stream.
@@ -71,8 +83,20 @@ namespace __placid
      * Writes a magma element into a file, given the filename.
      * @param fn the filename.
      */
-    virtual void
-    write (std::string fn) = 0;
+    void
+    write (std::string fn)
+    {
+      FILE *f = fopen (fn.c_str (), "w");
+
+      if (f == NULL)
+      {
+        throw errno;
+      }
+
+      this->write (f);
+
+      fclose (f);
+    }
   };
 
 }    // namespace __placid

@@ -64,6 +64,7 @@ add_executable(placid main.cc tests/tests.cc tests/tropical_number_tests.cc)
 
 # add required libraries
 target_link_libraries (placid TropicalNumbers)
+target_link_libraries (placid TropicalMatrices)
 # target_link_libraries (placid AlgebraElements)
 
 

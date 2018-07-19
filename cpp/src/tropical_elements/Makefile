@@ -125,6 +125,48 @@ TropicalNumbers/fast:
 	cd "/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp" && $(MAKE) -f src/tropical_elements/CMakeFiles/TropicalNumbers.dir/build.make src/tropical_elements/CMakeFiles/TropicalNumbers.dir/build
 .PHONY : TropicalNumbers/fast
 
+# Convenience name for target.
+src/tropical_elements/CMakeFiles/TropicalMatrices.dir/rule:
+	cd "/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp" && $(MAKE) -f CMakeFiles/Makefile2 src/tropical_elements/CMakeFiles/TropicalMatrices.dir/rule
+.PHONY : src/tropical_elements/CMakeFiles/TropicalMatrices.dir/rule
+
+# Convenience name for target.
+TropicalMatrices: src/tropical_elements/CMakeFiles/TropicalMatrices.dir/rule
+
+.PHONY : TropicalMatrices
+
+# fast build rule for target.
+TropicalMatrices/fast:
+	cd "/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp" && $(MAKE) -f src/tropical_elements/CMakeFiles/TropicalMatrices.dir/build.make src/tropical_elements/CMakeFiles/TropicalMatrices.dir/build
+.PHONY : TropicalMatrices/fast
+
+tropical_matrix.o: tropical_matrix.cc.o
+
+.PHONY : tropical_matrix.o
+
+# target to build an object file
+tropical_matrix.cc.o:
+	cd "/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp" && $(MAKE) -f src/tropical_elements/CMakeFiles/TropicalMatrices.dir/build.make src/tropical_elements/CMakeFiles/TropicalMatrices.dir/tropical_matrix.cc.o
+.PHONY : tropical_matrix.cc.o
+
+tropical_matrix.i: tropical_matrix.cc.i
+
+.PHONY : tropical_matrix.i
+
+# target to preprocess a source file
+tropical_matrix.cc.i:
+	cd "/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp" && $(MAKE) -f src/tropical_elements/CMakeFiles/TropicalMatrices.dir/build.make src/tropical_elements/CMakeFiles/TropicalMatrices.dir/tropical_matrix.cc.i
+.PHONY : tropical_matrix.cc.i
+
+tropical_matrix.s: tropical_matrix.cc.s
+
+.PHONY : tropical_matrix.s
+
+# target to generate assembly for a file
+tropical_matrix.cc.s:
+	cd "/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp" && $(MAKE) -f src/tropical_elements/CMakeFiles/TropicalMatrices.dir/build.make src/tropical_elements/CMakeFiles/TropicalMatrices.dir/tropical_matrix.cc.s
+.PHONY : tropical_matrix.cc.s
+
 tropical_number.o: tropical_number.cc.o
 
 .PHONY : tropical_number.o
@@ -161,6 +203,10 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... TropicalNumbers"
 	@echo "... edit_cache"
+	@echo "... TropicalMatrices"
+	@echo "... tropical_matrix.o"
+	@echo "... tropical_matrix.i"
+	@echo "... tropical_matrix.s"
 	@echo "... tropical_number.o"
 	@echo "... tropical_number.i"
 	@echo "... tropical_number.s"
