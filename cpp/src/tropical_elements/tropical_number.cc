@@ -34,6 +34,13 @@ namespace __placid
   }
 
   tropical_number
+  tropical_number::operator= (tn_t &o)
+  {
+    this->n = o;
+    return *this;
+  }
+
+  tropical_number
   tropical_number::operator= (tropical_number &o)
   {
     this->n = o.n;
@@ -43,7 +50,7 @@ namespace __placid
   bool
   tropical_number::operator== (tropical_number &o)
   {
-    return (!*this && !o) || (this->n == o.n);
+    return !(!*this || !o) || (this->n == o.n);
   }
 
   bool
@@ -71,7 +78,7 @@ namespace __placid
     return tropical_number (res);
   }
 
-  tropical_number
+  void
   tropical_number::read (FILE *f)
   {
     char val[256];
@@ -87,10 +94,10 @@ namespace __placid
       v = atoll (val);
     }
 
-    return tropical_number (v);
+    this->n = v;
   }
 
-  tropical_number
+  void
   tropical_number::read (std::string fn)
   {
     FILE *f = fopen (fn.c_str (), "r");
@@ -100,17 +107,15 @@ namespace __placid
       throw errno;
     }
 
-    tropical_number t = this->read (f);
+    this->read (f);
 
     fclose (f);
-
-    return t;
   }
 
   void
   tropical_number::write (FILE *f)
   {
-    if (!this)
+    if (!*this)
     {
       fprintf (f, (tn_str_format + " ").c_str (), this->get ());
     } else
