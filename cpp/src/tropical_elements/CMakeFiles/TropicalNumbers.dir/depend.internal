@@ -3,4 +3,6 @@
 
 src/tropical_elements/CMakeFiles/TropicalNumbers.dir/tropical_number.cc.o
  /home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp/src/tropical_elements/tropical_number.cc
+ include/magma_element.hpp
+ include/ring_element.hpp
  include/tropical_elements/tropical_number.hpp

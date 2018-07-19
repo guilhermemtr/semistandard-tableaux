@@ -1,0 +1,35 @@
+CPP Reference: https://en.cppreference.com/w/
+CPP Project: https://bitbucket.org/cad-tp/cad-tp2/src/master/include/
+Google GTest: https://github.com/google/googletest/tree/master/googletest
+https://github.com/google/googletest/blob/master/googletest/docs/primer.md
+GTest Tutorial: https://www.youtube.com/watch?v=vDpM--9XzF0
+CMake Tutorial: https://cmake.org/cmake-tutorial/
+CMake with inc and src paths: https://stackoverflow.com/questions/8304190/cmake-with-include-and-source-paths-basic-setup
+GTest CMake: https://cmake.org/cmake/help/v3.0/module/FindGTest.html
+Separate test cases through different files: https://stackoverflow.com/questions/7443970/separate-test-cases-across-multiple-files-in-google-test
+https://www.jetbrains.com/help/clion/quick-cmake-tutorial.html
+CMake output build directory: https://stackoverflow.com/questions/18826789/cmake-output-build-directory
+
+
+
+1) Implement the functions that are missing for the tropical numbers
+
+
+
+
+
+semigroup_element ->
+
+mult
+
+assignments
+
+equals
+diff
+
+
+read (FILE *f)
+read (std::string fn)
+
+write (FILE *f)
+write (std::string fn)
