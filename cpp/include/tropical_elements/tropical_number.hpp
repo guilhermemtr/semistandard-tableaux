@@ -76,9 +76,6 @@ namespace __placid
     bool
     operator== (tropical_number &o);
 
-    bool
-    operator!= (tropical_number &o);
-
     tropical_number operator* (tropical_number &o);
 
     tropical_number

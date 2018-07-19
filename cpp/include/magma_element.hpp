@@ -33,8 +33,11 @@ namespace __placid
      * @param &o the second argument of the inequality.
      * @return whether the magma elements are different or not.
      */
-    virtual bool
-    operator!= (T &o) = 0;
+    bool
+    operator!= (T &o)
+    {
+      return !(*this == o);
+    }
 
     /** Returns the multiplication of two magma elements.
      * Returns the multiplication of two magma elements.

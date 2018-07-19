@@ -25,6 +25,10 @@ include_directories("${PROJECT_BINARY_DIR}/include")
 include_directories("${PROJECT_BINARY_DIR}/src/tropical_elements")
 add_subdirectory (src/tropical_elements)
 
+# include_directories("${PROJECT_BINARY_DIR}/src")
+# add_subdirectory (src/)
+
+
 # whether using or not debugging utils
 option (USE_DEBUGGING_UTILS
         "Use debugging utils." ON)
@@ -60,6 +64,8 @@ add_executable(placid main.cc tests/tests.cc tests/tropical_number_tests.cc)
 
 # add required libraries
 target_link_libraries (placid TropicalNumbers)
+# target_link_libraries (placid AlgebraElements)
+
 
 # add debugging libraries (if used)
 target_link_libraries (placid  ${DBG_LIBS})

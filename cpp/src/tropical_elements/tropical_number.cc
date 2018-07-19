@@ -53,12 +53,6 @@ namespace __placid
     return !(!*this || !o) || (this->n == o.n);
   }
 
-  bool
-  tropical_number::operator!= (tropical_number &o)
-  {
-    return !(*this == o);
-  }
-
   tropical_number tropical_number::operator* (tropical_number &o)
   {
     return tropical_number (this->n + o.n);
