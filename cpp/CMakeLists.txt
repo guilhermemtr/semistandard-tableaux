@@ -13,7 +13,7 @@ configure_file (
   "${PROJECT_BINARY_DIR}/include/version.hpp"
 )
 
-
+set(CMAKE_BUILD_TYPE Debug)
 
 # add the include directory to the search path for include files
 include_directories("${PROJECT_BINARY_DIR}/include")

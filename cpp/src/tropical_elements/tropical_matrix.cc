@@ -4,26 +4,24 @@
 
 namespace __placid
 {
-  tropical_matrix::tropical_matrix (size_t columns, size_t rows)
+  const std::string invalid_matrix_sizes_exception =
+    std::string ("Different matrix sizes");
+
+  tropical_matrix::tropical_matrix (size_t rows, size_t columns)
   {
     this->rows    = rows;
     this->columns = columns;
-    this->matrix  = (tropical_number *) malloc (sizeof (tropical_number)
-                                               * this->rows * this->columns);
-    for (size_t i = 0; i < this->rows * this->columns; i++)
-    {
-      this->matrix[i] = tropical_number::get_infinite ();
-    }
+    this->matrix  = new tropical_number[this->rows * this->columns];
   }
 
-  tropical_matrix::tropical_matrix (size_t           columns,
-                                    size_t           rows,
+  tropical_matrix::tropical_matrix (size_t           rows,
+                                    size_t           columns,
                                     tropical_number *matrix)
   {
     this->rows    = rows;
     this->columns = columns;
-    this->matrix  = (tropical_number *) malloc (sizeof (tropical_number)
-                                               * this->rows * this->columns);
+    this->matrix  = new tropical_number[this->rows * this->columns];
+
     for (size_t i = 0; i < this->rows * this->columns; i++)
     {
       this->matrix[i] = matrix[i];
@@ -31,8 +29,8 @@ namespace __placid
   }
 
   tropical_matrix::~tropical_matrix ()
-  {
-    free (this->matrix);
+  { // TODO BUG
+    // delete[] this->matrix;
   }
 
   tropical_matrix
@@ -40,9 +38,8 @@ namespace __placid
   {
     if (this->columns * this->rows != o.columns * o.rows)
     {
-      free (this->matrix);
-      this->matrix = (tropical_number *) malloc (sizeof (tropical_number)
-                                                 * o.rows * o.columns);
+      delete[] this->matrix;
+      this->matrix = new tropical_number[this->rows * this->columns];
     }
 
     this->rows    = o.rows;
@@ -76,24 +73,22 @@ namespace __placid
 
   tropical_matrix tropical_matrix::operator* (tropical_matrix o)
   {
-    if (this->columns != o.columns || this->rows != o.rows)
+    if (this->columns != o.rows)
     {
-      throw std::string ("Different matrix sizes");
+      throw invalid_matrix_sizes_exception;
     }
 
-    tropical_matrix res (o.rows, o.columns);
+    tropical_matrix res (this->rows, o.columns);
 
     for (size_t i = 0; i < res.columns; i++)
     {
       for (size_t j = 0; j < res.rows; j++)
       {
-        res.matrix[i + j * res.columns] = tropical_number::get_infinite ();
-
         for (size_t k = 0; k < this->columns; k++)
         {
           res.matrix[i + j * res.columns] =
             res.matrix[i + j * res.columns]
-            + this->matrix[k + j * this->rows] * o.matrix[i + k * o.rows];
+            + this->matrix[k + j * this->columns] * o.matrix[i + k * o.columns];
         }
       }
     }
@@ -106,10 +101,10 @@ namespace __placid
   {
     if (this->columns != o.columns || this->rows != o.rows)
     {
-      throw std::string ("Different matrix sizes");
+      throw invalid_matrix_sizes_exception;
     }
 
-    tropical_matrix res (o.rows, o.columns);
+    tropical_matrix res (o.columns, o.rows);
 
     for (size_t i = 0; i < this->rows * this->columns; i++)
     {
@@ -150,7 +145,7 @@ namespace __placid
         tn_t tn;
         if (strcmp ("-inf", res) == 0)
         {
-          tn = tropical_number::get_infinite ().get ();
+          tn = tropical_number ().get ();
         } else
         {
           if (sscanf (res, "%lu", &tn) < 0)
@@ -171,8 +166,7 @@ namespace __placid
     this->rows    = rows;
     this->columns = entries / rows;
 
-    this->matrix = (tropical_number *) malloc (sizeof (tropical_number)
-                                               * this->rows * this->columns);
+    this->matrix = new tropical_number[this->rows * this->columns];
 
     for (size_t i = 0; i < this->rows * this->columns; i++)
     {

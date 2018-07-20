@@ -17,7 +17,7 @@ TEST (tropical_number, test_comparisons)
   tn_t n1 = 1000;
   tn_t n2 = 1001;
 
-  tn_t i1 = tropical_number::get_infinite ().get ();
+  tn_t i1 = tropical_number ().get ();
   tn_t i2 = i1 + n1;
 
   tropical_number tn1 (n1);
@@ -37,9 +37,9 @@ TEST (tropical_number, test_infinity_check)
 {
   tn_t n1 = 1000;
   tn_t n2 = 0;
-  tn_t n3 = tropical_number::get_infinite ().get () - n1;
+  tn_t n3 = tropical_number ().get () - n1;
 
-  tn_t i1 = tropical_number::get_infinite ().get ();
+  tn_t i1 = tropical_number ().get ();
   tn_t i2 = i1 + n1;
   tn_t i3 = i2 + i1;
 
@@ -67,8 +67,8 @@ TEST (tropical_number, test_sum)
   tn_t n1 = 1000;
   tn_t n2 = 1001;
 
-  tn_t i1 = tropical_number::get_infinite ().get ();
-  tn_t i2 = tropical_number::get_infinite ().get () + n1;
+  tn_t i1 = tropical_number ().get ();
+  tn_t i2 = tropical_number ().get () + n1;
 
 
   tropical_number tn1 (n1);
@@ -94,8 +94,8 @@ TEST (tropical_number, test_mult)
   tn_t n1 = 1000;
   tn_t n2 = 1001;
 
-  tn_t i1 = tropical_number::get_infinite ().get ();
-  tn_t i2 = tropical_number::get_infinite ().get () + n1;
+  tn_t i1 = tropical_number ().get ();
+  tn_t i2 = tropical_number ().get () + n1;
 
 
   tropical_number tn1 (n1);
@@ -131,7 +131,7 @@ TEST (tropical_number, test_read)
   char *si  = (char *) "-inf";
 
   tn_t n1 = atoll (sn1);
-  tn_t i  = tropical_number::get_infinite ().get ();
+  tn_t i  = tropical_number ().get ();
 
   tropical_number tn1 (n1);
   tropical_number ti (i);
@@ -156,7 +156,7 @@ TEST (tropical_number, test_write)
   char *si = (char *) "-inf ";
 
   tn_t n = 1230;
-  tn_t i = tropical_number::get_infinite ().get ();
+  tn_t i = tropical_number ().get ();
 
   tropical_number tn (n);
   tropical_number ti (i);

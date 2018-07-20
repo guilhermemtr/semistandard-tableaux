@@ -12,27 +12,30 @@
 
 namespace __placid
 {
+  extern const std::string invalid_matrix_sizes_exception;
+
   struct tropical_matrix : public ring_element<tropical_matrix>
   {
-    size_t rows;
-    size_t columns;
-    tropical_number * matrix;
+    size_t           rows;
+    size_t           columns;
+    tropical_number *matrix;
 
     /** Constructs a new tropical matrix, given its size (columns and rows).
      * Constructs a new tropical matrix, given its size (columns and rows).
-     * @param columns the number of columns of the matrix.
      * @param rows the number of rows of the matrix.
+     * @param columns the number of columns of the matrix.
      */
-    tropical_matrix (size_t columns, size_t rows);
+    tropical_matrix (size_t rows, size_t columns);
 
-    /** Constructs a new tropical matrix, given its size (columns and rows), and the values of the matrix's entries.
-     * Constructs a new tropical matrix, given its size (columns and rows), and the values of the matrix's entries.
-     * The given values are cloned to the new matrix.
-     * @param columns the number of columns of the matrix.
+    /** Constructs a new tropical matrix, given its size (columns and rows), and
+     * the values of the matrix's entries. Constructs a new tropical matrix,
+     * given its size (columns and rows), and the values of the matrix's
+     * entries. The given values are cloned to the new matrix.
      * @param rows the number of rows of the matrix.
+     * @param columns the number of columns of the matrix.
      * @param matrix the values of the entries of the matrix.
      */
-    tropical_matrix (size_t columns, size_t rows, tropical_number *matrix);
+    tropical_matrix (size_t rows, size_t columns, tropical_number *matrix);
 
     /** Destroys a tropical matrix.
      * Destroys a tropical matrix.

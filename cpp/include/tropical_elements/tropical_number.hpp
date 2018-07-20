@@ -20,15 +20,20 @@ namespace __placid
    * is infinite. On the other hand, if none is infinite, then the result
    * outputs the multiplication of the numbers correctly too.
    */
-  typedef uint64_t         tn_t;
-  
+  typedef uint64_t tn_t;
+
   extern const std::string tn_str_format;
   extern const std::string tn_str_infinite;
-  extern const tn_t tn_infinite;
+  extern const tn_t        tn_infinite;
 
   struct tropical_number : public ring_element<tropical_number>
   {
     tn_t n;
+
+    /** Constructs a new tropical number, corresponding to -infinity.
+     * Constructs a new tropical number, corresponding to -infinity.
+     */
+    tropical_number ();
 
     /** Constructs a new tropical number, given its value.
      * Constructs a new tropical number, given its value.
@@ -47,13 +52,6 @@ namespace __placid
      */
     tn_t
     get ();
-
-    /** Returns the tropical number representing -infinity.
-     * Returns the tropical number representing -infinity.
-     * @return the tropical number -infinity.
-     */
-    static tropical_number
-    get_infinite ();
 
     /** Checks if the tropical number if infinite.
      * Checks if the tropical number if infinite.

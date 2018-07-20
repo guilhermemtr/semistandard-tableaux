@@ -5,127 +5,245 @@
 
 using namespace __placid;
 
+tropical_matrix
+create_square_matrix_2 (tn_t e1, tn_t e2, tn_t e3, tn_t e4)
+{
+  tropical_number tns[4] = {tropical_number (e1),
+                            tropical_number (e2),
+                            tropical_number (e3),
+                            tropical_number (e4)};
+  return tropical_matrix (2, 2, tns);
+}
+
+tropical_matrix
+create_square_matrix_3 (tn_t e1,
+                        tn_t e2,
+                        tn_t e3,
+                        tn_t e4,
+                        tn_t e5,
+                        tn_t e6,
+                        tn_t e7,
+                        tn_t e8,
+                        tn_t e9)
+{
+  tropical_number tns[9] = {tropical_number (e1),
+                            tropical_number (e2),
+                            tropical_number (e3),
+                            tropical_number (e4),
+                            tropical_number (e5),
+                            tropical_number (e6),
+                            tropical_number (e7),
+                            tropical_number (e8),
+                            tropical_number (e9)};
+  return tropical_matrix (3, 3, tns);
+}
+
 TEST (tropical_matrix, test_default_creation)
 {
-  tropical_matrix tm (2,2);
-  ASSERT_EQ (tm.matrix[0], tn.get ());
+  tropical_number ti = tropical_number ();
+  tropical_matrix tm (2, 2);
+  ASSERT_TRUE (tm.matrix[0] == ti);
+  ASSERT_TRUE (tm.matrix[1] == ti);
+  ASSERT_TRUE (tm.matrix[2] == ti);
+  ASSERT_TRUE (tm.matrix[3] == ti);
 }
 
 TEST (tropical_matrix, test_creation_with_values)
 {
-  tropical_matrix tm (2,2);
-  ASSERT_EQ (tm.matrix[0], tn.get ());
+  tropical_matrix tm = create_square_matrix_2 (1, 2, 3, 4);
+  ASSERT_EQ (tm.matrix[0].get (), 1);
+  ASSERT_EQ (tm.matrix[1].get (), 2);
+  ASSERT_EQ (tm.matrix[2].get (), 3);
+  ASSERT_EQ (tm.matrix[3].get (), 4);
 }
 
 
 TEST (tropical_matrix, test_comparisons)
 {
-  tn_t n1 = 1000;
-  tn_t n2 = 1001;
+  tropical_matrix tm1 = create_square_matrix_2 (1, 2, 3, 4);
+  tropical_matrix tm2 = create_square_matrix_2 (2, 3, 4, 5);
+  tropical_matrix tm3 = create_square_matrix_2 (1, 2, 3, 4);
 
-  tn_t i1 = tropical_number::get_infinite ().get ();
-  tn_t i2 = i1 + n1;
+  tropical_matrix tmi (2, 2);
 
-  tropical_number tn1 (n1);
-  tropical_number tn2 (n2);
+  tropical_matrix tmi_12 (1, 2);
+  tropical_matrix tmi_21 (2, 1);
 
-  tropical_number ti1 (i1);
-  tropical_number ti2 (i2);
+  ASSERT_FALSE (tm1 == tm2);
+  ASSERT_TRUE (tm1 != tm2);
 
-  ASSERT_FALSE (tn1 == tn2 || tn1 == ti1 || tn2 == ti1 || tn2 == ti2);
-  ASSERT_TRUE (tn1 != tn2 && tn1 != ti1 && tn2 != ti1 && tn2 != ti2);
+  ASSERT_FALSE (tm1 != tm3);
+  ASSERT_TRUE (tm1 == tm3);
 
-  ASSERT_TRUE (ti1 == ti2);
-  ASSERT_FALSE (ti1 != ti2);
-}
+  ASSERT_FALSE (tm2 == tm3);
+  ASSERT_TRUE (tm2 != tm3);
 
-TEST (tropical_matrix, test_infinity_check)
-{
-  tn_t n1 = 1000;
-  tn_t n2 = 0;
-  tn_t n3 = tropical_number::get_infinite ().get () - n1;
+  ASSERT_FALSE (tm1 == tmi);
+  ASSERT_TRUE (tm1 != tmi);
 
-  tn_t i1 = tropical_number::get_infinite ().get ();
-  tn_t i2 = i1 + n1;
-  tn_t i3 = i2 + i1;
+  ASSERT_FALSE (tm2 == tmi);
+  ASSERT_TRUE (tm2 != tmi);
 
+  ASSERT_FALSE (tmi_12 == tmi);
+  ASSERT_TRUE (tmi_12 != tmi);
 
-  tropical_number tn1 (n1);
-  tropical_number tn2 (n2);
-  tropical_number tn3 (n3);
+  ASSERT_FALSE (tmi_21 == tmi);
+  ASSERT_TRUE (tmi_21 != tmi);
 
-  tropical_number ti1 (i1);
-  tropical_number ti2 (i2);
-  tropical_number ti3 (i3);
-
-
-  ASSERT_TRUE (!tn1);
-  ASSERT_TRUE (!tn2);
-  ASSERT_TRUE (!tn3);
-
-  ASSERT_FALSE (!ti1);
-  ASSERT_FALSE (!ti2);
-  ASSERT_FALSE (!ti3);
+  ASSERT_FALSE (tmi_12 == tmi_21);
+  ASSERT_TRUE (tmi_12 != tmi_21);
 }
 
 TEST (tropical_matrix, test_sum)
 {
-  tn_t n1 = 1000;
-  tn_t n2 = 1001;
+  tropical_matrix tm1 = create_square_matrix_2 (1, 2, 3, 4);
+  tropical_matrix tm2 = create_square_matrix_2 (2, 3, 4, 5);
 
-  tn_t i1 = tropical_number::get_infinite ().get ();
-  tn_t i2 = tropical_number::get_infinite ().get () + n1;
+  tropical_matrix tmi (2, 2);
 
+  tropical_matrix tmi_12 (1, 2);
+  tropical_matrix tmi_21 (2, 1);
 
-  tropical_number tn1 (n1);
-  tropical_number tn2 (n2);
+  try
+  {
+    tm1 + tmi_12;
+    ASSERT_TRUE (false);
+  } catch (const std::string &e)
+  {
+    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
+  }
 
-  tropical_number ti1 (i1);
-  tropical_number ti2 (i2);
+  try
+  {
+    tm1 + tmi_21;
+    ASSERT_TRUE (false);
+  } catch (const std::string &e)
+  {
+    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
+  }
 
+  try
+  {
+    tmi_12 + tmi_21;
+    ASSERT_TRUE (false);
+  } catch (const std::string &e)
+  {
+    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
+  }
 
-  tropical_number tn_res1 = tn1 + tn2;
-  ASSERT_EQ (tn_res1.get (), n2);
-
-  tropical_number tn_res2 = tn1 + ti1;
-  ASSERT_EQ (tn_res2.get (), n1);
-
-  tropical_number tn_res3 = ti1 + ti2;
-  bool valid_outcome      = (tn_res3.get () == i1) || (tn_res3.get () == i2);
-  ASSERT_TRUE (valid_outcome);
+  ASSERT_TRUE (tm1 + tm2 == tm2);
+  ASSERT_TRUE (tmi + tmi == tmi);
+  ASSERT_TRUE (tm1 + tmi == tm1);
+  ASSERT_TRUE (tm2 + tmi == tm2);
 }
 
 TEST (tropical_matrix, test_mult)
 {
-  tn_t n1 = 1000;
-  tn_t n2 = 1001;
+  tropical_matrix tm1 = create_square_matrix_2 (1, 2, 3, 4);
+  tropical_matrix tm2 = create_square_matrix_2 (2, 3, 4, 5);
 
-  tn_t i1 = tropical_number::get_infinite ().get ();
-  tn_t i2 = tropical_number::get_infinite ().get () + n1;
+  tn_t inf = tropical_number ().get ();
 
+  tropical_matrix tm1_3 =
+    create_square_matrix_3 (inf, 1, 2, 0, inf, 4, 0, 1, 1);
+  tropical_matrix tm2_3 =
+    create_square_matrix_3 (0, 1, 1, inf, inf, 3, 0, 0, 0);
 
-  tropical_number tn1 (n1);
-  tropical_number tn2 (n2);
+  tropical_matrix tm_res_3 = create_square_matrix_3 (2, 2, 4, 4, 4, 4, 1, 1, 4);
 
-  tropical_number ti1 (i1);
-  tropical_number ti2 (i2);
+  tropical_matrix tmi (2, 2);
 
+  tropical_matrix tmi_11 (1, 1);
+  tropical_matrix tmi_12 (1, 2);
+  tropical_matrix tmi_21 (2, 1);
 
-  tropical_number tn_res1 = tn1 * tn2;
-  ASSERT_EQ (tn_res1.get (), n1 + n2);
-  ASSERT_TRUE (!tn_res1);
+  try
+  {
+    tm1 *tmi_12;
+    ASSERT_TRUE (false);
+  } catch (const std::string &e)
+  {
+    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
+  }
 
-  tropical_number tn_res2 = tn1 * ti1;
-  ASSERT_EQ (tn_res2.get (), n1 + i1);
-  ASSERT_FALSE (!tn_res2);
+  try
+  {
+    tmi_21 *tm1;
+    ASSERT_TRUE (false);
+  } catch (const std::string &e)
+  {
+    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
+  }
 
-  tropical_number tn_res3 = tn2 * ti1;
-  ASSERT_EQ (tn_res3.get (), n2 + i1);
-  ASSERT_FALSE (!tn_res3);
+  try
+  {
+    tm1 *tmi_11;
+    ASSERT_TRUE (false);
+  } catch (const std::string &e)
+  {
+    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
+  }
 
-  tropical_number tn_res4 = ti1 * ti2;
-  ASSERT_EQ (tn_res4.get (), i1 + i2);
-  ASSERT_FALSE (!tn_res4);
+  try
+  {
+    tmi_12 *tmi_11;
+    ASSERT_TRUE (false);
+  } catch (const std::string &e)
+  {
+    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
+  }
+
+  try
+  {
+    tmi_11 *tmi_21;
+    ASSERT_TRUE (false);
+  } catch (const std::string &e)
+  {
+    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
+  }
+
+  try
+  {
+    tmi_12 *tmi_12;
+    ASSERT_TRUE (false);
+  } catch (const std::string &e)
+  {
+    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
+  }
+
+  try
+  {
+    tmi_21 *tmi_21;
+    ASSERT_TRUE (false);
+  } catch (const std::string &e)
+  {
+    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
+  }
+
+  ASSERT_TRUE (tmi * tmi == tmi);
+  ASSERT_TRUE (tm1 * tmi == tmi);
+  ASSERT_TRUE (tm2 * tmi == tmi);
+  ASSERT_TRUE (tmi * tm1 == tmi);
+  ASSERT_TRUE (tmi * tm2 == tmi);
+  ASSERT_TRUE (tmi_21 * tmi_12 == tmi);
+
+  ASSERT_TRUE (tmi_12 * tmi_21 == tmi_11);
+  ASSERT_TRUE (tmi_11 * tmi_11 == tmi_11);
+
+  ASSERT_TRUE (tmi_21 * tmi_11 == tmi_21);
+  ASSERT_TRUE (tmi_11 * tmi_12 == tmi_12);
+
+  tropical_matrix tm_res_11 = create_square_matrix_2 (5, 6, 7, 8);
+  tropical_matrix tm_res_12 = create_square_matrix_2 (6, 7, 8, 9);
+  tropical_matrix tm_res_21 = create_square_matrix_2 (6, 7, 8, 9);
+  tropical_matrix tm_res_22 = create_square_matrix_2 (7, 8, 9, 10);
+
+  ASSERT_TRUE (tm1 * tm1 == tm_res_11);
+  ASSERT_TRUE (tm1 * tm2 == tm_res_12);
+  ASSERT_TRUE (tm2 * tm1 == tm_res_21);
+  ASSERT_TRUE (tm2 * tm2 == tm_res_22);
+
+  ASSERT_TRUE (tm1_3 * tm2_3 == tm_res_3);
 }
 
 TEST (tropical_matrix, test_read)
@@ -137,7 +255,7 @@ TEST (tropical_matrix, test_read)
   char *si  = (char *) "-inf";
 
   tn_t n1 = atoll (sn1);
-  tn_t i  = tropical_number::get_infinite ().get ();
+  tn_t i  = tropical_number ().get ();
 
   tropical_number tn1 (n1);
   tropical_number ti (i);
@@ -162,7 +280,7 @@ TEST (tropical_matrix, test_write)
   char *si = (char *) "-inf ";
 
   tn_t n = 1230;
-  tn_t i = tropical_number::get_infinite ().get ();
+  tn_t i = tropical_number ().get ();
 
   tropical_number tn (n);
   tropical_number ti (i);

@@ -6,7 +6,12 @@ namespace __placid
 {
   const std::string tn_str_format   = std::string ("%lu");
   const std::string tn_str_infinite = std::string ("-inf");
-  const tn_t tn_infinite = (1L << 32L);
+  const tn_t        tn_infinite     = (1L << 32L);
+
+  tropical_number::tropical_number ()
+  {
+    this->n = tn_infinite;
+  }
 
   tropical_number::tropical_number (tn_t n)
   {
@@ -26,12 +31,6 @@ namespace __placid
   tropical_number::get ()
   {
     return this->n;
-  }
-
-  tropical_number
-  tropical_number::get_infinite ()
-  {
-    return tropical_number (tn_infinite);
   }
 
   tropical_number
@@ -83,7 +82,7 @@ namespace __placid
 
     if (strcmp (tn_str_infinite.c_str (), val) == 0)
     {
-      v = tropical_number::get_infinite ().get ();
+      v = tropical_number ().get ();
     } else
     {
       v = atoll (val);
