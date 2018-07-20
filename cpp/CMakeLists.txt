@@ -63,7 +63,7 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 
 # add executable
-add_executable(placid main.cc tests/tropical_number_tests.cc)
+add_executable(placid main.cc tests/tropical_number_tests.cc tests/tropical_matrix_tests.cc)
 
 # add required libraries
 target_link_libraries (placid TropicalNumbers)

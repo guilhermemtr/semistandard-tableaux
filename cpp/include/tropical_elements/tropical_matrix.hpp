@@ -18,14 +18,24 @@ namespace __placid
     size_t columns;
     tropical_number * matrix;
 
-    /** Constructs a new tropical number, given its value.
-     * Constructs a new tropical number, given its value.
-     * @param n the number of the tropical number to be created.
+    /** Constructs a new tropical matrix, given its size (columns and rows).
+     * Constructs a new tropical matrix, given its size (columns and rows).
+     * @param columns the number of columns of the matrix.
+     * @param rows the number of rows of the matrix.
      */
     tropical_matrix (size_t columns, size_t rows);
 
-    /** Destroys a tropical number structure.
-     * Destroys a tropical number structure.
+    /** Constructs a new tropical matrix, given its size (columns and rows), and the values of the matrix's entries.
+     * Constructs a new tropical matrix, given its size (columns and rows), and the values of the matrix's entries.
+     * The given values are cloned to the new matrix.
+     * @param columns the number of columns of the matrix.
+     * @param rows the number of rows of the matrix.
+     * @param matrix the values of the entries of the matrix.
+     */
+    tropical_matrix (size_t columns, size_t rows, tropical_number *matrix);
+
+    /** Destroys a tropical matrix.
+     * Destroys a tropical matrix.
      */
     virtual ~tropical_matrix ();
 

@@ -16,6 +16,20 @@ namespace __placid
     }
   }
 
+  tropical_matrix::tropical_matrix (size_t           columns,
+                                    size_t           rows,
+                                    tropical_number *matrix)
+  {
+    this->rows    = rows;
+    this->columns = columns;
+    this->matrix  = (tropical_number *) malloc (sizeof (tropical_number)
+                                               * this->rows * this->columns);
+    for (size_t i = 0; i < this->rows * this->columns; i++)
+    {
+      this->matrix[i] = matrix[i];
+    }
+  }
+
   tropical_matrix::~tropical_matrix ()
   {
     free (this->matrix);
