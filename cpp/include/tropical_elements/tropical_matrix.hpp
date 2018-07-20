@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cassert>
 #include <cstring>
+#include <cctype>
 
 #include "ring_element.hpp"
 #include "tropical_number.hpp"

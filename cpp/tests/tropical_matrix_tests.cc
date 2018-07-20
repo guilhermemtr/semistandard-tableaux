@@ -248,49 +248,55 @@ TEST (tropical_matrix, test_mult)
 
 TEST (tropical_matrix, test_read)
 {
-  const char *mode = "r";
+  char f1[1 << 10];
+  char f2[1 << 10];
+  char f3[1 << 10];
 
-  char *sn1 = (char *) "1230";
-  char *sn2 = (char *) "1230L";
-  char *si  = (char *) "-inf";
+  strcpy (f1, "1 2 5\n -inf -inf 2\n -inf 3 -inf");
+  strcpy (f2, "-inf 1 2 \n 0 -inf 4\n 0 1 1\n  ");
+  strcpy (f3, "0 1 1\n -inf -inf 3\n 0L 0 0");
 
-  tn_t n1 = atoll (sn1);
-  tn_t i  = tropical_number ().get ();
+  tropical_matrix tm1 (3, 3);
+  tropical_matrix tm2 (3, 3);
+  tropical_matrix tm3 (3, 3);
 
-  tropical_number tn1 (n1);
-  tropical_number ti (i);
+  tn_t inf = tropical_number ().get ();
 
-  tropical_number v = 0;
+  tropical_matrix tm1_res =
+    create_square_matrix_3 (1, 2, 5, inf, inf, 2, inf, 3, inf);
+  tropical_matrix tm2_res =
+    create_square_matrix_3 (inf, 1, 2, 0, inf, 4, 0, 1, 1);
+  tropical_matrix tm3_res =
+    create_square_matrix_3 (0, 1, 1, inf, inf, 3, 0, 0, 0);
 
-  test_magma_element_file_read (v, sn1);
-  ASSERT_EQ (v.get (), tn1.get ());
+  test_magma_element_file_read (tm1, f1);
+  test_magma_element_file_read (tm2, f2);
+  test_magma_element_file_read (tm3, f3);
 
-  test_magma_element_file_read (v, sn2);
-  ASSERT_EQ (v.get (), tn1.get ());
-
-  test_magma_element_file_read (v, si);
-  EXPECT_EQ (v.get (), ti.get ());
-  ASSERT_TRUE (v == ti);
+  ASSERT_TRUE (tm1 == tm1_res);
+  ASSERT_TRUE (tm2 == tm2_res);
+  ASSERT_TRUE (tm3 == tm3_res);
 }
 
 
 TEST (tropical_matrix, test_write)
 {
-  char *sn = (char *) "1230 ";
-  char *si = (char *) "-inf ";
+  tn_t inf = tropical_number ().get ();
 
-  tn_t n = 1230;
-  tn_t i = tropical_number ().get ();
+  tropical_matrix tm1 =
+    create_square_matrix_3 (1, 2, 5, inf, inf, 2, inf, 3, inf);
+  tropical_matrix tm2 = create_square_matrix_3 (inf, 1, 2, 0, inf, 4, 0, 1, 1);
+  tropical_matrix tm3 = create_square_matrix_3 (0, 1, 1, inf, inf, 3, 0, 0, 0);
 
-  tropical_number tn (n);
-  tropical_number ti (i);
+  char *f1 = test_magma_element_file_write (tm1, 1 << 10);
+  char *f2 = test_magma_element_file_write (tm2, 1 << 10);
+  char *f3 = test_magma_element_file_write (tm3, 1 << 10);
+  
+  ASSERT_TRUE (strcmp (f1, "1 2 5 \n-inf -inf 2 \n-inf 3 -inf \n") == 0);
+  ASSERT_TRUE (strcmp (f2, "-inf 1 2 \n0 -inf 4 \n0 1 1 \n") == 0);
+  ASSERT_TRUE (strcmp (f3, "0 1 1 \n-inf -inf 3 \n0 0 0 \n") == 0);
 
-  size_t f1_len = (strlen (sn) + 2) * sizeof (char);
-  size_t f2_len = (strlen (si) + 2) * sizeof (char);
-
-  char *f1 = test_magma_element_file_write (tn, f1_len);
-  char *f2 = test_magma_element_file_write (ti, f2_len);
-
-  ASSERT_TRUE (strcmp (sn, f1) == 0);
-  ASSERT_TRUE (strcmp (si, f2) == 0);
+  free (f1);
+  free (f2);
+  free (f3);
 }

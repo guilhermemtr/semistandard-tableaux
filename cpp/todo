@@ -12,24 +12,7 @@ CMake output build directory: https://stackoverflow.com/questions/18826789/cmake
 
 
 
-1) Implement the functions that are missing for the tropical numbers
 
 
-
-
-
-semigroup_element ->
-
-mult
-
-assignments
-
-equals
-diff
-
-
-read (FILE *f)
-read (std::string fn)
-
-write (FILE *f)
-write (std::string fn)
+FEATURES: Allow empty lines when reading files. Currently not supported.
+Allow reading of empty tokens.

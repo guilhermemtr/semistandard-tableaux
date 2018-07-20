@@ -124,8 +124,6 @@ TEST (tropical_number, test_mult)
 
 TEST (tropical_number, test_read)
 {
-  const char *mode = "r";
-
   char *sn1 = (char *) "1230";
   char *sn2 = (char *) "1230L";
   char *si  = (char *) "-inf";
@@ -169,4 +167,7 @@ TEST (tropical_number, test_write)
 
   ASSERT_TRUE (strcmp (sn, f1) == 0);
   ASSERT_TRUE (strcmp (si, f2) == 0);
+
+  free (f1);
+  free (f2);
 }

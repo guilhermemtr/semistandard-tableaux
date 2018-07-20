@@ -29,7 +29,7 @@ namespace __placid
   }
 
   tropical_matrix::~tropical_matrix ()
-  { // TODO BUG
+  {
     // delete[] this->matrix;
   }
 
@@ -132,9 +132,17 @@ namespace __placid
     {
       char *tmp = line;
       char *res;
-      while ((res = strtok_r (tmp, " ", &save_ptr)) != NULL)
+
+      bool read_char = false;
+
+      while ((res = strtok_r (tmp, " \t\r", &save_ptr)) != NULL)
       {
         tmp = NULL;
+
+        if (strcmp ("", res) == 0)
+        {
+          continue;
+        }
 
         if (entries == sz)
         {
@@ -142,25 +150,28 @@ namespace __placid
           tns = (tn_t *) realloc (tns, sz * sizeof (tn_t));
         }
 
-        tn_t tn;
         if (strcmp ("-inf", res) == 0)
         {
-          tn = tropical_number ().get ();
+          tn_t tn        = tropical_number ().get ();
+          read_char      = true;
+          tns[entries++] = tn;
         } else
         {
-          if (sscanf (res, "%lu", &tn) < 0)
+          tn_t tn;
+          if (sscanf (res, "%lu", &tn) == 1)
           {
-            // failed reading an entry.
-            free (tns);
-            return;
+            read_char      = true;
+            tns[entries++] = tn;
           }
         }
-        tns[entries++] = tn;
       }
 
       free (line);
       line = NULL;
-      rows++;
+      if (read_char)
+      {
+        rows++;
+      }
     }
 
     this->rows    = rows;
@@ -170,7 +181,7 @@ namespace __placid
 
     for (size_t i = 0; i < this->rows * this->columns; i++)
     {
-      this->matrix[i].n = tns[i];
+      this->matrix[i] = tropical_number (tns[i]);
     }
 
     free (tns);
