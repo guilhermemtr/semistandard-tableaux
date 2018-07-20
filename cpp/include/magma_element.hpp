@@ -18,7 +18,7 @@ namespace __placid
      * @return the magma element value assigned.
      */
     virtual T
-    operator= (T &o) = 0;
+    operator= (T o) = 0;
 
     /** Checks if magma elements are equal.
      * Checks if magma elements are equal.
@@ -26,7 +26,7 @@ namespace __placid
      * @return whether the magma elements are equal or not.
      */
     virtual bool
-    operator== (T &o) = 0;
+    operator== (T o) = 0;
 
     /** Checks if magma elements are different.
      * Checks if magma elements are different.
@@ -34,7 +34,7 @@ namespace __placid
      * @return whether the magma elements are different or not.
      */
     bool
-    operator!= (T &o)
+    operator!= (T o)
     {
       return !(*this == o);
     }
@@ -44,7 +44,7 @@ namespace __placid
      * @param &o the second argument of the multiplication.
      * @return the multiplication of the two given magma elements.
      */
-    virtual T operator* (T &o) = 0;
+    virtual T operator* (T o) = 0;
 
     /** Reads a magma element from a file, given the file stream.
      * Reads a magma element from a file, given the file stream.

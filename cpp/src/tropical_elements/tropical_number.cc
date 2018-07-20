@@ -6,6 +6,7 @@ namespace __placid
 {
   const std::string tn_str_format   = std::string ("%lu");
   const std::string tn_str_infinite = std::string ("-inf");
+  const tn_t tn_infinite = (1L << 32L);
 
   tropical_number::tropical_number (tn_t n)
   {
@@ -34,32 +35,32 @@ namespace __placid
   }
 
   tropical_number
-  tropical_number::operator= (tn_t &o)
+  tropical_number::operator= (tn_t o)
   {
     this->n = o;
     return *this;
   }
 
   tropical_number
-  tropical_number::operator= (tropical_number &o)
+  tropical_number::operator= (tropical_number o)
   {
     this->n = o.n;
     return *this;
   }
 
   bool
-  tropical_number::operator== (tropical_number &o)
+  tropical_number::operator== (tropical_number o)
   {
     return !(!*this || !o) || (this->n == o.n);
   }
 
-  tropical_number tropical_number::operator* (tropical_number &o)
+  tropical_number tropical_number::operator* (tropical_number o)
   {
     return tropical_number (this->n + o.n);
   }
 
   tropical_number
-  tropical_number::operator+ (tropical_number &o)
+  tropical_number::operator+ (tropical_number o)
   {
     tn_t res;
     if (!*this && !o)

@@ -30,30 +30,21 @@ namespace __placid
     virtual ~tropical_matrix ();
 
     tropical_matrix
-    operator= (tropical_matrix &o);
+    operator= (tropical_matrix o);
 
     bool
-    operator== (tropical_matrix &o);
+    operator== (tropical_matrix o);
 
-    bool
-    operator!= (tropical_matrix &o);
-
-    tropical_matrix operator* (tropical_matrix &o);
+    tropical_matrix operator* (tropical_matrix o);
 
     tropical_matrix
-    operator+ (tropical_matrix &o);
+    operator+ (tropical_matrix o);
 
     void
     read (FILE *f);
 
     void
-    read (std::string fn);
-
-    void
     write (FILE *f);
-
-    void
-    write (std::string fn);
   };
 
 }    // namespace __placid

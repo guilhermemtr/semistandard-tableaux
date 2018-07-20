@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "tropical_elements/tropical_number.hpp"
+#include "magma_element_test_utils.hpp"
 
 using namespace __placid;
 
@@ -137,32 +138,15 @@ TEST (tropical_number, test_read)
 
   tropical_number v = 0;
 
-  FILE *input1 = fmemopen (sn1, strlen (sn1) * sizeof (char), mode);
-
-  v.read (input1);
-
+  test_magma_element_file_read (v, sn1);
   ASSERT_EQ (v.get (), tn1.get ());
 
-  fclose (input1);
-
-
-  FILE *input2 = fmemopen (sn2, strlen (sn2) * sizeof (char), mode);
-
-  v.read (input2);
-
+  test_magma_element_file_read (v, sn2);
   ASSERT_EQ (v.get (), tn1.get ());
 
-  fclose (input2);
-
-
-  FILE *inputi = fmemopen (si, strlen (si) * sizeof (char), mode);
-
-  v.read (inputi);
-
+  test_magma_element_file_read (v, si);
   EXPECT_EQ (v.get (), ti.get ());
   ASSERT_TRUE (v == ti);
-
-  fclose (inputi);
 }
 
 
@@ -178,21 +162,11 @@ TEST (tropical_number, test_write)
   tropical_number ti (i);
 
   size_t f1_len = (strlen (sn) + 2) * sizeof (char);
-  char * f1     = (char *) malloc (f1_len);
-
   size_t f2_len = (strlen (si) + 2) * sizeof (char);
-  char * f2     = (char *) malloc (f2_len);
 
-  const char *mode = "w";
-  FILE *      out1 = fmemopen (f1, f1_len, mode);
-  FILE *      out2 = fmemopen (f2, f2_len, mode);
+  char *f1 = test_magma_element_file_write (tn, f1_len);
+  char *f2 = test_magma_element_file_write (ti, f2_len);
 
-  tn.write (out1);
-  ti.write (out2);
-
-  fclose (out1);
-  fclose (out2);
-  
   ASSERT_TRUE (strcmp (sn, f1) == 0);
   ASSERT_TRUE (strcmp (si, f2) == 0);
 }

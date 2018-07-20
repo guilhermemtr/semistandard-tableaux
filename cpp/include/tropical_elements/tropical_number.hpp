@@ -21,10 +21,10 @@ namespace __placid
    * outputs the multiplication of the numbers correctly too.
    */
   typedef uint64_t         tn_t;
+  
   extern const std::string tn_str_format;
   extern const std::string tn_str_infinite;
-
-  const tn_t tn_infinite (1L << 32L);
+  extern const tn_t tn_infinite;
 
   struct tropical_number : public ring_element<tropical_number>
   {
@@ -68,18 +68,18 @@ namespace __placid
      * @return the tropical number value assigned.
      */
     tropical_number
-    operator= (tn_t &o);
+    operator= (tn_t o);
 
     tropical_number
-    operator= (tropical_number &o);
+    operator= (tropical_number o);
 
     bool
-    operator== (tropical_number &o);
+    operator== (tropical_number o);
 
-    tropical_number operator* (tropical_number &o);
+    tropical_number operator* (tropical_number o);
 
     tropical_number
-    operator+ (tropical_number &o);
+    operator+ (tropical_number o);
 
     void
     read (FILE *f);

@@ -22,7 +22,7 @@ namespace __placid
   }
 
   tropical_matrix
-  tropical_matrix::operator= (tropical_matrix &o)
+  tropical_matrix::operator= (tropical_matrix o)
   {
     if (this->columns * this->rows != o.columns * o.rows)
     {
@@ -43,7 +43,7 @@ namespace __placid
   }
 
   bool
-  tropical_matrix::operator== (tropical_matrix &o)
+  tropical_matrix::operator== (tropical_matrix o)
   {
     if (this->columns != o.columns || this->rows != o.rows)
     {
@@ -60,7 +60,7 @@ namespace __placid
     return true;
   }
 
-  tropical_matrix tropical_matrix::operator* (tropical_matrix &o)
+  tropical_matrix tropical_matrix::operator* (tropical_matrix o)
   {
     if (this->columns != o.columns || this->rows != o.rows)
     {
@@ -74,7 +74,7 @@ namespace __placid
       for (size_t j = 0; j < res.rows; j++)
       {
         res.matrix[i + j * res.columns] = tropical_number::get_infinite ();
-        ;
+
         for (size_t k = 0; k < this->columns; k++)
         {
           res.matrix[i + j * res.columns] =
@@ -88,7 +88,7 @@ namespace __placid
   }
 
   tropical_matrix
-  tropical_matrix::operator+ (tropical_matrix &o)
+  tropical_matrix::operator+ (tropical_matrix o)
   {
     if (this->columns != o.columns || this->rows != o.rows)
     {
@@ -130,7 +130,7 @@ namespace __placid
         if (entries == sz)
         {
           sz  = sz * 2;
-          tns = realloc (tns, sz * sizeof (tn_t));
+          tns = (tn_t *) realloc (tns, sz * sizeof (tn_t));
         }
 
         tn_t tn;
@@ -154,11 +154,18 @@ namespace __placid
       rows++;
     }
 
-    fclose (f);
-
-    this->matrix  = tns;
     this->rows    = rows;
     this->columns = entries / rows;
+
+    this->matrix = (tropical_number *) malloc (sizeof (tropical_number)
+                                               * this->rows * this->columns);
+
+    for (size_t i = 0; i < this->rows * this->columns; i++)
+    {
+      this->matrix[i].n = tns[i];
+    }
+
+    free (tns);
   }
 
   void

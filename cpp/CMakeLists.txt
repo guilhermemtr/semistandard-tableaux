@@ -28,6 +28,9 @@ add_subdirectory (src/tropical_elements)
 # include_directories("${PROJECT_BINARY_DIR}/src")
 # add_subdirectory (src/)
 
+#include_directories("${PROJECT_BINARY_DIR}/tests")
+#add_subdirectory (tests/)
+
 
 # whether using or not debugging utils
 option (USE_DEBUGGING_UTILS
@@ -60,13 +63,14 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 
 # add executable
-add_executable(placid main.cc tests/tests.cc tests/tropical_number_tests.cc)
+add_executable(placid main.cc tests/tropical_number_tests.cc)
 
 # add required libraries
 target_link_libraries (placid TropicalNumbers)
 target_link_libraries (placid TropicalMatrices)
 # target_link_libraries (placid AlgebraElements)
 
+#target_link_libraries (placid MagmaElementTestUtils)
 
 # add debugging libraries (if used)
 target_link_libraries (placid  ${DBG_LIBS})
