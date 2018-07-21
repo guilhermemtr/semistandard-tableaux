@@ -63,7 +63,7 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 
 # add executable
-add_executable(placid main.cc tests/tropical_number_tests.cc tests/tropical_matrix_tests.cc)
+add_executable(placid main.cc tests/tropical_number_tests.cc tests/tropical_matrix_tests.cc tests/tuple_tests.cc)
 
 # add required libraries
 target_link_libraries (placid TropicalNumbers)
@@ -72,7 +72,7 @@ target_link_libraries (placid Tuples)
 
 # target_link_libraries (placid AlgebraElements)
 
-#target_link_libraries (placid MagmaElementTestUtils)
+# target_link_libraries (placid MagmaElementTestUtils)
 
 # add debugging libraries (if used)
 target_link_libraries (placid  ${DBG_LIBS})

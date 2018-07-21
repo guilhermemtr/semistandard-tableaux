@@ -5,59 +5,6 @@
 
 using namespace __placid;
 
-void
-initialize_square_matrix_2 (
-  tropical_matrix &m, tn_t e1, tn_t e2, tn_t e3, tn_t e4)
-{
-  tropical_number tns[4] = {tropical_number (e1),
-                            tropical_number (e2),
-                            tropical_number (e3),
-                            tropical_number (e4)};
-
-  if (!((m.rows == m.columns) && (m.rows == 2)))
-  {
-    return;
-  }
-
-  for (size_t i = 0; i < m.rows * m.columns; i++)
-  {
-    m.matrix[i] = tns[i];
-  }
-}
-
-void
-initialize_square_matrix_3 (tropical_matrix &m,
-                            tn_t             e1,
-                            tn_t             e2,
-                            tn_t             e3,
-                            tn_t             e4,
-                            tn_t             e5,
-                            tn_t             e6,
-                            tn_t             e7,
-                            tn_t             e8,
-                            tn_t             e9)
-{
-  tropical_number tns[9] = {tropical_number (e1),
-                            tropical_number (e2),
-                            tropical_number (e3),
-                            tropical_number (e4),
-                            tropical_number (e5),
-                            tropical_number (e6),
-                            tropical_number (e7),
-                            tropical_number (e8),
-                            tropical_number (e9)};
-
-  if (!((m.rows == m.columns) && (m.rows == 3)))
-  {
-    return;
-  }
-
-  for (size_t i = 0; i < m.rows * m.columns; i++)
-  {
-    m.matrix[i] = tns[i];
-  }
-}
-
 TEST (tropical_matrix, test_default_creation)
 {
   tropical_number ti = tropical_number ();

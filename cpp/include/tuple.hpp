@@ -15,7 +15,7 @@ namespace __placid
   extern const std::string incompatible_tuple_arities_exception;
 
   template <typename T>
-  struct tuple : public magma_element<tuple>
+  struct tuple : public magma_element<tuple<T>>
   {
     size_t arity;
     T *    elements;
@@ -25,32 +25,108 @@ namespace __placid
      * @param arity the arity of the tuple.
      * @param elements the elements of the tuple.
      */
-    tuple (size_t arity, T *elements);
+    tuple (size_t arity, T *elements)
+    {
+      this->arity    = arity;
+      this->elements = new T[this->arity];
+      for (size_t i = 0; i < this->arity; i++)
+      {
+        this->elements[i] = elements[i];
+      }
+    }
 
     /** Constructs a new tuple, from another tuple.
      * Constructs a new tuple, from another tuple.
      * @param tuple the tuple to be copied.
      */
-    tuple (tuple &tup);
+    tuple (tuple<T> &tup) : tuple (tup.arity, tup.elements)
+    {
+    }
 
     /** Destroys a tuple.
      * Destroys a tuple.
      */
-    virtual ~tuple ();
+    virtual ~tuple ()
+    {
+      delete[] this->elements;
+    }
 
-    tuple
-    operator= (tuple o);
+    tuple<T>
+    operator= (tuple<T> o)
+    {
+      if (this->arity != o.arity)
+      {
+        delete[] this->elements;
+        this->arity    = o.arity;
+        this->elements = new T[this->arity];
+      }
+
+      for (size_t i = 0; i < this->arity; i++)
+      {
+        this->elements[i] = o.elements[i];
+      }
+
+      return *this;
+    }
 
     bool
-    operator== (tuple o);
+    operator== (tuple<T> o)
+    {
+      if (this->arity != o.arity)
+      {
+        return false;
+      }
 
-    tuple operator* (tuple o);
+      for (size_t i = 0; i < this->arity; i++)
+      {
+        if (this->elements[i] != o.elements[i])
+        {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    tuple<T> operator* (tuple<T> o)
+    {
+      if (this->arity != o.arity)
+      {
+        throw incompatible_tuple_arities_exception;
+      }
+
+      T *elements = new T[this->arity];
+
+      for (size_t i = 0; i < this->arity; i++)
+      {
+        elements[i] = this->elements[i] * o.elements[i];
+      }
+
+      tuple<T> res (this->arity, elements);
+
+      delete[] elements;
+
+      return res;
+    }
 
     void
-    read (FILE *f);
+    read (FILE *f)
+    {
+    }
 
     void
-    write (FILE *f);
+    read (std::string fn)
+    {
+    }
+
+    void
+    write (FILE *f)
+    {
+    }
+
+    void
+    write (std::string fn)
+    {
+    }
   };
 
 }    // namespace __placid
