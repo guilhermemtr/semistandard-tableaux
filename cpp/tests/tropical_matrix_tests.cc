@@ -5,26 +5,37 @@
 
 using namespace __placid;
 
-tropical_matrix
-create_square_matrix_2 (tn_t e1, tn_t e2, tn_t e3, tn_t e4)
+void
+initialize_square_matrix_2 (
+  tropical_matrix &m, tn_t e1, tn_t e2, tn_t e3, tn_t e4)
 {
   tropical_number tns[4] = {tropical_number (e1),
                             tropical_number (e2),
                             tropical_number (e3),
                             tropical_number (e4)};
-  return tropical_matrix (2, 2, tns);
+
+  if (!((m.rows == m.columns) && (m.rows == 2)))
+  {
+    return;
+  }
+
+  for (size_t i = 0; i < m.rows * m.columns; i++)
+  {
+    m.matrix[i] = tns[i];
+  }
 }
 
-tropical_matrix
-create_square_matrix_3 (tn_t e1,
-                        tn_t e2,
-                        tn_t e3,
-                        tn_t e4,
-                        tn_t e5,
-                        tn_t e6,
-                        tn_t e7,
-                        tn_t e8,
-                        tn_t e9)
+void
+initialize_square_matrix_3 (tropical_matrix &m,
+                            tn_t             e1,
+                            tn_t             e2,
+                            tn_t             e3,
+                            tn_t             e4,
+                            tn_t             e5,
+                            tn_t             e6,
+                            tn_t             e7,
+                            tn_t             e8,
+                            tn_t             e9)
 {
   tropical_number tns[9] = {tropical_number (e1),
                             tropical_number (e2),
@@ -35,7 +46,16 @@ create_square_matrix_3 (tn_t e1,
                             tropical_number (e7),
                             tropical_number (e8),
                             tropical_number (e9)};
-  return tropical_matrix (3, 3, tns);
+
+  if (!((m.rows == m.columns) && (m.rows == 3)))
+  {
+    return;
+  }
+
+  for (size_t i = 0; i < m.rows * m.columns; i++)
+  {
+    m.matrix[i] = tns[i];
+  }
 }
 
 TEST (tropical_matrix, test_default_creation)
@@ -50,7 +70,9 @@ TEST (tropical_matrix, test_default_creation)
 
 TEST (tropical_matrix, test_creation_with_values)
 {
-  tropical_matrix tm = create_square_matrix_2 (1, 2, 3, 4);
+  tropical_matrix tm (2, 2);
+  initialize_square_matrix_2 (tm, 1, 2, 3, 4);
+
   ASSERT_EQ (tm.matrix[0].get (), 1);
   ASSERT_EQ (tm.matrix[1].get (), 2);
   ASSERT_EQ (tm.matrix[2].get (), 3);
@@ -60,9 +82,13 @@ TEST (tropical_matrix, test_creation_with_values)
 
 TEST (tropical_matrix, test_comparisons)
 {
-  tropical_matrix tm1 = create_square_matrix_2 (1, 2, 3, 4);
-  tropical_matrix tm2 = create_square_matrix_2 (2, 3, 4, 5);
-  tropical_matrix tm3 = create_square_matrix_2 (1, 2, 3, 4);
+  tropical_matrix tm1 (2, 2);
+  tropical_matrix tm2 (2, 2);
+  tropical_matrix tm3 (2, 2);
+
+  initialize_square_matrix_2 (tm1, 1, 2, 3, 4);
+  initialize_square_matrix_2 (tm2, 2, 3, 4, 5);
+  initialize_square_matrix_2 (tm3, 1, 2, 3, 4);
 
   tropical_matrix tmi (2, 2);
 
@@ -71,6 +97,7 @@ TEST (tropical_matrix, test_comparisons)
 
   ASSERT_FALSE (tm1 == tm2);
   ASSERT_TRUE (tm1 != tm2);
+
 
   ASSERT_FALSE (tm1 != tm3);
   ASSERT_TRUE (tm1 == tm3);
@@ -96,8 +123,11 @@ TEST (tropical_matrix, test_comparisons)
 
 TEST (tropical_matrix, test_sum)
 {
-  tropical_matrix tm1 = create_square_matrix_2 (1, 2, 3, 4);
-  tropical_matrix tm2 = create_square_matrix_2 (2, 3, 4, 5);
+  tropical_matrix tm1 (2, 2);
+  tropical_matrix tm2 (2, 2);
+
+  initialize_square_matrix_2 (tm1, 1, 2, 3, 4);
+  initialize_square_matrix_2 (tm2, 2, 3, 4, 5);
 
   tropical_matrix tmi (2, 2);
 
@@ -139,17 +169,21 @@ TEST (tropical_matrix, test_sum)
 
 TEST (tropical_matrix, test_mult)
 {
-  tropical_matrix tm1 = create_square_matrix_2 (1, 2, 3, 4);
-  tropical_matrix tm2 = create_square_matrix_2 (2, 3, 4, 5);
+  tropical_matrix tm1 (2, 2);
+  tropical_matrix tm2 (2, 2);
+
+  initialize_square_matrix_2 (tm1, 1, 2, 3, 4);
+  initialize_square_matrix_2 (tm2, 2, 3, 4, 5);
 
   tn_t inf = tropical_number ().get ();
 
-  tropical_matrix tm1_3 =
-    create_square_matrix_3 (inf, 1, 2, 0, inf, 4, 0, 1, 1);
-  tropical_matrix tm2_3 =
-    create_square_matrix_3 (0, 1, 1, inf, inf, 3, 0, 0, 0);
+  tropical_matrix tm1_3 (3, 3);
+  tropical_matrix tm2_3 (3, 3);
+  tropical_matrix tm_res_3 (3, 3);
 
-  tropical_matrix tm_res_3 = create_square_matrix_3 (2, 2, 4, 4, 4, 4, 1, 1, 4);
+  initialize_square_matrix_3 (tm1_3, inf, 1, 2, 0, inf, 4, 0, 1, 1);
+  initialize_square_matrix_3 (tm2_3, 0, 1, 1, inf, inf, 3, 0, 0, 0);
+  initialize_square_matrix_3 (tm_res_3, 2, 2, 4, 4, 4, 4, 1, 1, 4);
 
   tropical_matrix tmi (2, 2);
 
@@ -233,10 +267,15 @@ TEST (tropical_matrix, test_mult)
   ASSERT_TRUE (tmi_21 * tmi_11 == tmi_21);
   ASSERT_TRUE (tmi_11 * tmi_12 == tmi_12);
 
-  tropical_matrix tm_res_11 = create_square_matrix_2 (5, 6, 7, 8);
-  tropical_matrix tm_res_12 = create_square_matrix_2 (6, 7, 8, 9);
-  tropical_matrix tm_res_21 = create_square_matrix_2 (6, 7, 8, 9);
-  tropical_matrix tm_res_22 = create_square_matrix_2 (7, 8, 9, 10);
+  tropical_matrix tm_res_11 (2, 2);
+  tropical_matrix tm_res_12 (2, 2);
+  tropical_matrix tm_res_21 (2, 2);
+  tropical_matrix tm_res_22 (2, 2);
+
+  initialize_square_matrix_2 (tm_res_11, 5, 6, 7, 8);
+  initialize_square_matrix_2 (tm_res_12, 6, 7, 8, 9);
+  initialize_square_matrix_2 (tm_res_21, 6, 7, 8, 9);
+  initialize_square_matrix_2 (tm_res_22, 7, 8, 9, 10);
 
   ASSERT_TRUE (tm1 * tm1 == tm_res_11);
   ASSERT_TRUE (tm1 * tm2 == tm_res_12);
@@ -262,12 +301,13 @@ TEST (tropical_matrix, test_read)
 
   tn_t inf = tropical_number ().get ();
 
-  tropical_matrix tm1_res =
-    create_square_matrix_3 (1, 2, 5, inf, inf, 2, inf, 3, inf);
-  tropical_matrix tm2_res =
-    create_square_matrix_3 (inf, 1, 2, 0, inf, 4, 0, 1, 1);
-  tropical_matrix tm3_res =
-    create_square_matrix_3 (0, 1, 1, inf, inf, 3, 0, 0, 0);
+  tropical_matrix tm1_res (3, 3);
+  tropical_matrix tm2_res (3, 3);
+  tropical_matrix tm3_res (3, 3);
+
+  initialize_square_matrix_3 (tm1_res, 1, 2, 5, inf, inf, 2, inf, 3, inf);
+  initialize_square_matrix_3 (tm2_res, inf, 1, 2, 0, inf, 4, 0, 1, 1);
+  initialize_square_matrix_3 (tm3_res, 0, 1, 1, inf, inf, 3, 0, 0, 0);
 
   test_magma_element_file_read (tm1, f1);
   test_magma_element_file_read (tm2, f2);
@@ -283,15 +323,18 @@ TEST (tropical_matrix, test_write)
 {
   tn_t inf = tropical_number ().get ();
 
-  tropical_matrix tm1 =
-    create_square_matrix_3 (1, 2, 5, inf, inf, 2, inf, 3, inf);
-  tropical_matrix tm2 = create_square_matrix_3 (inf, 1, 2, 0, inf, 4, 0, 1, 1);
-  tropical_matrix tm3 = create_square_matrix_3 (0, 1, 1, inf, inf, 3, 0, 0, 0);
+  tropical_matrix tm1 (3, 3);
+  tropical_matrix tm2 (3, 3);
+  tropical_matrix tm3 (3, 3);
+
+  initialize_square_matrix_3 (tm1, 1, 2, 5, inf, inf, 2, inf, 3, inf);
+  initialize_square_matrix_3 (tm2, inf, 1, 2, 0, inf, 4, 0, 1, 1);
+  initialize_square_matrix_3 (tm3, 0, 1, 1, inf, inf, 3, 0, 0, 0);
 
   char *f1 = test_magma_element_file_write (tm1, 1 << 10);
   char *f2 = test_magma_element_file_write (tm2, 1 << 10);
   char *f3 = test_magma_element_file_write (tm3, 1 << 10);
-  
+
   ASSERT_TRUE (strcmp (f1, "1 2 5 \n-inf -inf 2 \n-inf 3 -inf \n") == 0);
   ASSERT_TRUE (strcmp (f2, "-inf 1 2 \n0 -inf 4 \n0 1 1 \n") == 0);
   ASSERT_TRUE (strcmp (f3, "0 1 1 \n-inf -inf 3 \n0 0 0 \n") == 0);

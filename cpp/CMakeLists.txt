@@ -26,7 +26,7 @@ include_directories("${PROJECT_BINARY_DIR}/src/tropical_elements")
 add_subdirectory (src/tropical_elements)
 
 # include_directories("${PROJECT_BINARY_DIR}/src")
-# add_subdirectory (src/)
+add_subdirectory (src/)
 
 #include_directories("${PROJECT_BINARY_DIR}/tests")
 #add_subdirectory (tests/)
@@ -68,6 +68,8 @@ add_executable(placid main.cc tests/tropical_number_tests.cc tests/tropical_matr
 # add required libraries
 target_link_libraries (placid TropicalNumbers)
 target_link_libraries (placid TropicalMatrices)
+target_link_libraries (placid Tuples)
+
 # target_link_libraries (placid AlgebraElements)
 
 #target_link_libraries (placid MagmaElementTestUtils)

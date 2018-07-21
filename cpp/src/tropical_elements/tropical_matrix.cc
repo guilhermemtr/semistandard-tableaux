@@ -17,20 +17,26 @@ namespace __placid
   tropical_matrix::tropical_matrix (size_t           rows,
                                     size_t           columns,
                                     tropical_number *matrix)
+    : tropical_matrix (rows, columns)
   {
-    this->rows    = rows;
-    this->columns = columns;
-    this->matrix  = new tropical_number[this->rows * this->columns];
-
     for (size_t i = 0; i < this->rows * this->columns; i++)
     {
       this->matrix[i] = matrix[i];
     }
   }
 
+  tropical_matrix::tropical_matrix (tropical_matrix &o)
+    : tropical_matrix (o.rows, o.columns)
+  {
+    for (size_t i = 0; i < this->rows * this->columns; i++)
+    {
+      this->matrix[i] = o.matrix[i];
+    }
+  }
+
   tropical_matrix::~tropical_matrix ()
   {
-    // delete[] this->matrix;
+    delete[] this->matrix;
   }
 
   tropical_matrix

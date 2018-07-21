@@ -38,6 +38,13 @@ namespace __placid
      */
     tropical_matrix (size_t rows, size_t columns, tropical_number *matrix);
 
+    /** Constructs a new tropical matrix, from another tropical matrix.
+     * Constructs a new tropical matrix, from another tropical matrix.
+     * The given values are cloned to the new matrix.
+     * @param o the tropical matrix to be cloned.
+     */
+    tropical_matrix (tropical_matrix &o);
+
     /** Destroys a tropical matrix.
      * Destroys a tropical matrix.
      */

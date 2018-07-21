@@ -14,5 +14,5 @@ CMake output build directory: https://stackoverflow.com/questions/18826789/cmake
 
 
 
-FEATURES: Allow empty lines when reading files. Currently not supported.
-Allow reading of empty tokens.
+FEATURES: make the delete [] work without segfault.
+implement tuples.
