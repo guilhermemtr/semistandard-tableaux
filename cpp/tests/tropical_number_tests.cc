@@ -150,7 +150,7 @@ TEST (tropical_number, test_read)
 
 TEST (tropical_number, test_write)
 {
-  file_format format = 0;
+  file_format format = tropical_number::plain_format;
   char *      sn     = (char *) "1230 ";
   char *      si     = (char *) "-inf ";
 

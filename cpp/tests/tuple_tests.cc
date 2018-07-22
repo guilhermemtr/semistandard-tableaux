@@ -119,62 +119,83 @@ TEST (tuple, test_mult)
   }
 }
 
-/*TEST (tuple, test_read)
+TEST (tuple, test_read_tropical_numbers)
 {
+  tropical_number e0;
+  tropical_number e1 (1);
+  tropical_number e2 (2);
+  tropical_number e3 (3);
+  tropical_number e4 (4);
+  tropical_number e5 (5);
+  tropical_number e6 (6);
+  tropical_number e7 (7);
+  tropical_number e8 (8);
+  tropical_number e9 (9);
+
+  tropical_number tns_1[2]  = {e1, e2};
+  tropical_number tns_2[5]  = {e0, e1, e2, e3, e4};
+  tropical_number tns_3[10] = {e0, e1, e2, e3, e4, e5, e6, e7, e8, e9};
+
   char f1[1 << 10];
   char f2[1 << 10];
   char f3[1 << 10];
 
-  strcpy (f1, "1 2 5\n -inf -inf 2\n -inf 3 -inf");
-  strcpy (f2, "-inf 1 2 \n 0 -inf 4\n 0 1 1\n  ");
-  strcpy (f3, "0 1 1\n -inf -inf 3\n 0L 0 0");
+  strcpy (f1, "tuple\n2\n1 \n,\n2 ");
+  strcpy (f2, "tuple\n5\n-inf \n,\n1 \n,\n2 \n,\n3 \n,\n4 ");
+  strcpy (
+    f3,
+    "tuple\n10\n-inf \n,\n1 \n,\n2 \n,\n3 \n,\n4 \n,\n5 \n,\n6 \n,\n7 \n,\n8 \n,\n9 ");
 
-  tuple tm1 (3, 3);
-  tuple tm2 (3, 3);
-  tuple tm3 (3, 3);
+  tuple<tropical_number> tup1 (2, tns_1);
+  tuple<tropical_number> tup2 (5, tns_2);
+  tuple<tropical_number> tup3 (10, tns_3);
 
-  tn_t inf = tropical_number ().get ();
+  tuple<tropical_number> tup1_res (2, tns_1);
+  tuple<tropical_number> tup2_res (5, tns_2);
+  tuple<tropical_number> tup3_res (10, tns_3);
 
-  tuple tm1_res (3, 3);
-  tuple tm2_res (3, 3);
-  tuple tm3_res (3, 3);
+  test_magma_element_file_read (tup1, f1);
+  test_magma_element_file_read (tup2, f2);
+  test_magma_element_file_read (tup3, f3);
 
-  initialize_square_matrix_3 (tm1_res, 1, 2, 5, inf, inf, 2, inf, 3, inf);
-  initialize_square_matrix_3 (tm2_res, inf, 1, 2, 0, inf, 4, 0, 1, 1);
-  initialize_square_matrix_3 (tm3_res, 0, 1, 1, inf, inf, 3, 0, 0, 0);
-
-  test_magma_element_file_read (tm1, f1);
-  test_magma_element_file_read (tm2, f2);
-  test_magma_element_file_read (tm3, f3);
-
-  ASSERT_TRUE (tm1 == tm1_res);
-  ASSERT_TRUE (tm2 == tm2_res);
-  ASSERT_TRUE (tm3 == tm3_res);
+  ASSERT_TRUE (tup1 == tup1_res);
+  ASSERT_TRUE (tup2 == tup2_res);
+  ASSERT_TRUE (tup3 == tup3_res);
 }
 
 
 TEST (tuple, test_write)
 {
-  tn_t inf = tropical_number ().get ();
+  tropical_number e0;
+  tropical_number e1 (1);
+  tropical_number e2 (2);
+  tropical_number e3 (3);
+  tropical_number e4 (4);
+  tropical_number e5 (5);
+  tropical_number e6 (6);
+  tropical_number e7 (7);
+  tropical_number e8 (8);
+  tropical_number e9 (9);
 
-  tuple tm1 (3, 3);
-  tuple tm2 (3, 3);
-  tuple tm3 (3, 3);
+  tropical_number tns_1[2]  = {e1, e2};
+  tropical_number tns_2[5]  = {e0, e1, e2, e3, e4};
+  tropical_number tns_3[10] = {e0, e1, e2, e3, e4, e5, e6, e7, e8, e9};
 
-  initialize_square_matrix_3 (tm1, 1, 2, 5, inf, inf, 2, inf, 3, inf);
-  initialize_square_matrix_3 (tm2, inf, 1, 2, 0, inf, 4, 0, 1, 1);
-  initialize_square_matrix_3 (tm3, 0, 1, 1, inf, inf, 3, 0, 0, 0);
+  tuple<tropical_number> tup1 (2, tns_1);
+  tuple<tropical_number> tup2 (5, tns_2);
+  tuple<tropical_number> tup3 (10, tns_3);
 
-  char *f1 = test_magma_element_file_write (tm1, 1 << 10);
-  char *f2 = test_magma_element_file_write (tm2, 1 << 10);
-  char *f3 = test_magma_element_file_write (tm3, 1 << 10);
+  char *tup1_res = test_magma_element_file_write (tup1, 1 << 10, 0);
+  char *tup2_res = test_magma_element_file_write (tup2, 1 << 10, 0);
+  char *tup3_res = test_magma_element_file_write (tup3, 1 << 10, 0);
 
-  ASSERT_TRUE (strcmp (f1, "1 2 5 \n-inf -inf 2 \n-inf 3 -inf \n") == 0);
-  ASSERT_TRUE (strcmp (f2, "-inf 1 2 \n0 -inf 4 \n0 1 1 \n") == 0);
-  ASSERT_TRUE (strcmp (f3, "0 1 1 \n-inf -inf 3 \n0 0 0 \n") == 0);
 
-  free (f1);
-  free (f2);
-  free (f3);
+  ASSERT_TRUE (strcmp (tup1_res, "tuple\n2\n1 \n,\n2 ") == 0);
+  ASSERT_TRUE (strcmp (tup2_res, "tuple\n5\n-inf \n,\n1 \n,\n2 \n,\n3 \n,\n4 ")
+               == 0);
+  ASSERT_TRUE (
+    strcmp (
+      tup3_res,
+      "tuple\n10\n-inf \n,\n1 \n,\n2 \n,\n3 \n,\n4 \n,\n5 \n,\n6 \n,\n7 \n,\n8 \n,\n9 ")
+    == 0);
 }
-*/

@@ -12,6 +12,7 @@
 
 namespace __placid
 {
+  extern const std::string tuple_format_id;
   extern const std::string incompatible_tuple_arities_exception;
 
   template <typename T>
@@ -111,21 +112,82 @@ namespace __placid
     void
     read (FILE *f)
     {
-    }
+      char format_id[256];
+      if (fscanf (f, "%s", format_id) != 1)
+      {
+        throw invalid_file_format_exception;
+      }
 
-    void
-    read (std::string fn)
-    {
+      if (strcmp (format_id, tuple_format_id.c_str ()) != 0)
+      {
+        throw invalid_file_format_exception;
+      }
+
+      size_t arity;
+
+      if (fscanf (f, "%lu", &arity) != 1)
+      {
+        throw invalid_file_format_exception;
+      }
+
+      delete[] this->elements;
+      this->arity = arity;
+
+      this->elements = new T[this->arity];
+
+      discard_line (f);
+      read_data (f);
     }
 
     void
     write (FILE *f, file_format format)
     {
+      if (f == NULL)
+      {
+        return;
+      }
+
+      fprintf (f, "%s\n", tuple_format_id.c_str ());
+
+      fprintf (f, "%lu\n", this->arity);
+
+      this->write_data (f, format);
+    }
+
+      private:
+    void
+    discard_line (FILE *f, size_t to_discard = 1)
+    {
+      char * tmp = NULL;
+      size_t len = 0;
+      for (size_t i = 0; i < to_discard; i++)
+      {
+        getline (&tmp, &len, f);
+        free (tmp);
+        tmp = NULL;
+      }
     }
 
     void
-    write (std::string fn, file_format format)
+    read_data (FILE *f)
     {
+      for (size_t i = 1; i < this->arity; i++)
+      {
+        this->elements[i - 1].read (f);
+        discard_line (f,2);
+      }
+      this->elements[this->arity - 1].read (f);
+    }
+
+    void
+    write_data (FILE *f, file_format format)
+    {
+      for (size_t i = 1; i < this->arity; i++)
+      {
+        elements[i - 1].write (f, format);
+        fprintf (f, "\n,\n");
+      }
+      elements[this->arity - 1].write (f, format);
     }
   };
 
