@@ -194,18 +194,23 @@ namespace __placid
   }
 
   void
-  tropical_matrix::write (FILE *f)
+  tropical_matrix::write (FILE *f, file_format format)
   {
     if (f == NULL)
     {
       return;
     }
 
+    if (format != plain_format && format != table_format)
+    {
+      throw invalid_file_format_exception;
+    }
+
     for (size_t i = 0; i < this->rows; i++)
     {
       for (size_t j = 0; j < this->columns; j++)
       {
-        this->matrix[i * this->columns + j].write (f);
+        this->matrix[i * this->columns + j].write (f, format);
       }
       fprintf (f, "\n");
     }

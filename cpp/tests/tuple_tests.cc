@@ -59,127 +59,64 @@ TEST (tuple, test_mult)
   tropical_number e2 (2);
   tropical_number e3 (3);
   tropical_number e4 (4);
-  
+  tropical_number e6 (6);
 
+  // setup of the pairs
   tropical_number elems2_1[2] = {e0, e1};
   tropical_number elems2_2[2] = {e1, e2};
-  tropical_number elems2_3[2] = {e2, e3};
-  tropical_number elems3_1[3] = {e1, e2, e3};
 
   tuple<tropical_number> tup2_1 (2, elems2_1);
   tuple<tropical_number> tup2_2 (2, elems2_2);
-  tuple<tropical_number> tup2_3 (2, elems2_3);
+
+  // setup of the triples
+  tropical_number elems3_1[3] = {e1, e2, e3};
+  tropical_number elems3_2[3] = {e2, e1, e0};
+
   tuple<tropical_number> tup3_1 (3, elems3_1);
-  tuple<tropical_number> tup3_2 (3, elems3_1);
-
-  // NOT OK:
-  // tup2_1 tup3_1
-  // tuples of different types
-
-  
-  // tup2_1 * tup2_1
-  // 
+  tuple<tropical_number> tup3_2 (3, elems3_2);
 
 
-  
-  tuple tmi (2, 2);
+  tropical_number elems2_res_11[2] = {e0, e2};
+  tropical_number elems2_res_21[2] = {e0, e3};
+  tropical_number elems2_res_22[2] = {e2, e4};
 
-  tuple tmi_11 (1, 1);
-  tuple tmi_12 (1, 2);
-  tuple tmi_21 (2, 1);
+  tuple<tropical_number> tup2_res_11 (2, elems2_res_11);
+  tuple<tropical_number> tup2_res_21 (2, elems2_res_21);
+  tuple<tropical_number> tup2_res_22 (2, elems2_res_22);
+
+  tropical_number elems3_res_11[3] = {e2, e4, e6};
+  tropical_number elems3_res_12[3] = {e3, e3, e0};
+  tropical_number elems3_res_22[3] = {e4, e2, e0};
+
+  tuple<tropical_number> tup3_res_11 (3, elems3_res_11);
+  tuple<tropical_number> tup3_res_12 (3, elems3_res_12);
+  tuple<tropical_number> tup3_res_22 (3, elems3_res_22);
+
+  ASSERT_TRUE (tup2_1 * tup2_1 == tup2_res_11);
+  ASSERT_TRUE (tup2_2 * tup2_1 == tup2_res_21);
+  ASSERT_TRUE (tup2_2 * tup2_2 == tup2_res_22);
+
+  ASSERT_TRUE (tup3_1 * tup3_1 == tup3_res_11);
+  ASSERT_TRUE (tup3_1 * tup3_2 == tup3_res_12);
+  ASSERT_TRUE (tup3_2 * tup3_2 == tup3_res_22);
 
   try
   {
-    tm1 *tmi_12;
+    tup2_1 *tup3_1;
     ASSERT_TRUE (false);
   } catch (const std::string &e)
   {
-    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
+    ASSERT_TRUE (e == incompatible_tuple_arities_exception);
   }
 
   try
   {
-    tmi_21 *tm1;
+    tup3_1 *tup2_1;
     ASSERT_TRUE (false);
   } catch (const std::string &e)
   {
-    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
+    ASSERT_TRUE (e == incompatible_tuple_arities_exception);
   }
-
-  try
-  {
-    tm1 *tmi_11;
-    ASSERT_TRUE (false);
-  } catch (const std::string &e)
-  {
-    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
-  }
-
-  try
-  {
-    tmi_12 *tmi_11;
-    ASSERT_TRUE (false);
-  } catch (const std::string &e)
-  {
-    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
-  }
-
-  try
-  {
-    tmi_11 *tmi_21;
-    ASSERT_TRUE (false);
-  } catch (const std::string &e)
-  {
-    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
-  }
-
-  try
-  {
-    tmi_12 *tmi_12;
-    ASSERT_TRUE (false);
-  } catch (const std::string &e)
-  {
-    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
-  }
-
-  try
-  {
-    tmi_21 *tmi_21;
-    ASSERT_TRUE (false);
-  } catch (const std::string &e)
-  {
-    ASSERT_TRUE (e == invalid_matrix_sizes_exception);
-  }
-
-  ASSERT_TRUE (tmi * tmi == tmi);
-  ASSERT_TRUE (tm1 * tmi == tmi);
-  ASSERT_TRUE (tm2 * tmi == tmi);
-  ASSERT_TRUE (tmi * tm1 == tmi);
-  ASSERT_TRUE (tmi * tm2 == tmi);
-  ASSERT_TRUE (tmi_21 * tmi_12 == tmi);
-
-  ASSERT_TRUE (tmi_12 * tmi_21 == tmi_11);
-  ASSERT_TRUE (tmi_11 * tmi_11 == tmi_11);
-
-  ASSERT_TRUE (tmi_21 * tmi_11 == tmi_21);
-  ASSERT_TRUE (tmi_11 * tmi_12 == tmi_12);
-
-  tuple tm_res_11 (2, 2);
-  tuple tm_res_12 (2, 2);
-  tuple tm_res_21 (2, 2);
-  tuple tm_res_22 (2, 2);
-
-  initialize_square_matrix_2 (tm_res_11, 5, 6, 7, 8);
-  initialize_square_matrix_2 (tm_res_12, 6, 7, 8, 9);
-  initialize_square_matrix_2 (tm_res_21, 6, 7, 8, 9);
-  initialize_square_matrix_2 (tm_res_22, 7, 8, 9, 10);
-
-  ASSERT_TRUE (tm1 * tm1 == tm_res_11);
-  ASSERT_TRUE (tm1 * tm2 == tm_res_12);
-  ASSERT_TRUE (tm2 * tm1 == tm_res_21);
-  ASSERT_TRUE (tm2 * tm2 == tm_res_22);
-
-  ASSERT_TRUE (tm1_3 * tm2_3 == tm_res_3);
 }
 
 /*TEST (tuple, test_read)

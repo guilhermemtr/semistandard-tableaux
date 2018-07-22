@@ -92,8 +92,18 @@ namespace __placid
   }
 
   void
-  tropical_number::write (FILE *f)
+  tropical_number::write (FILE *f, file_format format)
   {
+    if (f == NULL)
+    {
+      return;
+    }
+
+    if (format != plain_format)
+    {
+      throw invalid_file_format_exception;
+    }
+
     if (!*this)
     {
       fprintf (f, (tn_str_format + " ").c_str (), this->get ());

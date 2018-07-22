@@ -17,6 +17,9 @@ namespace __placid
 
   struct tropical_matrix : public ring_element<tropical_matrix>
   {
+    const file_format plain_format = 0;
+    const file_format table_format = 1;
+
     size_t           rows;
     size_t           columns;
     tropical_number *matrix;
@@ -65,7 +68,7 @@ namespace __placid
     read (FILE *f);
 
     void
-    write (FILE *f);
+    write (FILE *f, file_format format);
   };
 
 }    // namespace __placid

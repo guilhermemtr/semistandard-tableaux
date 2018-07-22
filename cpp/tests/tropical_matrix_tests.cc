@@ -5,6 +5,59 @@
 
 using namespace __placid;
 
+void
+initialize_square_matrix_2 (
+  tropical_matrix &m, tn_t e1, tn_t e2, tn_t e3, tn_t e4)
+{
+  tropical_number tns[4] = {tropical_number (e1),
+                            tropical_number (e2),
+                            tropical_number (e3),
+                            tropical_number (e4)};
+
+  if (!((m.rows == m.columns) && (m.rows == 2)))
+  {
+    return;
+  }
+
+  for (size_t i = 0; i < m.rows * m.columns; i++)
+  {
+    m.matrix[i] = tns[i];
+  }
+}
+
+void
+initialize_square_matrix_3 (tropical_matrix &m,
+                            tn_t             e1,
+                            tn_t             e2,
+                            tn_t             e3,
+                            tn_t             e4,
+                            tn_t             e5,
+                            tn_t             e6,
+                            tn_t             e7,
+                            tn_t             e8,
+                            tn_t             e9)
+{
+  tropical_number tns[9] = {tropical_number (e1),
+                            tropical_number (e2),
+                            tropical_number (e3),
+                            tropical_number (e4),
+                            tropical_number (e5),
+                            tropical_number (e6),
+                            tropical_number (e7),
+                            tropical_number (e8),
+                            tropical_number (e9)};
+
+  if (!((m.rows == m.columns) && (m.rows == 3)))
+  {
+    return;
+  }
+
+  for (size_t i = 0; i < m.rows * m.columns; i++)
+  {
+    m.matrix[i] = tns[i];
+  }
+}
+
 TEST (tropical_matrix, test_default_creation)
 {
   tropical_number ti = tropical_number ();
@@ -268,6 +321,7 @@ TEST (tropical_matrix, test_read)
 
 TEST (tropical_matrix, test_write)
 {
+  file_format format = 0;
   tn_t inf = tropical_number ().get ();
 
   tropical_matrix tm1 (3, 3);
@@ -278,9 +332,9 @@ TEST (tropical_matrix, test_write)
   initialize_square_matrix_3 (tm2, inf, 1, 2, 0, inf, 4, 0, 1, 1);
   initialize_square_matrix_3 (tm3, 0, 1, 1, inf, inf, 3, 0, 0, 0);
 
-  char *f1 = test_magma_element_file_write (tm1, 1 << 10);
-  char *f2 = test_magma_element_file_write (tm2, 1 << 10);
-  char *f3 = test_magma_element_file_write (tm3, 1 << 10);
+  char *f1 = test_magma_element_file_write (tm1, 1 << 10, format);
+  char *f2 = test_magma_element_file_write (tm2, 1 << 10, format);
+  char *f3 = test_magma_element_file_write (tm3, 1 << 10, format);
 
   ASSERT_TRUE (strcmp (f1, "1 2 5 \n-inf -inf 2 \n-inf 3 -inf \n") == 0);
   ASSERT_TRUE (strcmp (f2, "-inf 1 2 \n0 -inf 4 \n0 1 1 \n") == 0);

@@ -5,9 +5,15 @@
 
 #include <cstdio>
 #include <cerrno>
+#include <cstdint>
 
 namespace __placid
 {
+  typedef uint8_t file_format;
+
+  const std::string invalid_file_format_exception =
+    std::string ("Invalid file format");
+
   template <typename T>
   class magma_element
   {
@@ -75,16 +81,18 @@ namespace __placid
     /** Writes a magma element into a file, given the file stream.
      * Writes a magma element into a file, given the file stream.
      * @param f the file stream.
+     * @param format the file format to be used.
      */
     virtual void
-    write (FILE *f) = 0;
+    write (FILE *f, file_format format) = 0;
 
     /** Writes a magma element into a file, given the filename.
      * Writes a magma element into a file, given the filename.
      * @param fn the filename.
+     * @param format the file format to be used.
      */
     void
-    write (std::string fn)
+    write (std::string fn, file_format format)
     {
       FILE *f = fopen (fn.c_str (), "w");
 
@@ -93,7 +101,7 @@ namespace __placid
         throw errno;
       }
 
-      this->write (f);
+      this->write (f, format);
 
       fclose (f);
     }

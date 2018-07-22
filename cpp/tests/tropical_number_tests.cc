@@ -150,8 +150,9 @@ TEST (tropical_number, test_read)
 
 TEST (tropical_number, test_write)
 {
-  char *sn = (char *) "1230 ";
-  char *si = (char *) "-inf ";
+  file_format format = 0;
+  char *      sn     = (char *) "1230 ";
+  char *      si     = (char *) "-inf ";
 
   tn_t n = 1230;
   tn_t i = tropical_number ().get ();
@@ -162,8 +163,8 @@ TEST (tropical_number, test_write)
   size_t f1_len = (strlen (sn) + 2) * sizeof (char);
   size_t f2_len = (strlen (si) + 2) * sizeof (char);
 
-  char *f1 = test_magma_element_file_write (tn, f1_len);
-  char *f2 = test_magma_element_file_write (ti, f2_len);
+  char *f1 = test_magma_element_file_write (tn, f1_len, format);
+  char *f2 = test_magma_element_file_write (ti, f2_len, format);
 
   ASSERT_TRUE (strcmp (sn, f1) == 0);
   ASSERT_TRUE (strcmp (si, f2) == 0);

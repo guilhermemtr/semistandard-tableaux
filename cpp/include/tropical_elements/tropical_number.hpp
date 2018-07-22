@@ -28,6 +28,8 @@ namespace __placid
 
   struct tropical_number : public ring_element<tropical_number>
   {
+    const file_format plain_format = 0;
+
     tn_t n;
 
     /** Constructs a new tropical number, corresponding to -infinity.
@@ -83,7 +85,7 @@ namespace __placid
     read (FILE *f);
 
     void
-    write (FILE *f);
+    write (FILE *f, file_format format);
   };
 
 }    // namespace __placid

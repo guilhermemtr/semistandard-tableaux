@@ -119,12 +119,12 @@ namespace __placid
     }
 
     void
-    write (FILE *f)
+    write (FILE *f, file_format format)
     {
     }
 
     void
-    write (std::string fn)
+    write (std::string fn, file_format format)
     {
     }
   };
