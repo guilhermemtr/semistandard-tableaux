@@ -7,6 +7,8 @@ namespace __placid
   const std::string invalid_matrix_sizes_exception =
     std::string ("Different matrix sizes");
 
+  const std::string tropical_matrix_format_id = std::string ("tropical_matrix");
+
   tropical_matrix::tropical_matrix (size_t rows, size_t columns)
   {
     this->rows    = rows;
@@ -123,74 +125,54 @@ namespace __placid
   void
   tropical_matrix::read (FILE *f)
   {
-    ssize_t read;
-    char *  line     = NULL;
-    size_t  len      = 0;
-    char *  save_ptr = NULL;
-
-    size_t sz      = 32L;
-    tn_t * tns     = (tn_t *) malloc (sz * sizeof (tn_t));
-    size_t entries = 0;
-    size_t rows    = 0;
-
-
-    while ((read = getline (&line, &len, f)) != -1)
+    char format_id[256];
+    if (fscanf (f, "%s", format_id) != 1)
     {
-      char *tmp = line;
-      char *res;
-
-      bool read_char = false;
-
-      while ((res = strtok_r (tmp, " \t\r", &save_ptr)) != NULL)
-      {
-        tmp = NULL;
-
-        if (strcmp ("", res) == 0)
-        {
-          continue;
-        }
-
-        if (entries == sz)
-        {
-          sz  = sz * 2;
-          tns = (tn_t *) realloc (tns, sz * sizeof (tn_t));
-        }
-
-        if (strcmp ("-inf", res) == 0)
-        {
-          tn_t tn        = tropical_number ().get ();
-          read_char      = true;
-          tns[entries++] = tn;
-        } else
-        {
-          tn_t tn;
-          if (sscanf (res, "%lu", &tn) == 1)
-          {
-            read_char      = true;
-            tns[entries++] = tn;
-          }
-        }
-      }
-
-      free (line);
-      line = NULL;
-      if (read_char)
-      {
-        rows++;
-      }
+      throw invalid_file_format_exception;
     }
 
-    this->rows    = rows;
-    this->columns = entries / rows;
+    if (strcmp (format_id, tropical_matrix_format_id.c_str ()) != 0)
+    {
+      throw invalid_file_format_exception;
+    }
+
+    int format;
+    if (fscanf (f, "%d", &format) != 1)
+    {
+      throw invalid_file_format_exception;
+    }
+
+    if (format != plain_format && format != table_format)
+    {
+      throw invalid_file_format_exception;
+    }
+
+    size_t n_rows;
+    size_t n_columns;
+
+    if (fscanf (f, "%lu %lu", &n_rows, &n_columns) != 2)
+    {
+      throw invalid_file_format_exception;
+    }
+
+    delete[] this->matrix;
+    this->rows    = n_rows;
+    this->columns = n_columns;
 
     this->matrix = new tropical_number[this->rows * this->columns];
 
-    for (size_t i = 0; i < this->rows * this->columns; i++)
+    switch (format)
     {
-      this->matrix[i] = tropical_number (tns[i]);
+      case tropical_matrix::plain_format:
+        this->read_plain (f);
+        break;
+      case tropical_matrix::table_format:
+        this->read_table (f);
+        break;
+      default:
+        throw invalid_file_format_exception;
+        break;
     }
-
-    free (tns);
   }
 
   void
@@ -206,15 +188,98 @@ namespace __placid
       throw invalid_file_format_exception;
     }
 
+    fprintf (f, "%s\n%u\n", tropical_matrix_format_id.c_str (), format);
+
+    fprintf (f, "%lu %lu\n", this->rows, this->columns);
+
+    switch (format)
+    {
+      case plain_format:
+        this->write_plain (f);
+        break;
+      case table_format:
+        this->write_table (f);
+        break;
+    }
+  }
+
+  void
+  tropical_matrix::read_plain (FILE *f)
+  {
+    char   input[256];
+    char   nl;
+    size_t entries = 0;
+
+    for (size_t i = 0; i < this->rows * this->columns; i++)
+    {
+      this->matrix[entries++].read (f);
+    }
+  }
+
+  void
+  tropical_matrix::read_table (FILE *f)
+  {
+    char input[256];
+
+    for (size_t i = 0; i < this->rows; i++)
+    {
+      /*char *  line = NULL;
+      size_t  len  = 0;
+      ssize_t read = getline (&line, &len, f);
+
+      if (read == -1)
+      {
+        throw invalid_file_format_exception;
+      }
+
+      FILE *f_line = fmemopen (line, (1 + strlen (line)) * sizeof (char), "r");
+      */
+      for (size_t j = 0; j < this->columns; j++)
+      {
+	this->matrix[j + i * this->columns].read (f);
+	/*        try
+        {
+          this->matrix[j + i * this->columns].read (f_line);
+          this->matrix[j + i * this->columns].write (stdout);
+        } catch (std::string e)
+        {
+          printf ("%s\n", e.c_str ());
+	  }*/
+      }
+
+      /*      fclose (f_line);
+      free(line);
+      line = NULL;
+      len = 0;*/
+    }
+  }
+
+  void
+  tropical_matrix::write_plain (FILE *f)
+  {
     for (size_t i = 0; i < this->rows; i++)
     {
       for (size_t j = 0; j < this->columns; j++)
       {
-        this->matrix[i * this->columns + j].write (f, format);
+        this->matrix[i * this->columns + j].write (f);
+        fprintf (f, "\n");
+      }
+    }
+  }
+
+  void
+  tropical_matrix::write_table (FILE *f)
+  {
+    for (size_t i = 0; i < this->rows; i++)
+    {
+      for (size_t j = 0; j < this->columns; j++)
+      {
+        this->matrix[i * this->columns + j].write (f);
       }
       fprintf (f, "\n");
     }
   }
+
 
 }    // namespace __placid
 

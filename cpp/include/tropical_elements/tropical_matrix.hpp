@@ -13,12 +13,13 @@
 
 namespace __placid
 {
+  extern const std::string tropical_matrix_format_id;
   extern const std::string invalid_matrix_sizes_exception;
 
   struct tropical_matrix : public ring_element<tropical_matrix>
   {
-    const file_format plain_format = 0;
-    const file_format table_format = 1;
+    static const file_format plain_format = 0;
+    static const file_format table_format = 1;
 
     size_t           rows;
     size_t           columns;
@@ -69,6 +70,19 @@ namespace __placid
 
     void
     write (FILE *f, file_format format);
+
+      private:
+    void
+    read_plain (FILE *f);
+
+    void
+    read_table (FILE *f);
+
+    void
+    write_plain (FILE *f);
+
+    void
+    write_table (FILE *f);
   };
 
 }    // namespace __placid

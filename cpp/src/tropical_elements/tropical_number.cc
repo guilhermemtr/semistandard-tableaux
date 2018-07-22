@@ -76,7 +76,10 @@ namespace __placid
   tropical_number::read (FILE *f)
   {
     char val[256];
-    fscanf (f, "%256s", val);
+    if (fscanf (f, "%256s", val) != 1)
+    {
+      throw invalid_file_format_exception;
+    }
 
     tn_t v;
 
