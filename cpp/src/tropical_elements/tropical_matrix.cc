@@ -161,6 +161,11 @@ namespace __placid
 
     this->matrix = new tropical_number[this->rows * this->columns];
 
+    char * l   = NULL;
+    size_t len = 0;
+    getline (&l, &len, f);
+    free (l);
+
     switch (format)
     {
       case tropical_matrix::plain_format:
@@ -223,7 +228,7 @@ namespace __placid
 
     for (size_t i = 0; i < this->rows; i++)
     {
-      /*char *  line = NULL;
+      char *  line = NULL;
       size_t  len  = 0;
       ssize_t read = getline (&line, &len, f);
 
@@ -233,24 +238,17 @@ namespace __placid
       }
 
       FILE *f_line = fmemopen (line, (1 + strlen (line)) * sizeof (char), "r");
-      */
+
+      char tmp[256];
       for (size_t j = 0; j < this->columns; j++)
       {
-	this->matrix[j + i * this->columns].read (f);
-	/*        try
-        {
-          this->matrix[j + i * this->columns].read (f_line);
-          this->matrix[j + i * this->columns].write (stdout);
-        } catch (std::string e)
-        {
-          printf ("%s\n", e.c_str ());
-	  }*/
+        this->matrix[j + i * this->columns].read (f_line);
       }
 
-      /*      fclose (f_line);
-      free(line);
+      fclose (f_line);
+      free (line);
       line = NULL;
-      len = 0;*/
+      len  = 0;
     }
   }
 
