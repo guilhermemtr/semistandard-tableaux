@@ -164,7 +164,7 @@ TEST (tuple, test_read_tropical_numbers)
 }
 
 
-TEST (tuple, test_write)
+TEST (tuple, test_write_tropical_numbers)
 {
   tropical_number e0;
   tropical_number e1 (1);

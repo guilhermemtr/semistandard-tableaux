@@ -12,6 +12,7 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "include"
   "src/tropical_elements"
+  "src/semistandard_tableaux"
   "src/logger"
   )
 

@@ -6,5 +6,5 @@ CXX_FLAGS = -g
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I"/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp/include" -I"/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp/src/tropical_elements" -I"/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp/src/logger" 
+CXX_INCLUDES = -I"/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp/include" -I"/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp/src/tropical_elements" -I"/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp/src/semistandard_tableaux" -I"/home/guilhermemtr/Dropbox/workspace/Mathematics/semistandard tableaux/cpp/src/logger" 
 
