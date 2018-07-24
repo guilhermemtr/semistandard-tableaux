@@ -34,11 +34,11 @@ namespace __placid
       size_t
       get_size ();
 
-      /*    void
-      add (entry *to_place,
-           size_t         real_nr_to_place,
-           entry *replaced,
-           size_t *       real_nr_replaced);*/
+      void
+      add (entry * to_place,
+           size_t  real_nr_to_place,
+           entry * replaced,
+           size_t *real_nr_replaced);
 
       void
       write (FILE *f);
@@ -49,6 +49,21 @@ namespace __placid
 
       void
       compress ();
+
+      size_t
+      get_mid (entry_val val);
+
+      void
+      place_cell_mid (size_t *idx, entry to_place);
+
+      void
+      shift_cells_after_mid (size_t *  idx,
+                             entry_len extra,
+                             entry *   replaced,
+                             size_t *  pos);
+
+      void
+      place_cell (entry to_place, entry *replaced, size_t *pos);
     };
 
   }    // namespace semistandard_tableaux

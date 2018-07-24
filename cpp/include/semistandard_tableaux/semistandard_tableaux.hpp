@@ -7,6 +7,8 @@
 #include <cassert>
 #include <cstring>
 
+#include "free_monoid/free_monoid_element.hpp"
+
 #include "magma_element.hpp"
 
 namespace __placid
@@ -30,6 +32,8 @@ namespace __placid
        */
       tableaux (tableaux &o);
 
+      // tableaux (free_monoid &o);
+
       /** Destroys a tropical number structure.
        * Destroys a tropical number structure.
        */
@@ -41,6 +45,15 @@ namespace __placid
       bool
       operator== (tableaux o);
 
+      size_t
+      get_size ();
+
+      size_t
+      get_storage_size ();
+
+      // free_monoid
+      // get_reading();
+
       tableaux operator* (tableaux o);
 
       void
@@ -48,6 +61,25 @@ namespace __placid
 
       void
       write (FILE *f, file_format format);
+
+        private:
+      void
+      read_plain (FILE *f);
+
+      void
+      read_compressed (FILE *f);
+
+      void
+      read_table (FILE *f);
+
+      void
+      write_plain (FILE *f);
+
+      void
+      write_compressed (FILE *f);
+
+      void
+      write_table (FILE *f);
     };
 
   }    // namespace semistandard_tableaux

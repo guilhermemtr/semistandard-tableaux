@@ -13,8 +13,8 @@ CMake output build directory: https://stackoverflow.com/questions/18826789/cmake
 
 
 FEATURES:
-remove operators from tableaux_entry, because it will lead to multiple bugs.
-
+finish implementing the free monoid.
+finish implementing the semistandard tableaux.
 
 
 

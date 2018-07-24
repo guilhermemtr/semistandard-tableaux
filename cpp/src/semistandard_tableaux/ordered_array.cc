@@ -100,13 +100,155 @@ namespace __placid
       return sz;
     }
 
-    /*  void
-    ordered_array::add (entry *to_place,
-                                 size_t         real_nr_to_place,
-                                 entry *replaced,
-                                 size_t *       real_nr_replaced)
+    size_t
+    ordered_array::get_mid (entry_val val)
     {
-    }*/
+      size_t top    = this->counter - 1;
+      size_t bottom = 0;
+      size_t mid    = (top + bottom) >> 1;
+
+      while (true)
+      {
+        if (val < this->cells[mid].val
+            && (mid == 0 || val >= this->cells[mid - 1].val))
+        {
+          break;
+        }
+
+        if (val >= this->cells[mid].val)
+        {
+          bottom = mid + 1;
+        } else
+        {
+          top = mid;
+        }
+
+        mid = (top + bottom) >> 1;
+      }
+      return mid;
+    }
+
+    void
+    ordered_array::place_cell_mid (size_t *idx, entry to_place)
+    {
+      if (*idx == 0 || this->cells[*idx - 1].val < to_place.val)
+      {
+        if (this->counter == this->size)
+        {
+          this->resize ();
+        }
+
+        for (size_t i = this->counter; i > *idx; i--)
+        {
+          this->cells[i] = this->cells[i - 1];
+        }
+
+        this->cells[*idx] = to_place;
+        this->counter++;
+        *idx = *idx + 1;
+      } else    // this->cells[*idx - 1].val == to_place.val
+      {
+        this->cells[*idx - 1].count += to_place.count;
+      }
+    }
+
+    void
+    ordered_array::shift_cells_after_mid (size_t *  idx,
+                                          entry_len extra,
+                                          entry *   replaced,
+                                          size_t *  pos)
+    {
+      size_t beg = 0;
+      size_t dis = 0;
+
+      while (extra > 0)
+      {
+        if (*idx >= this->counter)
+        {
+          extra = 0;
+        } else if (extra >= this->cells[*idx].count)
+        {
+          if (dis == 0)
+          {
+            beg = *idx;
+            dis = 1;
+          } else
+          {
+            dis++;
+          }
+          replaced[*pos] = this->cells[*idx];
+          *pos           = *pos + this->cells[*idx].count;
+          extra          = extra - this->cells[*idx].count;
+        } else    // extra < _sstoa[*idx].len
+        {
+          replaced[*pos]          = this->cells[*idx];
+          replaced[*pos].count    = extra;
+          this->cells[*idx].count = this->cells[*idx].count - extra;
+          *pos                    = *pos + extra;
+          extra                   = 0;
+        }
+        *idx = *idx + 1;
+      }
+
+      // shift all one to the left
+      for (size_t i = beg; i + dis < this->counter; i++)
+      {
+        this->cells[i] = this->cells[i + dis];
+      }
+      this->counter -= dis;
+    }
+
+    void
+    ordered_array::place_cell (entry to_place, entry *replaced, size_t *pos)
+    {
+      // if the cell is to be appended
+      if (this->counter == 0
+          || to_place.val >= this->cells[this->counter - 1].val)
+      {
+        if (this->counter == this->size)
+        {
+          this->resize ();
+        }
+
+        if ((this->counter == 0)
+            || (to_place.val > this->cells[this->counter - 1].val))
+        {
+          this->cells[this->counter++] = to_place;
+        } else    // this->cells[this->counter - 1].val == to_place.val
+        {
+          this->cells[this->counter - 1].count += to_place.count;
+        }
+        return;
+      }
+
+      // if the cell is not to be appended
+      // search for correct position to place the cell
+      size_t idx = this->get_mid (to_place.val);
+
+      // place the cell
+      this->place_cell_mid (&idx, to_place);
+
+      // remove all the extra cells, starting at idx (to append them to another
+      // row)
+      this->shift_cells_after_mid (&idx, to_place.count, replaced, pos);
+    }
+
+    void
+    ordered_array::add (entry * to_place,
+                        size_t  real_nr_to_place,
+                        entry * replaced,
+                        size_t *real_nr_replaced)
+    {
+      size_t nr_placed  = 0;
+      *real_nr_replaced = 0;
+
+      // add the cells, one by one
+      while (nr_placed < real_nr_to_place)
+      {
+        this->place_cell (to_place[nr_placed], replaced, real_nr_replaced);
+        nr_placed += to_place[nr_placed].count;
+      }
+    }
 
     void
     ordered_array::write (FILE *f)
@@ -116,6 +258,16 @@ namespace __placid
     void
     ordered_array::resize ()
     {
+      entry *cells = this->cells;
+      this->size   = this->size * 2;
+      this->cells  = new entry[this->size];
+
+      for (size_t i = 0; i < this->counter; i++)
+      {
+        this->cells[i] = cells[i];
+      }
+
+      delete[] cells;
     }
 
   }    // namespace semistandard_tableaux
