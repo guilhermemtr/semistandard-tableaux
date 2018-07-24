@@ -11,7 +11,7 @@
 
 namespace __placid
 {
-  struct semistandard_tableaux : public magma_element<tropical_number>
+  struct semistandard_tableaux : public magma_element<semistandard_tableaux>
   {
     static const file_format plain_format      = 0;
     static const file_format compressed_format = 1;
@@ -24,9 +24,9 @@ namespace __placid
 
     /** Constructs a new semistandard tableaux, given .
      * Constructs a new tropical number, given its value.
-     * @param n the number of the tropical number to be created.
+     * @param o the semistandard tableaux.
      */
-    semistandard_tableaux (tn_t n);
+    semistandard_tableaux (semistandard_tableaux& o);
 
     /** Destroys a tropical number structure.
      * Destroys a tropical number structure.
