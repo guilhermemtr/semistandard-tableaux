@@ -13,16 +13,7 @@ CMake output build directory: https://stackoverflow.com/questions/18826789/cmake
 
 
 FEATURES:
-implement tuples.
-
-how to test the file read and write for tuples?
-
-how to read and write tuples?
-How to know which type of entries we are dealing with?
-
-give as parameter how the value should be stored/loaded from a file?
-i.e. compressed tableaux or not, etc
-
+remove operators from tableaux_entry, because it will lead to multiple bugs.
 
 
 

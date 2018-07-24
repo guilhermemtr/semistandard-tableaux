@@ -4,47 +4,50 @@
 
 namespace __placid
 {
-  semistandard_tableaux::semistandard_tableaux ()
+  namespace semistandard_tableaux
   {
-  }
+    tableaux::tableaux ()
+    {
+    }
 
-  semistandard_tableaux::semistandard_tableaux (semistandard_tableaux& o)
-  {
-  }
+    tableaux::tableaux (tableaux &o)
+    {
+    }
 
-  semistandard_tableaux::~semistandard_tableaux ()
-  {
-  }
+    tableaux::~tableaux ()
+    {
+    }
 
-  semistandard_tableaux
-  semistandard_tableaux::operator= (semistandard_tableaux o)
-  {
-    return o;
-  }
+    tableaux
+    tableaux::operator= (tableaux o)
+    {
+      return o;
+    }
 
-  bool
-  semistandard_tableaux::operator== (semistandard_tableaux o)
-  {
-    return false;
-  }
+    bool
+    tableaux::operator== (tableaux o)
+    {
+      return false;
+    }
 
-  semistandard_tableaux semistandard_tableaux::
-                        operator* (semistandard_tableaux o)
-  {
-    return o;
-  }
+    tableaux tableaux::operator* (tableaux o)
+    {
+      return o;
+    }
 
-  void
-  semistandard_tableaux::read (FILE *f)
-  {
-    return;
-  }
+    void
+    tableaux::read (FILE *f)
+    {
+      return;
+    }
 
-  void
-  semistandard_tableaux::write (FILE *f, file_format format)
-  {
-    return;
-  }
+    void
+    tableaux::write (FILE *f, file_format format)
+    {
+      return;
+    }
+
+  }    // namespace semistandard_tableaux
 
 }    // namespace __placid
 

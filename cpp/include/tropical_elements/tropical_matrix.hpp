@@ -13,77 +13,81 @@
 
 namespace __placid
 {
-  extern const std::string tropical_matrix_format_id;
-  extern const std::string invalid_matrix_sizes_exception;
-
-  struct tropical_matrix : public ring_element<tropical_matrix>
+  namespace tropical_elements
   {
-    static const file_format plain_format = 0;
-    static const file_format table_format = 1;
+    extern const std::string tropical_matrix_format_id;
+    extern const std::string invalid_matrix_sizes_exception;
 
-    size_t           rows;
-    size_t           columns;
-    tropical_number *matrix;
+    struct matrix : public ring_element<matrix>
+    {
+      static const file_format plain_format = 0;
+      static const file_format table_format = 1;
 
-    /** Constructs a new tropical matrix, given its size (columns and rows).
-     * Constructs a new tropical matrix, given its size (columns and rows).
-     * @param rows the number of rows of the matrix.
-     * @param columns the number of columns of the matrix.
-     */
-    tropical_matrix (size_t rows, size_t columns);
+      size_t  rows;
+      size_t  columns;
+      number *matrix_entries;
 
-    /** Constructs a new tropical matrix, given its size (columns and rows), and
-     * the values of the matrix's entries. Constructs a new tropical matrix,
-     * given its size (columns and rows), and the values of the matrix's
-     * entries. The given values are cloned to the new matrix.
-     * @param rows the number of rows of the matrix.
-     * @param columns the number of columns of the matrix.
-     * @param matrix the values of the entries of the matrix.
-     */
-    tropical_matrix (size_t rows, size_t columns, tropical_number *matrix);
+      /** Constructs a new tropical matrix, given its size (columns and rows).
+       * Constructs a new tropical matrix, given its size (columns and rows).
+       * @param rows the number of rows of the matrix.
+       * @param columns the number of columns of the matrix.
+       */
+      matrix (size_t rows, size_t columns);
 
-    /** Constructs a new tropical matrix, from another tropical matrix.
-     * Constructs a new tropical matrix, from another tropical matrix.
-     * The given values are cloned to the new matrix.
-     * @param o the tropical matrix to be cloned.
-     */
-    tropical_matrix (tropical_matrix &o);
+      /** Constructs a new tropical matrix, given its size (columns and rows),
+       * and the values of the matrix's entries. Constructs a new tropical
+       * matrix, given its size (columns and rows), and the values of the
+       * matrix's entries. The given values are cloned to the new matrix.
+       * @param rows the number of rows of the matrix.
+       * @param columns the number of columns of the matrix.
+       * @param matrix the values of the entries of the matrix.
+       */
+      matrix (size_t rows, size_t columns, number *matrix_entries);
 
-    /** Destroys a tropical matrix.
-     * Destroys a tropical matrix.
-     */
-    virtual ~tropical_matrix ();
+      /** Constructs a new tropical matrix, from another tropical matrix.
+       * Constructs a new tropical matrix, from another tropical matrix.
+       * The given values are cloned to the new matrix.
+       * @param o the tropical matrix to be cloned.
+       */
+      matrix (matrix &o);
 
-    tropical_matrix
-    operator= (tropical_matrix o);
+      /** Destroys a tropical matrix.
+       * Destroys a tropical matrix.
+       */
+      virtual ~matrix ();
 
-    bool
-    operator== (tropical_matrix o);
+      matrix
+      operator= (matrix o);
 
-    tropical_matrix operator* (tropical_matrix o);
+      bool
+      operator== (matrix o);
 
-    tropical_matrix
-    operator+ (tropical_matrix o);
+      matrix operator* (matrix o);
 
-    void
-    read (FILE *f);
+      matrix
+      operator+ (matrix o);
 
-    void
-    write (FILE *f, file_format format);
+      void
+      read (FILE *f);
 
-      private:
-    void
-    read_plain (FILE *f);
+      void
+      write (FILE *f, file_format format);
 
-    void
-    read_table (FILE *f);
+        private:
+      void
+      read_plain (FILE *f);
 
-    void
-    write_plain (FILE *f);
+      void
+      read_table (FILE *f);
 
-    void
-    write_table (FILE *f);
-  };
+      void
+      write_plain (FILE *f);
+
+      void
+      write_table (FILE *f);
+    };
+
+  }    // namespace tropical_elements
 
 }    // namespace __placid
 

@@ -11,42 +11,46 @@
 
 namespace __placid
 {
-  struct semistandard_tableaux : public magma_element<semistandard_tableaux>
+  namespace semistandard_tableaux
   {
-    static const file_format plain_format      = 0;
-    static const file_format compressed_format = 1;
-    static const file_format table_format      = 2;
+    struct tableaux : public magma_element<tableaux>
+    {
+      static const file_format plain_format      = 0;
+      static const file_format compressed_format = 1;
+      static const file_format table_format      = 2;
 
-    /** Constructs a new semistandard tableaux.
-     * Constructs a new semistandard tableaux.
-     */
-    semistandard_tableaux ();
+      /** Constructs a new semistandard tableaux.
+       * Constructs a new semistandard tableaux.
+       */
+      tableaux ();
 
-    /** Constructs a new semistandard tableaux, given .
-     * Constructs a new tropical number, given its value.
-     * @param o the semistandard tableaux.
-     */
-    semistandard_tableaux (semistandard_tableaux& o);
+      /** Constructs a new semistandard tableaux, given .
+       * Constructs a new tropical number, given its value.
+       * @param o the semistandard tableaux.
+       */
+      tableaux (tableaux &o);
 
-    /** Destroys a tropical number structure.
-     * Destroys a tropical number structure.
-     */
-    virtual ~semistandard_tableaux ();
+      /** Destroys a tropical number structure.
+       * Destroys a tropical number structure.
+       */
+      virtual ~tableaux ();
 
-    semistandard_tableaux
-    operator= (semistandard_tableaux o);
+      tableaux
+      operator= (tableaux o);
 
-    bool
-    operator== (semistandard_tableaux o);
+      bool
+      operator== (tableaux o);
 
-    semistandard_tableaux operator* (semistandard_tableaux o);
+      tableaux operator* (tableaux o);
 
-    void
-    read (FILE *f);
+      void
+      read (FILE *f);
 
-    void
-    write (FILE *f, file_format format);
-  };
+      void
+      write (FILE *f, file_format format);
+    };
+
+  }    // namespace semistandard_tableaux
 
 }    // namespace __placid
 

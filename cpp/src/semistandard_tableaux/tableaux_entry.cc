@@ -4,163 +4,52 @@
 
 namespace __placid
 {
-  tableaux_cell::tableaux_cell (tableaux_entry_val val,
-                                tableaux_entry_len count)
-    : val (val), count (count)
+  namespace semistandard_tableaux
   {
-  }
-
-  tableaux_cell::tableaux_cell (tableaux_entry_val val) : tableaux_cell (val, 1)
-  {
-  }
-
-  tableaux_cell::tableaux_cell (tableaux_cell &t)
-    : tableaux_cell (t.val, t.count)
-  {
-  }
-
-  bool
-  tableaux_cell::equals (tableaux_cell o)
-  {
-    return this->val == o.val && this->count == o.count;
-  }
-
-  tableaux_cell
-  tableaux_cell::operator= (tableaux_cell o)
-  {
-    this->val   = o.val;
-    this->count = o.count;
-    return *this;
-  }
-
-  tableaux_cell
-  tableaux_cell::operator= (tableaux_entry_val val)
-  {
-    this->val   = val;
-    this->count = 1;
-
-    return *this;
-  }
-
-  tableaux_cell
-  tableaux_cell::operator+= (tableaux_cell o)
-  {
-    if (this->val != o.val)
+    entry::entry (entry_val val, entry_len count) : val (val), count (count)
     {
-      throw unmatching_values_exception;
     }
 
-    this->count += o.count;
-
-    return *this;
-  }
-
-  tableaux_cell
-  tableaux_cell::operator-= (tableaux_cell o)
-  {
-    if (this->val != o.val)
+    entry::entry (entry_val val)
+      : entry (val, 1)
     {
-      throw unmatching_values_exception;
     }
 
-    this->count -= o.count;
-
-    return *this;
-  }
-
-  tableaux_cell
-  tableaux_cell::operator++ ()
-  {
-    this->count++;
-
-    return *this;
-  }
-
-  tableaux_cell
-  tableaux_cell::operator++ (int v)
-  {
-    this->count++;
-
-    return *this;
-  }
-
-  tableaux_cell
-  tableaux_cell::operator-- ()
-  {
-    this->count--;
-
-    return *this;
-  }
-
-  tableaux_cell
-  tableaux_cell::operator-- (int v)
-  {
-    this->count--;
-
-    return *this;
-  }
-
-  tableaux_cell
-  tableaux_cell::operator+ (tableaux_cell o)
-  {
-    if (this->val != o.val)
+    entry::entry (entry &t)
+      : entry (t.val, t.count)
     {
-      throw unmatching_values_exception;
     }
 
-    tableaux_cell res (this->val, this->count + o.count);
-
-    return res;
-  }
-
-  tableaux_cell
-  tableaux_cell::operator- (tableaux_cell o)
-  {
-    if (this->val != o.val)
+    entry
+    entry::operator= (entry o)
     {
-      throw unmatching_values_exception;
+      this->val   = o.val;
+      this->count = o.count;
+      return *this;
     }
 
-    tableaux_cell res (this->val, this->count - o.count);
+    entry
+    entry::operator= (entry_val val)
+    {
+      this->val   = val;
+      this->count = 1;
 
-    return res;
-  }
+      return *this;
+    }
 
-  bool
-  tableaux_cell::operator== (tableaux_cell o)
-  {
-    return this->val == o.val;
-  }
+    bool
+    entry::operator== (entry o)
+    {
+      return this->val == o.val && this->count == o.count;
+    }
 
-  bool
-  tableaux_cell::operator!= (tableaux_cell o)
-  {
-    return !(*this == o);
-  }
+    bool
+    entry::operator!= (entry o)
+    {
+      return !(*this == o);
+    }
 
-  bool
-  tableaux_cell::operator< (tableaux_cell o)
-  {
-    return this->val < o.val;
-  }
-
-  bool
-  tableaux_cell::operator> (tableaux_cell o)
-  {
-    return this->val > o.val;
-  }
-
-  bool
-  tableaux_cell::operator<= (tableaux_cell o)
-  {
-    return this->val <= o.val;
-  }
-
-  bool
-  tableaux_cell::operator>= (tableaux_cell o)
-  {
-    return this->val >= o.val;
-  }
+  }    // namespace semistandard_tableaux
 
 }    // namespace __placid
 
