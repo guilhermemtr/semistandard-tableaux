@@ -12,7 +12,7 @@ namespace __placid
   {
     extern const std::string free_monoid_format_id;
 
-    struct free_monoid_element : public magma_element<free_monoid_element>
+    struct element : public magma_element<element>
     {
       static const size_t      default_size      = 0;
       static const file_format plain_format      = 0;
@@ -24,29 +24,29 @@ namespace __placid
       /** Constructs a new free monoid element.
        * Constructs a new free monoid element.
        */
-      free_monoid_element (size_t size = default_size);
+      element (size_t size = default_size);
 
-      free_monoid_element (symbol *w, size_t len);
+      element (symbol *w, size_t len);
 
       /** Constructs a new free monoid element, from a given free monoid
        * element. Constructs a new free monoid element, from a given free monoid
        * element.
        * @param o the free monoid element.
        */
-      free_monoid_element (const free_monoid_element &o);
+      element (const element &o);
 
       /** Destroys a free monoid.
        * Destroys a free monoid.
        */
-      ~free_monoid_element ();
+      ~element ();
 
-      free_monoid_element &
-      operator= (const free_monoid_element &o);
+      element &
+      operator= (const element &o);
 
       bool
-      operator== (const free_monoid_element &o) const;
+      operator== (const element &o) const;
 
-      free_monoid_element operator* (const free_monoid_element &o) const;
+      element operator* (const element &o) const;
 
       void
       add (symbol *s, size_t count);

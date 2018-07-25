@@ -10,13 +10,13 @@ namespace __placid
   {
     const std::string free_monoid_format_id = std::string ("free_monoid");
 
-    free_monoid_element::free_monoid_element (size_t size)
+    element::element (size_t size)
     {
       this->length = size;
       this->word   = new entry[this->length];
     }
 
-    free_monoid_element::free_monoid_element (symbol *w, size_t len)
+    element::element (symbol *w, size_t len)
     {
       this->length = len;
       this->word   = new entry[this->length];
@@ -30,7 +30,7 @@ namespace __placid
       this->compress ();
     }
 
-    free_monoid_element::free_monoid_element (const free_monoid_element &o)
+    element::element (const element &o)
     {
       this->length = o.length;
       this->word   = new entry[this->length];
@@ -41,13 +41,13 @@ namespace __placid
       }
     }
 
-    free_monoid_element::~free_monoid_element ()
+    element::~element ()
     {
       delete[] this->word;
     }
 
-    free_monoid_element &
-    free_monoid_element::operator= (const free_monoid_element &o)
+    element &
+    element::operator= (const element &o)
     {
       delete[] this->word;
 
@@ -61,7 +61,7 @@ namespace __placid
     }
 
     void
-    free_monoid_element::compress ()
+    element::compress ()
     {
       symbol curr_sym =
         this->length > 0 ? this->word[0].sym : 0;    // current value read
@@ -103,10 +103,10 @@ namespace __placid
     }
 
     bool
-    free_monoid_element::operator== (const free_monoid_element &o) const
+    element::operator== (const element &o) const
     {
-      free_monoid_element e1 (*this);
-      free_monoid_element e2 (o);
+      element e1 (*this);
+      element e2 (o);
 
       e1.compress ();
       e2.compress ();
@@ -129,10 +129,10 @@ namespace __placid
       return equals;
     }
 
-    free_monoid_element free_monoid_element::
-                        operator* (const free_monoid_element &o) const
+    element element::
+                        operator* (const element &o) const
     {
-      free_monoid_element e (this->length + o.length);
+      element e (this->length + o.length);
       for (size_t i = 0; i < this->length; i++)
       {
         e.word[i] = o.word[i];
@@ -147,7 +147,7 @@ namespace __placid
     }
 
     void
-    free_monoid_element::add (symbol *s, size_t count)
+    element::add (symbol *s, size_t count)
     {
       entry *w   = this->word;
       this->word = new entry[this->length + count];
@@ -170,7 +170,7 @@ namespace __placid
     }
 
     size_t
-    free_monoid_element::get_size () const
+    element::get_size () const
     {
       size_t sz = 0;
       for (size_t i = 0; i < this->length; i++)
@@ -182,7 +182,7 @@ namespace __placid
     }
 
     void
-    free_monoid_element::read (FILE *f)
+    element::read (FILE *f)
     {
       char format_id[256];
       if (fscanf (f, "%s", format_id) != 1)
@@ -220,10 +220,10 @@ namespace __placid
 
       switch (format)
       {
-        case free_monoid_element::plain_format:
+        case element::plain_format:
           this->read_plain (f, lines);
           break;
-        case free_monoid_element::compressed_format:
+        case element::compressed_format:
           this->read_compressed (f, lines);
           break;
         default:
@@ -233,7 +233,7 @@ namespace __placid
     }
 
     void
-    free_monoid_element::write (FILE *f, file_format format) const
+    element::write (FILE *f, file_format format) const
     {
       if (f == NULL)
       {
@@ -247,7 +247,7 @@ namespace __placid
 
       fprintf (f, "%s\n%u\n", free_monoid_format_id.c_str (), format);
 
-      free_monoid_element e (*this);
+      element e (*this);
       e.compress ();
 
       fprintf (f, "%lu\n", e.length);
@@ -264,7 +264,7 @@ namespace __placid
     }
 
     void
-    free_monoid_element::read_plain (FILE *f, size_t lines)
+    element::read_plain (FILE *f, size_t lines)
     {
       delete[] this->word;
       this->length = lines;
@@ -286,7 +286,7 @@ namespace __placid
     }
 
     void
-    free_monoid_element::read_compressed (FILE *f, size_t lines)
+    element::read_compressed (FILE *f, size_t lines)
     {
       delete[] this->word;
       this->length = lines;
@@ -311,7 +311,7 @@ namespace __placid
     }
 
     void
-    free_monoid_element::write_plain (FILE *f) const
+    element::write_plain (FILE *f) const
     {
       for (size_t i = 0; i < this->length; i++)
       {
@@ -323,7 +323,7 @@ namespace __placid
     }
 
     void
-    free_monoid_element::write_compressed (FILE *f) const
+    element::write_compressed (FILE *f) const
     {
       for (size_t i = 0; i < this->length; i++)
       {

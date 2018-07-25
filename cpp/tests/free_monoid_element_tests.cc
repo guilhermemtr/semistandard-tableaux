@@ -5,14 +5,14 @@
 
 using namespace __placid::free_monoid;
 
-TEST (free_monoid_element, test_default_creation)
+TEST (element, test_default_creation)
 {
-  free_monoid_element e1;
+  element e1;
 
   ASSERT_EQ (e1.length, 0);
 }
 
-TEST (free_monoid_element, test_compress)
+TEST (element, test_compress)
 {
   size_t len1 = 5;
 
@@ -23,7 +23,7 @@ TEST (free_monoid_element, test_compress)
     w1[i].count = 1;
   }
 
-  free_monoid_element e1;
+  element e1;
   e1.word   = w1;
   e1.length = len1;
 
@@ -48,7 +48,7 @@ TEST (free_monoid_element, test_compress)
     w2[i].count = 1;
   }
 
-  free_monoid_element e2;
+  element e2;
   e2.word   = w2;
   e2.length = len2;
 
@@ -63,7 +63,7 @@ TEST (free_monoid_element, test_compress)
   }
 }
 
-TEST (free_monoid_element, test_create_from_symbols)
+TEST (element, test_create_from_symbols)
 {
   size_t len1 = 5;
 
@@ -73,7 +73,7 @@ TEST (free_monoid_element, test_create_from_symbols)
     w1[i] = i;
   }
 
-  free_monoid_element e1 (w1, len1);
+  element e1 (w1, len1);
 
   ASSERT_EQ (e1.length, len1);
 
@@ -93,7 +93,7 @@ TEST (free_monoid_element, test_create_from_symbols)
     w2[i] = i / divider;
   }
 
-  free_monoid_element e2 (w2, len2);
+  element e2 (w2, len2);
 
   e2.compress ();
 
@@ -106,7 +106,7 @@ TEST (free_monoid_element, test_create_from_symbols)
   }
 }
 
-TEST (free_monoid_element, test_create_from_element)
+TEST (element, test_create_from_element)
 {
   size_t len1 = 5;
 
@@ -116,8 +116,8 @@ TEST (free_monoid_element, test_create_from_element)
     w1[i] = i;
   }
 
-  free_monoid_element e1 (w1, len1);
-  free_monoid_element e11 (e1);
+  element e1 (w1, len1);
+  element e11 (e1);
 
   ASSERT_EQ (e1.length, e11.length);
 
@@ -137,10 +137,10 @@ TEST (free_monoid_element, test_create_from_element)
     w2[i] = i / divider;
   }
 
-  free_monoid_element e2 (w2, len2);
+  element e2 (w2, len2);
   e2.compress ();
 
-  free_monoid_element e22 (e2);
+  element e22 (e2);
 
   ASSERT_EQ (e2.length, e22.length);
 
@@ -152,7 +152,7 @@ TEST (free_monoid_element, test_create_from_element)
 }
 
 
-TEST (free_monoid_element, test_assignment)
+TEST (element, test_assignment)
 {
   size_t len1 = 5;
 
@@ -162,8 +162,8 @@ TEST (free_monoid_element, test_assignment)
     w1[i] = i;
   }
 
-  free_monoid_element e1 (w1, len1);
-  free_monoid_element e11 = e1;
+  element e1 (w1, len1);
+  element e11 = e1;
 
   ASSERT_EQ (e1.length, e11.length);
 
@@ -174,7 +174,7 @@ TEST (free_monoid_element, test_assignment)
   }
 }
 
-TEST (free_monoid_element, test_equality)
+TEST (element, test_equality)
 {
   size_t len1 = 5;
 
@@ -184,8 +184,8 @@ TEST (free_monoid_element, test_equality)
     w1[i] = i;
   }
 
-  free_monoid_element e1 (w1, len1);
-  free_monoid_element e1_res = e1;
+  element e1 (w1, len1);
+  element e1_res = e1;
 
   ASSERT_TRUE (e1 == e1_res);
   ASSERT_FALSE (e1 != e1_res);
@@ -199,8 +199,8 @@ TEST (free_monoid_element, test_equality)
     w2[i] = i / divider;
   }
 
-  free_monoid_element e2 (w2, len2);
-  free_monoid_element e2_res (e2);
+  element e2 (w2, len2);
+  element e2_res (e2);
 
   ASSERT_TRUE (e1 != e2);
   ASSERT_FALSE (e1 == e2);
@@ -217,9 +217,9 @@ TEST (free_monoid_element, test_equality)
   ASSERT_FALSE (e2 == e1);
 }
 
-TEST (free_monoid_element, test_add)
+TEST (element, test_add)
 {
-  free_monoid_element e1;
+  element e1;
 
   size_t len1 = 5;
 
@@ -231,11 +231,11 @@ TEST (free_monoid_element, test_add)
 
   e1.add (w1, len1);
 
-  free_monoid_element e1_res (w1, len1);
+  element e1_res (w1, len1);
 
   ASSERT_TRUE (e1 == e1_res);
 
-  free_monoid_element e2;
+  element e2;
 
   size_t  len2    = 20;
   size_t  divider = 5;
@@ -247,11 +247,11 @@ TEST (free_monoid_element, test_add)
   }
 
   e2.add (w2, len2);
-  free_monoid_element e2_res (e2);
+  element e2_res (e2);
 
   ASSERT_TRUE (e2 == e2_res);
 
-  free_monoid_element e3 = e2;
+  element e3 = e2;
   e3.add (w1, len1);
 
   size_t  len3 = len1 + len2;
@@ -267,12 +267,12 @@ TEST (free_monoid_element, test_add)
     w3[i + len1] = w2[i];
   }
 
-  free_monoid_element e3_res (w3, len3);
+  element e3_res (w3, len3);
 
   ASSERT_TRUE (e3 == e3_res);
 }
 
-TEST (free_monoid_element, test_mult)
+TEST (element, test_mult)
 {
   size_t len1 = 5;
 
@@ -282,7 +282,7 @@ TEST (free_monoid_element, test_mult)
     w1[i] = i;
   }
 
-  free_monoid_element e1 (w1, len1);
+  element e1 (w1, len1);
 
   size_t  len2    = 20;
   size_t  divider = 5;
@@ -293,18 +293,18 @@ TEST (free_monoid_element, test_mult)
     w2[i] = i / divider;
   }
 
-  free_monoid_element e2 (w2, len2);
+  element e2 (w2, len2);
 
-  free_monoid_element e11_res = e1;
+  element e11_res = e1;
   e11_res.add (w1, len1);
 
-  free_monoid_element e12_res = e1;
+  element e12_res = e1;
   e12_res.add (w2, len2);
 
-  free_monoid_element e21_res = e2;
+  element e21_res = e2;
   e21_res.add (w1, len1);
 
-  free_monoid_element e22_res = e2;
+  element e22_res = e2;
   e22_res.add (w2, len2);
 
   ASSERT_TRUE (e1 * e1 == e11_res);
