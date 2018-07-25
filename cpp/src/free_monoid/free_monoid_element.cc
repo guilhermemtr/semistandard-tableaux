@@ -8,7 +8,8 @@ namespace __placid
 {
   namespace free_monoid
   {
-    const std::string free_monoid_format_id = std::string ("free_monoid");
+    const std::string free_monoid_format_id =
+      std::string ("free_monoid_element");
 
     element::element (size_t size)
     {
@@ -129,44 +130,66 @@ namespace __placid
       return equals;
     }
 
-    element element::
-                        operator* (const element &o) const
+    element element::operator* (const element &o) const
     {
-      element e (this->length + o.length);
-      for (size_t i = 0; i < this->length; i++)
-      {
-        e.word[i] = o.word[i];
-      }
+      element e (*this);
 
+      size_t len = o.get_size ();
+
+      symbol *w2 = new symbol[len];
+
+      size_t counter = 0;
       for (size_t i = 0; i < o.length; i++)
       {
-        e.word[i + this->length] = o.word[i];
+        for (size_t j = 0; j < o.word[i].count; j++)
+        {
+          w2[counter++] = o.word[i].sym;
+        }
       }
+
+      e.add (w2, len);
+
+      delete[] w2;
 
       return e;
     }
 
     void
-    element::add (symbol *s, size_t count)
+    element::add (entry *entries, size_t count)
     {
       entry *w   = this->word;
-      this->word = new entry[this->length + count];
+      size_t len = this->length;
+      this->word = new entry[len + count];
 
-      for (size_t i = 0; i < this->length; i++)
+      for (size_t i = 0; i < len; i++)
       {
         this->word[i] = w[i];
       }
 
       for (size_t i = 0; i < count; i++)
       {
-        entry e (s[i]);
-        this->word[i + this->length] = e;
+        entry e (entries[i]);
+        this->word[i + len] = e;
       }
 
-      this->length = this->length + count;
+      this->length = len + count;
       delete[] w;
 
       this->compress ();
+    }
+
+    void
+    element::add (symbol *s, size_t count)
+    {
+      entry *entries = new entry[count];
+
+      for (size_t i = 0; i < count; i++)
+      {
+        entry e (s[i]);
+        entries[i] = e;
+      }
+      this->add (entries, count);
+      delete[] entries;
     }
 
     size_t
@@ -250,7 +273,14 @@ namespace __placid
       element e (*this);
       e.compress ();
 
-      fprintf (f, "%lu\n", e.length);
+      if (format == compressed_format)
+      {
+        fprintf (f, "%lu\n", e.length);
+      }
+      if (format == plain_format)
+      {
+        fprintf (f, "%lu\n", e.get_size ());
+      }
 
       switch (format)
       {
@@ -315,7 +345,7 @@ namespace __placid
     {
       for (size_t i = 0; i < this->length; i++)
       {
-        for (occurrences i = 0; i < this->word[i].count; i++)
+        for (occurrences j = 0; j < this->word[i].count; j++)
         {
           fprintf (f, "%lu\n", this->word[i].sym);
         }

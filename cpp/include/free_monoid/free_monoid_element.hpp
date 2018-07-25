@@ -51,6 +51,9 @@ namespace __placid
       void
       add (symbol *s, size_t count);
 
+      void
+      add (entry *entries, size_t length);
+
       size_t
       get_size () const;
 
