@@ -1,122 +1,87 @@
-#ifndef __PLACID_FREE_MONOID__
-#define __PLACID_FREE_MONOID__
+#ifndef __PLACID_FREE_MONOID_ELEMENT__
+#define __PLACID_FREE_MONOID_ELEMENT__
 
 #include <string>
 
 #include "magma_element.hpp"
+#include "free_monoid_entry.hpp"
 
 namespace __placid
 {
-  typedef uint64_t symbol;
-
-  struct free_monoid_element : public magma_element<free_monoid_element>
+  namespace free_monoid
   {
-    static const size_t default_size = (1 << 5);
+    extern const std::string free_monoid_format_id;
 
-    static const file_format plain_format      = 0;
-    static const file_format compressed_format = 1;
-
-    size_t  length;
-    symbol *elements;
-
-    /** Constructs a new free monoid element.
-     * Constructs a new free monoid element.
-     */
-    free_monoid_element (size_t len = default_size)
+    struct free_monoid_element : public magma_element<free_monoid_element>
     {
-      this->length   = default_size;
-      this->elements = new symbol[this->length];
-    }
+      static const size_t      default_size      = 0;
+      static const file_format plain_format      = 0;
+      static const file_format compressed_format = 1;
 
-    /** Constructs a new free monoid element, from a given free monoid element.
-     * Constructs a new free monoid element, from a given free monoid element.
-     * @param o the free monoid element.
-     */
-    free_monoid_element (free_monoid_element &o)
-      : free_monoid_element (o.length)
-    {
-      for (size_t i = 0; i < this->length; i++)
-      {
-        this->elements[i] = o.elements[i];
-      }
-    }
+      size_t length;
+      entry *word;
 
-    /** Destroys a free monoid.
-     * Destroys a free monoid.
-     */
-    ~free_monoid_element ()
-    {
-      delete[] this->elements;
-    }
+      /** Constructs a new free monoid element.
+       * Constructs a new free monoid element.
+       */
+      free_monoid_element (size_t size = default_size);
 
-    free_monoid_element
-    operator= (free_monoid_element o)
-    {
-      delete[] this->elements;
+      free_monoid_element (symbol *w, size_t len);
 
-      this->length   = o.length;
-      this->elements = new symbol[this->length];
-      for (size_t i = 0; i < this->length; i++)
-      {
-        this->elements[i] = o.elements[i];
-      }
-      return *this;
-    }
+      /** Constructs a new free monoid element, from a given free monoid
+       * element. Constructs a new free monoid element, from a given free monoid
+       * element.
+       * @param o the free monoid element.
+       */
+      free_monoid_element (free_monoid_element &o);
 
-    bool
-    operator== (free_monoid_element o)
-    {
-      if (this->length != o.length)
-      {
-        return false;
-      }
+      /** Destroys a free monoid.
+       * Destroys a free monoid.
+       */
+      ~free_monoid_element ();
 
-      bool equals = true;
-      for (size_t i = 0; i < this->length; i++)
-      {
-        if (this->elements[i] != o.elements[i])
-        {
-          equals = false;
-          break;
-        }
-      }
+      free_monoid_element
+      operator= (free_monoid_element o);
 
-      return equals;
-    }
+      bool
+      operator== (free_monoid_element o);
 
-    bool
-    operator!= (free_monoid_element o)
-    {
-      return !(*this == o);
-    }
+      bool
+      operator!= (free_monoid_element o);
 
-    free_monoid_element operator* (free_monoid_element o)
-    {
-      free_monoid_element e (this->length + o.length);
-      for (size_t i = 0; i < this->length; i++)
-      {
-        e.elements[i] = o.elements[i];
-      }
+      free_monoid_element operator* (free_monoid_element o);
 
-      for (size_t i = 0; i < o.length; i++)
-      {
-        e.elements[i + this->length] = o.elements[i];
-      }
+      void
+      add (symbol *s, size_t count);
 
-      return e;
-    }
+      size_t
+      get_size ();
 
-    void
-    read (FILE *f)
-    {
-    }
+      void
+      compress ();
 
-    void
-    write (FILE *f, file_format format)
-    {
-    }
-  };
+      void
+      read (FILE *f);
+
+      void
+      write (FILE *f, file_format format);
+
+        private:
+      void
+      read_plain (FILE *f, size_t lines);
+
+      void
+      read_compressed (FILE *f, size_t lines);
+
+      void
+      write_plain (FILE *f);
+
+      void
+      write_compressed (FILE *f);
+    };
+
+  }    // namespace free_monoid
 
 }    // namespace __placid
 
-#endif    // __PLACID_FREE_MONOID__
+#endif    // __PLACID_FREE_MONOID_ELEMENT__

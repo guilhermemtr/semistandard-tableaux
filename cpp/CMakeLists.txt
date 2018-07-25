@@ -22,6 +22,9 @@ include_directories("${PROJECT_BINARY_DIR}/include")
 
 # add the tropical elements path to the search path for include files
 # load the cmake lists from that directory
+include_directories("${PROJECT_BINARY_DIR}/src/free_monoid")
+add_subdirectory (src/free_monoid)
+
 include_directories("${PROJECT_BINARY_DIR}/src/tropical_elements")
 add_subdirectory (src/tropical_elements)
 
@@ -66,13 +69,15 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 
 # add executable
-add_executable(placid main.cc tests/tropical_number_tests.cc tests/tropical_matrix_tests.cc tests/tuple_tests.cc tests/tableaux_entry_tests.cc tests/ordered_array_tests.cc tests/semistandard_tableaux_tests.cc tests/free_monoid_element_tests.cc)
+add_executable(placid main.cc tests/tropical_number_tests.cc tests/tropical_matrix_tests.cc tests/tuple_tests.cc tests/tableaux_entry_tests.cc tests/ordered_array_tests.cc tests/semistandard_tableaux_tests.cc tests/free_monoid_entry_tests.cc tests/free_monoid_element_tests.cc)
 
 # add required libraries
+target_link_libraries (placid FreeMonoid)
 target_link_libraries (placid TropicalNumbers)
 target_link_libraries (placid TropicalMatrices)
 target_link_libraries (placid Tuples)
 target_link_libraries (placid SemiStandardTableaux)
+
 
 # target_link_libraries (placid AlgebraElements)
 

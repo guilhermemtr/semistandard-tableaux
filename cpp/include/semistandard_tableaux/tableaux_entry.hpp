@@ -12,9 +12,8 @@ namespace __placid
   namespace semistandard_tableaux
   {
     typedef uint64_t
-      entry_val;    //!< type of the value stored in tableaux cells.
-    typedef uint64_t
-      entry_len;    //!< type of the length of tableaux cells.
+                     entry_val;    //!< type of the value stored in tableaux cells.
+    typedef uint64_t entry_len;    //!< type of the length of tableaux cells.
 
 
     /** Type that represents a sequence of tableaux cells with the same value.
@@ -23,9 +22,6 @@ namespace __placid
      */
     struct entry
     {
-      const std::string unmatching_values_exception =
-        std::string ("Values of the entries do not match.");
-
       entry_val val;      //!< value of the tableaux cell.
       entry_len count;    //!< tableaux cell's sequence length.
 
@@ -47,7 +43,7 @@ namespace __placid
       bool
       operator!= (entry e);
     };
-    
+
   }    // namespace semistandard_tableaux
 
 }    // namespace __placid
