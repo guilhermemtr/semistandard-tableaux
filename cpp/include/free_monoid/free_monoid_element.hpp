@@ -33,29 +33,26 @@ namespace __placid
        * element.
        * @param o the free monoid element.
        */
-      free_monoid_element (free_monoid_element &o);
+      free_monoid_element (const free_monoid_element &o);
 
       /** Destroys a free monoid.
        * Destroys a free monoid.
        */
       ~free_monoid_element ();
 
-      free_monoid_element
-      operator= (free_monoid_element o);
+      free_monoid_element &
+      operator= (const free_monoid_element &o);
 
       bool
-      operator== (free_monoid_element o);
+      operator== (const free_monoid_element &o) const;
 
-      bool
-      operator!= (free_monoid_element o);
-
-      free_monoid_element operator* (free_monoid_element o);
+      free_monoid_element operator* (const free_monoid_element &o) const;
 
       void
       add (symbol *s, size_t count);
 
       size_t
-      get_size ();
+      get_size () const;
 
       void
       compress ();

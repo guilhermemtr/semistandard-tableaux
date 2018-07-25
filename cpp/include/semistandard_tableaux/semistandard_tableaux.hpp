@@ -30,7 +30,7 @@ namespace __placid
        * Constructs a new tropical number, given its value.
        * @param o the semistandard tableaux.
        */
-      tableaux (tableaux &o);
+      tableaux (const tableaux &o);
 
       // tableaux (free_monoid &o);
 
@@ -39,22 +39,22 @@ namespace __placid
        */
       virtual ~tableaux ();
 
-      tableaux
-      operator= (tableaux o);
+      tableaux&
+      operator= (const tableaux& o);
 
       bool
-      operator== (tableaux o);
+      operator== (const tableaux& o) const;
 
       size_t
-      get_size ();
+      get_size () const;
 
       size_t
-      get_storage_size ();
+      get_storage_size () const;
 
       // free_monoid
       // get_reading();
 
-      tableaux operator* (tableaux o);
+      tableaux operator* (const tableaux& o) const;
 
       void
       read (FILE *f);

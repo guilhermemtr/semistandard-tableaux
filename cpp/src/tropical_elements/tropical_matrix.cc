@@ -9,13 +9,14 @@ namespace __placid
     const std::string invalid_matrix_sizes_exception =
       std::string ("Different matrix sizes");
 
-    const std::string tropical_matrix_format_id = std::string ("tropical_matrix");
+    const std::string tropical_matrix_format_id =
+      std::string ("tropical_matrix");
 
     matrix::matrix (size_t rows, size_t columns)
     {
-      this->rows    = rows;
-      this->columns = columns;
-      this->matrix_entries  = new number[this->rows * this->columns];
+      this->rows           = rows;
+      this->columns        = columns;
+      this->matrix_entries = new number[this->rows * this->columns];
     }
 
     matrix::matrix (size_t rows, size_t columns, number *matrix_entries)
@@ -27,7 +28,7 @@ namespace __placid
       }
     }
 
-    matrix::matrix (matrix &o) : matrix (o.rows, o.columns)
+    matrix::matrix (const matrix &o) : matrix (o.rows, o.columns)
     {
       for (size_t i = 0; i < this->rows * this->columns; i++)
       {
@@ -40,8 +41,8 @@ namespace __placid
       delete[] this->matrix_entries;
     }
 
-    matrix
-    matrix::operator= (matrix o)
+    matrix &
+    matrix::operator= (const matrix &o)
     {
       if (this->columns * this->rows != o.columns * o.rows)
       {
@@ -61,7 +62,7 @@ namespace __placid
     }
 
     bool
-    matrix::operator== (matrix o)
+    matrix::operator== (const matrix &o) const
     {
       if (this->columns != o.columns || this->rows != o.rows)
       {
@@ -78,7 +79,7 @@ namespace __placid
       return true;
     }
 
-    matrix matrix::operator* (matrix o)
+    matrix matrix::operator* (const matrix &o) const
     {
       if (this->columns != o.rows)
       {
@@ -105,7 +106,7 @@ namespace __placid
     }
 
     matrix
-    matrix::operator+ (matrix o)
+    matrix::operator+ (const matrix &o) const
     {
       if (this->columns != o.columns || this->rows != o.rows)
       {

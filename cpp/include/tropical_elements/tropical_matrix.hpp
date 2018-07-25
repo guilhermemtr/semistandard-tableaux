@@ -49,23 +49,23 @@ namespace __placid
        * The given values are cloned to the new matrix.
        * @param o the tropical matrix to be cloned.
        */
-      matrix (matrix &o);
+      matrix (const matrix &o);
 
       /** Destroys a tropical matrix.
        * Destroys a tropical matrix.
        */
       virtual ~matrix ();
 
-      matrix
-      operator= (matrix o);
+      matrix &
+      operator= (const matrix &o);
 
       bool
-      operator== (matrix o);
+      operator== (const matrix &o) const;
 
-      matrix operator* (matrix o);
+      matrix operator* (const matrix &o) const;
 
       matrix
-      operator+ (matrix o);
+      operator+ (const matrix &o) const;
 
       void
       read (FILE *f);

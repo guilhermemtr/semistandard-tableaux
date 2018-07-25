@@ -30,7 +30,7 @@ namespace __placid
       this->compress ();
     }
 
-    free_monoid_element::free_monoid_element (free_monoid_element &o)
+    free_monoid_element::free_monoid_element (const free_monoid_element &o)
     {
       this->length = o.length;
       this->word   = new entry[this->length];
@@ -46,8 +46,8 @@ namespace __placid
       delete[] this->word;
     }
 
-    free_monoid_element
-    free_monoid_element::operator= (free_monoid_element o)
+    free_monoid_element &
+    free_monoid_element::operator= (const free_monoid_element &o)
     {
       delete[] this->word;
 
@@ -103,20 +103,23 @@ namespace __placid
     }
 
     bool
-    free_monoid_element::operator== (free_monoid_element o)
+    free_monoid_element::operator== (const free_monoid_element &o) const
     {
-      this->compress ();
-      o.compress ();
+      free_monoid_element e1 (*this);
+      free_monoid_element e2 (o);
 
-      if (this->length != o.length)
+      e1.compress ();
+      e2.compress ();
+
+      if (e1.length != e2.length)
       {
         return false;
       }
 
       bool equals = true;
-      for (size_t i = 0; i < this->length; i++)
+      for (size_t i = 0; i < e1.length; i++)
       {
-        if (this->word[i] != o.word[i])
+        if (e1.word[i] != e2.word[i])
         {
           equals = false;
           break;
@@ -126,13 +129,8 @@ namespace __placid
       return equals;
     }
 
-    bool
-    free_monoid_element::operator!= (free_monoid_element o)
-    {
-      return !(*this == o);
-    }
-
-    free_monoid_element free_monoid_element::operator* (free_monoid_element o)
+    free_monoid_element free_monoid_element::
+                        operator* (const free_monoid_element &o) const
     {
       free_monoid_element e (this->length + o.length);
       for (size_t i = 0; i < this->length; i++)
@@ -172,7 +170,7 @@ namespace __placid
     }
 
     size_t
-    free_monoid_element::get_size ()
+    free_monoid_element::get_size () const
     {
       size_t sz = 0;
       for (size_t i = 0; i < this->length; i++)

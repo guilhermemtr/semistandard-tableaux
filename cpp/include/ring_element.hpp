@@ -15,7 +15,7 @@ namespace __placid
      * @return the sum of the two given ring elements.
      */
     virtual T
-    operator+ (T o) = 0;
+    operator+ (const T &o) const = 0;
   };
 
 }    // namespace __placid

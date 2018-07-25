@@ -43,7 +43,13 @@ namespace __placid
        * Constructs a new tropical number, given its value.
        * @param n the number of the tropical number to be created.
        */
-      number (tn_t n);
+      number (const tn_t& n);
+
+      /** Constructs a new tropical number, given another tropical number.
+       * Constructs a new tropical number, given another tropical number.
+       * @param &o the other tropical number.
+       */
+      number (const number &o);
 
       /** Destroys a tropical number structure.
        * Destroys a tropical number structure.
@@ -55,13 +61,14 @@ namespace __placid
        * @return the value of the tropical number.
        */
       tn_t
-      get ();
+      get () const;
 
       /** Checks if the tropical number if infinite.
        * Checks if the tropical number if infinite.
        * @return true if the number is finite, and false otherwise.
        */
-      bool operator! ();
+      bool
+      finite () const;
 
       /** Makes an assignment of tropical numbers, given a tropical number
        * integer value. Makes an assignment of tropical numbers, given a
@@ -69,19 +76,19 @@ namespace __placid
        * @param &o the tropical number integer value to assign.
        * @return the tropical number value assigned.
        */
-      number
-      operator= (tn_t o);
+      number &
+      operator= (const tn_t& o);
 
-      number
-      operator= (number o);
+      number &
+      operator= (const number &o);
 
       bool
-      operator== (number o);
+      operator== (const number &o) const;
 
-      number operator* (number o);
+      number operator* (const number &o) const;
 
       number
-      operator+ (number o);
+      operator+ (const number &o) const;
 
       void
       read (FILE *f);

@@ -15,63 +15,71 @@ namespace __placid
       this->n = tn_infinite;
     }
 
-    number::number (tn_t n)
+    number::number (const tn_t &n)
     {
       this->n = n;
+    }
+
+    number::number (const number &o)
+    {
+      this->n = o.n;
     }
 
     number::~number ()
     {
     }
 
-    bool number::operator! ()
+    bool
+    number::finite () const
     {
       return !(this->n >> (sizeof (tn_t) * 8 / 2));
     }
 
     tn_t
-    number::get ()
+    number::get () const
     {
       return this->n;
     }
 
-    number
-    number::operator= (tn_t o)
+    number &
+    number::operator= (const tn_t &o)
     {
       this->n = o;
       return *this;
     }
 
-    number
-    number::operator= (number o)
+    number &
+    number::operator= (const number &o)
     {
       this->n = o.n;
       return *this;
     }
 
     bool
-    number::operator== (number o)
+    number::operator== (const number &o) const
     {
-      return !(!*this || !o) || (this->n == o.n);
+      return !(this->finite () || o.finite ()) || (this->n == o.n);
     }
 
-    number number::operator* (number o)
+    number number::operator* (const number &o) const
     {
       return number (this->n + o.n);
     }
 
     number
-    number::operator+ (number o)
+    number::operator+ (const number &o) const
     {
       tn_t res;
-      if (!*this && !o)
+      if (this->finite () && o.finite ())
       {
         res = this->n > o.n ? this->n : o.n;
       } else
       {
         res = this->n > o.n ? o.n : this->n;
       }
-      return number (res);
+
+      const tn_t r = res;
+      return number (r);
     }
 
     void
@@ -109,7 +117,7 @@ namespace __placid
         throw invalid_file_format_exception;
       }
 
-      if (!*this)
+      if (this->finite ())
       {
         fprintf (f, (tn_str_format + " ").c_str (), this->get ());
       } else

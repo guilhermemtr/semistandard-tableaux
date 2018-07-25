@@ -53,13 +53,13 @@ TEST (tropical_number, test_infinity_check)
   number ti3 (i3);
 
 
-  ASSERT_TRUE (!tn1);
-  ASSERT_TRUE (!tn2);
-  ASSERT_TRUE (!tn3);
+  ASSERT_TRUE (tn1.finite());
+  ASSERT_TRUE (tn2.finite());
+  ASSERT_TRUE (tn3.finite());
 
-  ASSERT_FALSE (!ti1);
-  ASSERT_FALSE (!ti2);
-  ASSERT_FALSE (!ti3);
+  ASSERT_FALSE (ti1.finite());
+  ASSERT_FALSE (ti2.finite());
+  ASSERT_FALSE (ti3.finite());
 }
 
 TEST (tropical_number, test_sum)
@@ -106,19 +106,19 @@ TEST (tropical_number, test_mult)
 
   number tn_res1 = tn1 * tn2;
   ASSERT_EQ (tn_res1.get (), n1 + n2);
-  ASSERT_TRUE (!tn_res1);
+  ASSERT_TRUE (tn_res1.finite());
 
   number tn_res2 = tn1 * ti1;
   ASSERT_EQ (tn_res2.get (), n1 + i1);
-  ASSERT_FALSE (!tn_res2);
+  ASSERT_FALSE (tn_res2.finite());
 
   number tn_res3 = tn2 * ti1;
   ASSERT_EQ (tn_res3.get (), n2 + i1);
-  ASSERT_FALSE (!tn_res3);
+  ASSERT_FALSE (tn_res3.finite());
 
   number tn_res4 = ti1 * ti2;
   ASSERT_EQ (tn_res4.get (), i1 + i2);
-  ASSERT_FALSE (!tn_res4);
+  ASSERT_FALSE (tn_res4.finite());
 }
 
 TEST (tropical_number, test_read)

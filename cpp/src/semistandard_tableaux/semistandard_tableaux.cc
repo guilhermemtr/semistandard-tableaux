@@ -10,7 +10,7 @@ namespace __placid
     {
     }
 
-    tableaux::tableaux (tableaux &o)
+    tableaux::tableaux (const tableaux &o)
     {
     }
 
@@ -18,19 +18,19 @@ namespace __placid
     {
     }
 
-    tableaux
-    tableaux::operator= (tableaux o)
+    tableaux&
+    tableaux::operator= (const tableaux& o)
     {
-      return o;
+      return *this;
     }
 
     bool
-    tableaux::operator== (tableaux o)
+    tableaux::operator== (const tableaux& o) const
     {
       return false;
     }
 
-    tableaux tableaux::operator* (tableaux o)
+    tableaux tableaux::operator* (const tableaux& o) const
     {
       return o;
     }

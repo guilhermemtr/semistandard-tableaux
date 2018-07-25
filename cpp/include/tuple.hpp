@@ -40,7 +40,7 @@ namespace __placid
      * Constructs a new tuple, from another tuple.
      * @param tuple the tuple to be copied.
      */
-    tuple (tuple<T> &tup) : tuple (tup.arity, tup.elements)
+    tuple (const tuple<T> &tup) : tuple (tup.arity, tup.elements)
     {
     }
 
@@ -52,8 +52,8 @@ namespace __placid
       delete[] this->elements;
     }
 
-    tuple<T>
-    operator= (tuple<T> o)
+    tuple<T> &
+    operator= (const tuple<T> &o)
     {
       if (this->arity != o.arity)
       {
@@ -71,7 +71,7 @@ namespace __placid
     }
 
     bool
-    operator== (tuple<T> o)
+    operator== (const tuple<T> &o) const
     {
       if (this->arity != o.arity)
       {
@@ -88,7 +88,7 @@ namespace __placid
       return true;
     }
 
-    tuple<T> operator* (tuple<T> o)
+    tuple<T> operator* (const tuple<T> &o) const
     {
       if (this->arity != o.arity)
       {
@@ -174,7 +174,7 @@ namespace __placid
       for (size_t i = 1; i < this->arity; i++)
       {
         this->elements[i - 1].read (f);
-        discard_line (f,2);
+        discard_line (f, 2);
       }
       this->elements[this->arity - 1].read (f);
     }
