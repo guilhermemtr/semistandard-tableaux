@@ -18,6 +18,11 @@ namespace __placid
   {
     struct tableaux : public magma_element<tableaux>
     {
+      typedef ptrdiff_t (iteration_function) (entry  cell,
+                                              size_t index,
+                                              size_t real_index,
+                                              void * data);
+
       static const size_t default_size = (1 << 5);
 
       static const file_format plain_format      = 0;
@@ -70,6 +75,15 @@ namespace __placid
       write (FILE *f, file_format format) const;
 
         private:
+      void
+      iterate (iteration_function fn, void *data);
+
+      size_t
+      add_cells (const free_monoid::element &word);
+
+      void
+      resize ();
+
       void
       read_plain (FILE *f);
 
