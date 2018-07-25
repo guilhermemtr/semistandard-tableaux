@@ -8,6 +8,7 @@
 #include <cstring>
 
 #include "free_monoid/free_monoid_element.hpp"
+#include "ordered_array.hpp"
 
 #include "magma_element.hpp"
 
@@ -17,14 +18,20 @@ namespace __placid
   {
     struct tableaux : public magma_element<tableaux>
     {
+      static const size_t default_size = (1 << 5);
+
       static const file_format plain_format      = 0;
       static const file_format compressed_format = 1;
       static const file_format table_format      = 2;
 
+      size_t         size;
+      size_t         counter;
+      ordered_array *rows;
+
       /** Constructs a new semistandard tableaux.
        * Constructs a new semistandard tableaux.
        */
-      tableaux ();
+      tableaux (size_t size = default_size);
 
       /** Constructs a new semistandard tableaux, given .
        * Constructs a new tropical number, given its value.
@@ -32,18 +39,18 @@ namespace __placid
        */
       tableaux (const tableaux &o);
 
-      // tableaux (free_monoid &o);
+      tableaux (const free_monoid::element &o);
 
       /** Destroys a tropical number structure.
        * Destroys a tropical number structure.
        */
       virtual ~tableaux ();
 
-      tableaux&
-      operator= (const tableaux& o);
+      tableaux &
+      operator= (const tableaux &o);
 
       bool
-      operator== (const tableaux& o) const;
+      operator== (const tableaux &o) const;
 
       size_t
       get_size () const;
@@ -51,10 +58,10 @@ namespace __placid
       size_t
       get_storage_size () const;
 
-      // free_monoid
-      // get_reading();
+      free_monoid::element
+      get_reading () const;
 
-      tableaux operator* (const tableaux& o) const;
+      tableaux operator* (const tableaux &o) const;
 
       void
       read (FILE *f);
