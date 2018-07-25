@@ -140,7 +140,7 @@ namespace __placid
     }
 
     void
-    write (FILE *f, file_format format)
+    write (FILE *f, file_format format) const
     {
       if (f == NULL)
       {
@@ -180,7 +180,7 @@ namespace __placid
     }
 
     void
-    write_data (FILE *f, file_format format)
+    write_data (FILE *f, file_format format) const
     {
       for (size_t i = 1; i < this->arity; i++)
       {

@@ -233,7 +233,7 @@ namespace __placid
     }
 
     void
-    free_monoid_element::write (FILE *f, file_format format)
+    free_monoid_element::write (FILE *f, file_format format) const
     {
       if (f == NULL)
       {
@@ -247,17 +247,18 @@ namespace __placid
 
       fprintf (f, "%s\n%u\n", free_monoid_format_id.c_str (), format);
 
-      this->compress ();
+      free_monoid_element e (*this);
+      e.compress ();
 
-      fprintf (f, "%lu\n", this->length);
+      fprintf (f, "%lu\n", e.length);
 
       switch (format)
       {
         case plain_format:
-          this->write_plain (f);
+          e.write_plain (f);
           break;
         case compressed_format:
-          this->write_compressed (f);
+          e.write_compressed (f);
           break;
       }
     }
@@ -310,7 +311,7 @@ namespace __placid
     }
 
     void
-    free_monoid_element::write_plain (FILE *f)
+    free_monoid_element::write_plain (FILE *f) const
     {
       for (size_t i = 0; i < this->length; i++)
       {
@@ -322,7 +323,7 @@ namespace __placid
     }
 
     void
-    free_monoid_element::write_compressed (FILE *f)
+    free_monoid_element::write_compressed (FILE *f) const
     {
       for (size_t i = 0; i < this->length; i++)
       {

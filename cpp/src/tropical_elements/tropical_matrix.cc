@@ -182,7 +182,7 @@ namespace __placid
     }
 
     void
-    matrix::write (FILE *f, file_format format)
+    matrix::write (FILE *f, file_format format) const
     {
       if (f == NULL)
       {
@@ -255,7 +255,7 @@ namespace __placid
     }
 
     void
-    matrix::write_plain (FILE *f)
+    matrix::write_plain (FILE *f) const
     {
       for (size_t i = 0; i < this->rows; i++)
       {
@@ -268,7 +268,7 @@ namespace __placid
     }
 
     void
-    matrix::write_table (FILE *f)
+    matrix::write_table (FILE *f) const
     {
       for (size_t i = 0; i < this->rows; i++)
       {

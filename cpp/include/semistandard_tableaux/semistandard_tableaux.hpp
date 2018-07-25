@@ -60,7 +60,7 @@ namespace __placid
       read (FILE *f);
 
       void
-      write (FILE *f, file_format format);
+      write (FILE *f, file_format format) const;
 
         private:
       void
@@ -70,13 +70,13 @@ namespace __placid
       read_compressed (FILE *f);
 
       void
-      read_table (FILE *f);
+      read_table (FILE *f) const;
 
       void
-      write_plain (FILE *f);
+      write_plain (FILE *f) const;
 
       void
-      write_compressed (FILE *f);
+      write_compressed (FILE *f) const;
 
       void
       write_table (FILE *f);

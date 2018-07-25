@@ -1,5 +1,4 @@
 #include "semistandard_tableaux.hpp"
-
 #ifdef __PLACID_SEMISTANDARD_TABLEAUX__
 
 namespace __placid
@@ -18,19 +17,19 @@ namespace __placid
     {
     }
 
-    tableaux&
-    tableaux::operator= (const tableaux& o)
+    tableaux &
+    tableaux::operator= (const tableaux &o)
     {
       return *this;
     }
 
     bool
-    tableaux::operator== (const tableaux& o) const
+    tableaux::operator== (const tableaux &o) const
     {
       return false;
     }
 
-    tableaux tableaux::operator* (const tableaux& o) const
+    tableaux tableaux::operator* (const tableaux &o) const
     {
       return o;
     }
@@ -42,7 +41,7 @@ namespace __placid
     }
 
     void
-    tableaux::write (FILE *f, file_format format)
+    tableaux::write (FILE *f, file_format format) const
     {
       return;
     }

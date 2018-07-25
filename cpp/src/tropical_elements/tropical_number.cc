@@ -105,7 +105,7 @@ namespace __placid
     }
 
     void
-    number::write (FILE *f, file_format format)
+    number::write (FILE *f, file_format format) const
     {
       if (f == NULL)
       {

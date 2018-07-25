@@ -71,7 +71,7 @@ namespace __placid
       read (FILE *f);
 
       void
-      write (FILE *f, file_format format);
+      write (FILE *f, file_format format) const;
 
         private:
       void
@@ -81,10 +81,10 @@ namespace __placid
       read_table (FILE *f);
 
       void
-      write_plain (FILE *f);
+      write_plain (FILE *f) const;
 
       void
-      write_table (FILE *f);
+      write_table (FILE *f) const;
     };
 
   }    // namespace tropical_elements

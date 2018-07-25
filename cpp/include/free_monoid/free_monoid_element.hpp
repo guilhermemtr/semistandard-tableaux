@@ -61,7 +61,7 @@ namespace __placid
       read (FILE *f);
 
       void
-      write (FILE *f, file_format format);
+      write (FILE *f, file_format format) const;
 
         private:
       void
@@ -71,10 +71,10 @@ namespace __placid
       read_compressed (FILE *f, size_t lines);
 
       void
-      write_plain (FILE *f);
+      write_plain (FILE *f) const;
 
       void
-      write_compressed (FILE *f);
+      write_compressed (FILE *f) const;
     };
 
   }    // namespace free_monoid

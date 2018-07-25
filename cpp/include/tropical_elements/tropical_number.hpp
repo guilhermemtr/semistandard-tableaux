@@ -94,7 +94,7 @@ namespace __placid
       read (FILE *f);
 
       void
-      write (FILE *f, file_format format = 0);
+      write (FILE *f, file_format format = 0) const;
     };
 
   }    // namespace tropical_elements
