@@ -12,7 +12,7 @@ namespace __placid
     }
 
     void
-    ordered_array::copy (ordered_array &o)
+    ordered_array::copy (const ordered_array &o)
     {
       delete[] this->cells;
 
@@ -25,7 +25,7 @@ namespace __placid
       }
     }
 
-    ordered_array::ordered_array (ordered_array &o)
+    ordered_array::ordered_array (const ordered_array &o)
     {
       this->cells = new entry[0];
       this->copy (o);
@@ -36,8 +36,8 @@ namespace __placid
       delete[] this->cells;
     }
 
-    ordered_array
-    ordered_array::operator= (ordered_array o)
+    ordered_array &
+    ordered_array::operator= (const ordered_array &o)
     {
       this->copy (o);
       return *this;
@@ -74,19 +74,22 @@ namespace __placid
     }
 
     bool
-    ordered_array::operator== (ordered_array o)
+    ordered_array::operator== (const ordered_array &o) const
     {
-      this->compress ();
-      o.compress ();
+      ordered_array o1 (*this);
+      ordered_array o2 (o);
 
-      if (this->counter != o.counter)
+      o1.compress ();
+      o2.compress ();
+
+      if (o1.counter != o2.counter)
       {
         return false;
       }
 
-      for (size_t i = 0; i < this->counter; i++)
+      for (size_t i = 0; i < o1.counter; i++)
       {
-        if (this->cells[i] != o.cells[i])
+        if (o1.cells[i] != o2.cells[i])
         {
           return false;
         }
@@ -95,13 +98,13 @@ namespace __placid
     }
 
     bool
-    ordered_array::operator!= (ordered_array o)
+    ordered_array::operator!= (const ordered_array &o) const
     {
       return !(*this == o);
     }
 
     size_t
-    ordered_array::get_size ()
+    ordered_array::get_size () const
     {
       size_t sz = 0;
       for (size_t i = 0; i < this->counter; i++)
@@ -112,7 +115,7 @@ namespace __placid
     }
 
     size_t
-    ordered_array::get_mid (entry_val val)
+    ordered_array::get_mid (const entry_val val) const
     {
       size_t top    = this->counter - 1;
       size_t bottom = 0;
@@ -140,7 +143,7 @@ namespace __placid
     }
 
     void
-    ordered_array::place_cell_mid (size_t *idx, entry to_place)
+    ordered_array::place_cell_mid (size_t *idx, const entry to_place)
     {
       if (*idx == 0 || this->cells[*idx - 1].val < to_place.val)
       {
@@ -262,7 +265,7 @@ namespace __placid
     }
 
     void
-    ordered_array::write (FILE *f)
+    ordered_array::write (FILE *f) const
     {
     }
 

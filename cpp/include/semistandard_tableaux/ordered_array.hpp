@@ -20,21 +20,21 @@ namespace __placid
 
       ordered_array (size_t size = default_size);
 
-      ordered_array (ordered_array &o);
+      ordered_array (const ordered_array &o);
 
       virtual ~ordered_array ();
 
-      ordered_array
-      operator= (ordered_array o);
+      ordered_array &
+      operator= (const ordered_array &o);
 
       bool
-      operator== (ordered_array o);
+      operator== (const ordered_array &o) const;
 
       bool
-      operator!= (ordered_array o);
+      operator!= (const ordered_array &o) const;
 
       size_t
-      get_size ();
+      get_size () const;
 
       void
       add (entry * to_place,
@@ -43,11 +43,11 @@ namespace __placid
            size_t *real_nr_replaced);
 
       void
-      write (FILE *f);
+      write (FILE *f) const;
 
         private:
       void
-      copy (ordered_array &o);
+      copy (const ordered_array &o);
 
       void
       resize ();
@@ -56,10 +56,10 @@ namespace __placid
       compress ();
 
       size_t
-      get_mid (entry_val val);
+      get_mid (const entry_val val) const;
 
       void
-      place_cell_mid (size_t *idx, entry to_place);
+      place_cell_mid (size_t *idx, const entry to_place);
 
       void
       shift_cells_after_mid (size_t *  idx,

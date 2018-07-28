@@ -31,19 +31,19 @@ namespace __placid
 
       entry (entry_val val, entry_len count);
 
-      entry (entry &t);
+      entry (const entry &t);
 
-      entry
-      operator= (entry o);
+      entry &
+      operator= (const entry &o);
 
-      entry
-      operator= (entry_val val);
-
-      bool
-      operator== (entry e);
+      entry &
+      operator= (const entry_val val);
 
       bool
-      operator!= (entry e);
+      operator== (const entry &e) const;
+
+      bool
+      operator!= (const entry &e) const;
     };
 
   }    // namespace semistandard_tableaux

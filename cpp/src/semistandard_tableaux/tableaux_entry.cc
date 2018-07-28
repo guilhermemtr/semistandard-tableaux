@@ -18,20 +18,20 @@ namespace __placid
     {
     }
 
-    entry::entry (entry &t) : entry (t.val, t.count)
+    entry::entry (const entry &t) : entry (t.val, t.count)
     {
     }
 
-    entry
-    entry::operator= (entry o)
+    entry &
+    entry::operator= (const entry &o)
     {
       this->val   = o.val;
       this->count = o.count;
       return *this;
     }
 
-    entry
-    entry::operator= (entry_val val)
+    entry &
+    entry::operator= (const entry_val val)
     {
       this->val   = val;
       this->count = 1;
@@ -40,13 +40,13 @@ namespace __placid
     }
 
     bool
-    entry::operator== (entry o)
+    entry::operator== (const entry &o) const
     {
       return this->val == o.val && this->count == o.count;
     }
 
     bool
-    entry::operator!= (entry o)
+    entry::operator!= (const entry &o) const
     {
       return !(*this == o);
     }

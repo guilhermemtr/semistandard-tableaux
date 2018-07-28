@@ -2,6 +2,7 @@
 
 #include "tuple.hpp"
 #include "magma_element_test_utils.hpp"
+#include "semistandard_tableaux/tableaux_entry.hpp"
 #include "semistandard_tableaux/ordered_array.hpp"
 
 using namespace __placid::semistandard_tableaux;
@@ -194,6 +195,67 @@ TEST (ordered_array, test_get_size)
 // To test: add, write and read.
 // How to write and read?
 // Write for ordered array not yet implemented.
+
+TEST (ordered_array, test_add)
+{
+  entry *cells = new entry[10];
+  cells[0]     = entry (3L, 5L);
+  cells[1]     = entry (5L, 5L);
+  cells[2]     = entry (4L, 10L);
+  cells[3]     = entry (6L, 5L);
+  cells[4]     = entry (2L, 10L);
+  cells[5]     = entry (5L, 5L);
+  cells[6]     = entry (4L, 3L);
+
+  entry *to_place    = new entry[50];
+  size_t to_place_sz = 43L;
+
+  to_place[0]  = cells[0];
+  to_place[5]  = cells[1];
+  to_place[10] = cells[2];
+  to_place[20] = cells[3];
+  to_place[25] = cells[4];
+  to_place[35] = cells[5];
+  to_place[40] = cells[6];
+
+
+  entry  replaced[50];
+  size_t sz = 0;
+
+  ordered_array o1;
+  o1.add (to_place, to_place_sz, replaced, &sz);
+
+  ASSERT_EQ (o1.counter, 3);
+  ASSERT_EQ (o1.get_size (), 20);
+
+  ASSERT_TRUE(o1.cells[0].val == 2);
+  ASSERT_TRUE(o1.cells[0].count == 10);
+
+  ASSERT_TRUE(o1.cells[1].val == 4);
+  ASSERT_TRUE(o1.cells[1].count == 8);
+
+  ASSERT_TRUE(o1.cells[2].val == 5);
+  ASSERT_TRUE(o1.cells[2].count == 2);
+
+
+  
+  ASSERT_EQ (sz, 23);
+  
+  ASSERT_TRUE(replaced[0].val == 5);
+  ASSERT_TRUE(replaced[0].count == 5);
+
+  ASSERT_TRUE(replaced[5].val == 3);
+  ASSERT_TRUE(replaced[5].count == 5);
+
+  ASSERT_TRUE(replaced[10].val == 4);
+  ASSERT_TRUE(replaced[10].count == 5);
+
+  ASSERT_TRUE(replaced[15].val == 6);
+  ASSERT_TRUE(replaced[15].count == 5);
+
+  ASSERT_TRUE(replaced[20].val == 5);
+  ASSERT_TRUE(replaced[20].count == 3);
+}
 
 
 
