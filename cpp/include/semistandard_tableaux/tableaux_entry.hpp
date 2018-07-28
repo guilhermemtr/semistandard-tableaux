@@ -25,7 +25,9 @@ namespace __placid
       entry_val val;      //!< value of the tableaux cell.
       entry_len count;    //!< tableaux cell's sequence length.
 
-      entry (entry_val val = 0L);
+      entry ();
+
+      entry (entry_val val);
 
       entry (entry_val val, entry_len count);
 

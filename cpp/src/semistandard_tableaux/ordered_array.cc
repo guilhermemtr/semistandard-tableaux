@@ -11,21 +11,8 @@ namespace __placid
       this->cells = new entry[this->size];
     }
 
-    ordered_array::ordered_array (ordered_array &o) : ordered_array (o.size)
-    {
-      for (size_t i = 0; i < o.counter; i++)
-      {
-        this->cells[i] = o.cells[i];
-      }
-    }
-
-    ordered_array::~ordered_array ()
-    {
-      delete[] this->cells;
-    }
-
-    ordered_array
-    ordered_array::operator= (ordered_array o)
+    void
+    ordered_array::copy (ordered_array &o)
     {
       delete[] this->cells;
 
@@ -36,7 +23,24 @@ namespace __placid
       {
         this->cells[i] = o.cells[i];
       }
-      return o;
+    }
+
+    ordered_array::ordered_array (ordered_array &o)
+    {
+      this->cells = new entry[0];
+      this->copy (o);
+    }
+
+    ordered_array::~ordered_array ()
+    {
+      delete[] this->cells;
+    }
+
+    ordered_array
+    ordered_array::operator= (ordered_array o)
+    {
+      this->copy (o);
+      return *this;
     }
 
     void
@@ -59,6 +63,13 @@ namespace __placid
           count                  = this->cells[i].count;
         }
       }
+
+      if (this->counter > 0)
+      {
+        entry e (curr_val, count);
+        this->cells[counter++] = e;
+      }
+
       this->counter = counter;
     }
 

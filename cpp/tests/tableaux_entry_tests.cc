@@ -9,7 +9,7 @@ TEST (semistandard_tableaux_entry, test_creation)
   entry e1;
 
   ASSERT_EQ (e1.val, 0);
-  ASSERT_EQ (e1.count, 1);
+  ASSERT_EQ (e1.count, 0);
 
   entry e2 (1);
 
@@ -49,6 +49,9 @@ TEST (semistandard_tableaux_entry, test_equality)
   entry e3 (4, 2);
 
   ASSERT_TRUE (e1 == e2);
+  ASSERT_FALSE (e1 != e2);
   ASSERT_TRUE (e1 != e3);
+  ASSERT_FALSE (e1 == e3);
   ASSERT_TRUE (e2 != e3);
+  ASSERT_FALSE (e2 == e3);
 }

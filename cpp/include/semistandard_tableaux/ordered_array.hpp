@@ -3,6 +3,8 @@
 
 #include "tableaux_entry.hpp"
 
+#include "config.hpp"
+
 namespace __placid
 {
   namespace semistandard_tableaux
@@ -44,6 +46,9 @@ namespace __placid
       write (FILE *f);
 
         private:
+      void
+      copy (ordered_array &o);
+
       void
       resize ();
 

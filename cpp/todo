@@ -13,12 +13,11 @@ CMake output build directory: https://stackoverflow.com/questions/18826789/cmake
 
 
 FEATURES:
-finish implementing the free monoid.
 finish implementing the semistandard tableaux.
 document everything
 test everything
 
-
+consider changing the implementation of the free monoid to have a size and a counter, instead of only having a length (which requires constant memory management).
 
 Later: use fseek to let the user know which line the error is in, when reading input from files.
 Try getting the line number, the column number and the file number.

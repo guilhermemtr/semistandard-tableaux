@@ -114,6 +114,37 @@ namespace __placid
       return;
     }
 
+
+    void
+    tableaux::read_plain (FILE *f)
+    {
+    }
+
+    void
+    tableaux::read_compressed (FILE *f)
+    {
+    }
+
+    void
+    tableaux::read_table (FILE *f) const
+    {
+    }
+
+    void
+    tableaux::write_plain (FILE *f) const
+    {
+    }
+
+    void
+    tableaux::write_compressed (FILE *f) const
+    {
+    }
+
+    void
+    tableaux::write_table (FILE *f)
+    {
+    }
+
     size_t
     tableaux::add_cells (const free_monoid::element &word)
     {

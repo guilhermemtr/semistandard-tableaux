@@ -10,13 +10,15 @@ namespace __placid
     {
     }
 
-    entry::entry (entry_val val)
-      : entry (val, 1)
+    entry::entry (entry_val val) : entry (val, 1)
     {
     }
 
-    entry::entry (entry &t)
-      : entry (t.val, t.count)
+    entry::entry () : entry (0, 0)
+    {
+    }
+
+    entry::entry (entry &t) : entry (t.val, t.count)
     {
     }
 

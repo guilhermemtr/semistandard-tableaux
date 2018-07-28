@@ -7,6 +7,8 @@
 #include <cerrno>
 #include <cstdint>
 
+#include "config.hpp"
+
 namespace __placid
 {
   typedef uint8_t file_format;
