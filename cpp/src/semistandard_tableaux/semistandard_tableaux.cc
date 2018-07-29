@@ -135,7 +135,7 @@ namespace __placid
       const free_monoid::element res_word = e1 * e2;
 
       tableaux res (res_word);
-      return res;
+      return tableaux(this->get_reading() * o.get_reading());
     }
 
     void
@@ -158,38 +158,35 @@ namespace __placid
         throw invalid_file_format_exception;
       }
 
-      if (format != plain_format && format != table_format
+      if (format != plain_format && format != compressed_format
           && format != table_format)
       {
         throw invalid_file_format_exception;
       }
 
+      delete[] this->rows;
       this->counter = 0;
       this->size    = default_size;
-      delete[] this->rows;
-      this->rows = new ordered_array[this->size];
+      this->rows    = new ordered_array[this->size];
+
+      size_t lines;
+
+      if (fscanf (f, "%lu", &lines) != 1)
+      {
+        throw invalid_file_format_exception;
+      }
+
+      char * l   = NULL;
+      size_t len = 0;
+      getline (&l, &len, f);
+      free (l);
 
       if (format == table_format)
       {
-        size_t rows;
-
-        if (fscanf (f, "%lu", &rows) != 1)
-        {
-          throw invalid_file_format_exception;
-        }
-
-        char * l   = NULL;
-        size_t len = 0;
-        getline (&l, &len, f);
-        free (l);
-
-        this->read_table (f, rows);
+        this->read_table (f, lines);
 
       } else
       {
-        size_t lines = format == plain_format ? this->get_size () :
-                                                this->get_storage_size ();
-
         free_monoid::element e;
         if (format == plain_format)
         {
@@ -219,7 +216,16 @@ namespace __placid
 
       fprintf (f, "%s\n%u\n", semistandard_tableaux_format_id.c_str (), format);
 
-      fprintf (f, "%lu\n", this->counter);
+      if (format == plain_format)
+      {
+        fprintf (f, "%lu\n", this->get_size ());
+      } else if (format == compressed_format)
+      {
+        fprintf (f, "%lu\n", this->get_storage_size ());
+      } else if (format == table_format)
+      {
+        fprintf (f, "%lu\n", this->counter);
+      }
 
       free_monoid::element e = this->get_reading ();
 

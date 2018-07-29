@@ -387,139 +387,127 @@ TEST (semistandard_tableaux_element, test_multiplication)
 }
 
 
-/*
+
 TEST (semistandard_tableaux_element, test_read_plain)
 {
-  symbol e0 (0);
-  symbol e1 (1);
-  symbol e2 (2);
-  symbol e3 (3);
-  symbol e4 (4);
-  symbol e5 (5);
-
-  symbol symbols_1[2]  = {e1, e2};
-  symbol symbols_2[5]  = {e0, e1, e2, e3, e4};
-  symbol symbols_3[10] = {e0, e1, e1, e1, e2, e3, e4, e4, e5, e5};
-
   char f1[1 << 10];
   char f2[1 << 10];
-  char f3[1 << 10];
 
-  strcpy (f1, "free_monoid_element\n0\n2\n1\n2\n");
-  strcpy (f2, "free_monoid_element\n0\n5\n0\n1\n2\n3\n4\n");
-  strcpy (f3, "free_monoid_element\n0\n10\n0\n1\n1\n1\n2\n3\n4\n4\n5\n5\n");
+  strcpy (f1, "semistandard_tableaux\n0\n6\n1\n3\n2\n5\n4\n1\n");
+  strcpy (f2,
+          "semistandard_"
+          "tableaux\n0\n19\n6\n8\n4\n5\n5\n6\n2\n2\n3\n3\n5\n7\n1\n1\n1\n2\n4\n"
+          "4\n4\n");
 
-  element el1 (symbols_1, 2);
-  element el2 (symbols_2, 5);
-  element el3 (symbols_3, 10);
-  element el1_res (symbols_1, 2);
-  element el2_res (symbols_2, 5);
-  element el3_res (symbols_3, 10);
+  tableaux t1 (get_element_1 ());
+  tableaux t2 (get_element_2 ());
 
-  test_magma_element_file_read (el1, f1);
-  test_magma_element_file_read (el2, f2);
-  test_magma_element_file_read (el3, f3);
+  tableaux t1_res (get_element_1 ());
+  tableaux t2_res (get_element_2 ());
 
-  ASSERT_TRUE (el1 == el1_res);
-  ASSERT_TRUE (el2 == el2_res);
-  ASSERT_TRUE (el3 == el3_res);
+  test_magma_element_file_read (t1, f1);
+  test_magma_element_file_read (t2, f2);
+
+  ASSERT_TRUE (t1 == t1_res);
+  ASSERT_TRUE (t2 == t2_res);
 }
 
 TEST (semistandard_tableaux_element, test_read_compressed)
 {
-  symbol e0 (0);
-  symbol e1 (1);
-  symbol e2 (2);
-  symbol e3 (3);
-  symbol e4 (4);
-  symbol e5 (5);
-
-  symbol symbols_1[2]  = {e1, e2};
-  symbol symbols_2[5]  = {e0, e1, e2, e3, e4};
-  symbol symbols_3[10] = {e0, e1, e1, e1, e2, e3, e4, e4, e5, e5};
-
   char f1[1 << 10];
   char f2[1 << 10];
-  char f3[1 << 10];
 
-  strcpy (f1, "free_monoid_element\n1\n2\n1 1\n2 1\n");
-  strcpy (f2, "free_monoid_element\n1\n5\n0 1\n1 1\n2 1\n3 1\n4 1\n");
-  strcpy (f3, "free_monoid_element\n1\n6\n0 1\n1 3\n2 1\n3 1\n4 2\n5 2\n");
+  strcpy (f1, "semistandard_tableaux\n1\n6\n1 1\n3 1\n2 1\n5 1\n4 1\n1 1\n");
+  strcpy (
+    f2,
+    "semistandard_"
+    "tableaux\n1\n12\n6 1\n8 1\n4 1\n5 2\n6 1\n2 2\n3 2\n5 1\n7 1\n1 3\n2 "
+    "1\n4 3\n");
 
-  element el1 (symbols_1, 2);
-  element el2 (symbols_2, 5);
-  element el3 (symbols_3, 10);
-  element el1_res (symbols_1, 2);
-  element el2_res (symbols_2, 5);
-  element el3_res (symbols_3, 10);
+  tableaux t1 (get_element_1 ());
+  tableaux t2 (get_element_2 ());
 
-  test_magma_element_file_read (el1, f1);
-  test_magma_element_file_read (el2, f2);
-  test_magma_element_file_read (el3, f3);
+  tableaux t1_res (get_element_1 ());
+  tableaux t2_res (get_element_2 ());
 
-  ASSERT_TRUE (el1 == el1_res);
-  ASSERT_TRUE (el2 == el2_res);
-  ASSERT_TRUE (el3 == el3_res);
+  test_magma_element_file_read (t1, f1);
+  test_magma_element_file_read (t2, f2);
+
+  ASSERT_TRUE (t1 == t1_res);
+  ASSERT_TRUE (t2 == t2_res);
+}
+
+TEST (semistandard_tableaux_element, test_read_table)
+{
+  char f1[1 << 10];
+  char f2[1 << 10];
+
+  strcpy (f1, "semistandard_tableaux\n2\n3\n1 1 4\n2 5\n3\n");
+  strcpy (f2,
+          "semistandard_"
+          "tableaux\n2\n4\n1 1 1 2 4 4 4\n2 2 3 3 5 7\n4 5 5 6\n6 8\n");
+
+  tableaux t1 (get_element_1 ());
+  tableaux t2 (get_element_2 ());
+
+  tableaux t1_res (get_element_1 ());
+  tableaux t2_res (get_element_2 ());
+
+  test_magma_element_file_read (t1, f1);
+  test_magma_element_file_read (t2, f2);
+
+  ASSERT_TRUE (t1 == t1_res);
+  ASSERT_TRUE (t2 == t2_res);
 }
 
 TEST (semistandard_tableaux_element, test_write_plain)
 {
-  symbol e0 (0);
-  symbol e1 (1);
-  symbol e2 (2);
-  symbol e3 (3);
-  symbol e4 (4);
-  symbol e5 (5);
+  tableaux t1 (get_element_1 ());
+  tableaux t2 (get_element_2 ());
 
-  symbol symbols_1[2]  = {e1, e2};
-  symbol symbols_2[5]  = {e0, e1, e2, e3, e4};
-  symbol symbols_3[10] = {e0, e1, e1, e1, e2, e3, e4, e4, e5, e5};
+  char *t1_res = test_magma_element_file_write (t1, 1 << 10, 0);
+  char *t2_res = test_magma_element_file_write (t2, 1 << 10, 0);
 
-  element el1 (symbols_1, 2);
-  element el2 (symbols_2, 5);
-  element el3 (symbols_3, 10);
-
-  char *el1_res = test_magma_element_file_write (el1, 1 << 10, 0);
-  char *el2_res = test_magma_element_file_write (el2, 1 << 10, 0);
-  char *el3_res = test_magma_element_file_write (el3, 1 << 10, 0);
-
-  ASSERT_TRUE (strcmp (el1_res, "free_monoid_element\n0\n2\n1\n2\n") == 0);
-  ASSERT_TRUE (strcmp (el2_res, "free_monoid_element\n0\n5\n0\n1\n2\n3\n4\n")
-               == 0);
   ASSERT_TRUE (
-    strcmp (el3_res,
-            "free_monoid_element\n0\n10\n0\n1\n1\n1\n2\n3\n4\n4\n5\n5\n")
-    == 0);
+    strcmp (t1_res, "semistandard_tableaux\n0\n6\n3\n2\n5\n1\n1\n4\n") == 0);
+  ASSERT_TRUE (strcmp (t2_res,
+                       "semistandard_"
+                       "tableaux\n0\n19\n6\n8\n4\n5\n5\n6\n2\n2\n3\n3\n5\n7\n1"
+                       "\n1\n1\n2\n4\n4\n4\n")
+               == 0);
 }
 
 TEST (semistandard_tableaux_element, test_write_compressed)
 {
-  symbol e0 (0);
-  symbol e1 (1);
-  symbol e2 (2);
-  symbol e3 (3);
-  symbol e4 (4);
-  symbol e5 (5);
+  tableaux t1 (get_element_1 ());
+  tableaux t2 (get_element_2 ());
 
-  symbol symbols_1[2]  = {e1, e2};
-  symbol symbols_2[5]  = {e0, e1, e2, e3, e4};
-  symbol symbols_3[10] = {e0, e1, e1, e1, e2, e3, e4, e4, e5, e5};
+  char *t1_res = test_magma_element_file_write (t1, 1 << 10, 1);
+  char *t2_res = test_magma_element_file_write (t2, 1 << 10, 1);
 
-  element el1 (symbols_1, 2);
-  element el2 (symbols_2, 5);
-  element el3 (symbols_3, 10);
-
-  char *el1_res = test_magma_element_file_write (el1, 1 << 10, 1);
-  char *el2_res = test_magma_element_file_write (el2, 1 << 10, 1);
-  char *el3_res = test_magma_element_file_write (el3, 1 << 10, 1);
-
-  ASSERT_TRUE (strcmp (el1_res, "free_monoid_element\n1\n2\n1 1\n2 1\n") == 0);
   ASSERT_TRUE (
-    strcmp (el2_res, "free_monoid_element\n1\n5\n0 1\n1 1\n2 1\n3 1\n4 1\n")
+    strcmp (t1_res, "semistandard_tableaux\n1\n5\n3 1\n2 1\n5 1\n1 2\n4 1\n")
     == 0);
+  ASSERT_TRUE (strcmp (t2_res,
+                       "semistandard_"
+                       "tableaux\n1\n12\n6 1\n8 1\n4 1\n5 2\n6 1\n2 2\n3 2\n5 "
+                       "1\n7 1\n1 3\n2 1\n4 3\n")
+               == 0);
+}
+
+TEST (semistandard_tableaux_element, test_write_table)
+{
+  tableaux t1 (get_element_1 ());
+  tableaux t2 (get_element_2 ());
+
+  char *t1_res = test_magma_element_file_write (t1, 1 << 10, 2);
+  char *t2_res = test_magma_element_file_write (t2, 1 << 10, 2);
+
   ASSERT_TRUE (
-    strcmp (el3_res,
-            "free_monoid_element\n1\n6\n0 1\n1 3\n2 1\n3 1\n4 2\n5 2\n")
+    strcmp (t1_res, "semistandard_tableaux\n2\n3\n1 1 4 \n2 5 \n3 \n") == 0);
+  ASSERT_TRUE (
+    strcmp (t2_res,
+            "semistandard_"
+            "tableaux\n2\n4\n1 1 1 2 4 4 4 \n2 2 3 3 5 7 \n4 5 5 6 \n6 8 \n")
     == 0);
 }
-*/
