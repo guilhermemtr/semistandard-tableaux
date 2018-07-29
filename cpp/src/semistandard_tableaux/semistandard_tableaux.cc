@@ -129,12 +129,6 @@ namespace __placid
 
     tableaux tableaux::operator* (const tableaux &o) const
     {
-      const free_monoid::element e1 = this->get_reading ();
-      const free_monoid::element e2 = o.get_reading ();
-
-      const free_monoid::element res_word = e1 * e2;
-
-      tableaux res (res_word);
       return tableaux(this->get_reading() * o.get_reading());
     }
 
