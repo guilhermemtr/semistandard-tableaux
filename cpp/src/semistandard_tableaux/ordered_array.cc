@@ -265,11 +265,6 @@ namespace __placid
     }
 
     void
-    ordered_array::write (FILE *f) const
-    {
-    }
-
-    void
     ordered_array::resize ()
     {
       entry *cells = this->cells;

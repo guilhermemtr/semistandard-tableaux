@@ -8,12 +8,19 @@
 
 namespace __placid
 {
+  namespace semistandard_tableaux
+  {
+    struct tableaux;
+  }
+
   namespace free_monoid
   {
     extern const std::string free_monoid_format_id;
 
     struct element : public magma_element<element>
     {
+      friend semistandard_tableaux::tableaux;
+
       static const size_t      default_size      = 0;
       static const file_format plain_format      = 0;
       static const file_format compressed_format = 1;

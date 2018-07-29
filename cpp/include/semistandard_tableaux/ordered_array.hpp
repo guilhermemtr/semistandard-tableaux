@@ -42,9 +42,6 @@ namespace __placid
            entry * replaced,
            size_t *real_nr_replaced);
 
-      void
-      write (FILE *f) const;
-
         private:
       void
       copy (const ordered_array &o);

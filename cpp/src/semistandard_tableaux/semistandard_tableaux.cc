@@ -5,6 +5,9 @@ namespace __placid
 {
   namespace semistandard_tableaux
   {
+    const std::string semistandard_tableaux_format_id =
+      std::string ("semistandard_tableaux");
+
     tableaux::tableaux (size_t size)
     {
       this->size    = size;
@@ -24,7 +27,7 @@ namespace __placid
 
     tableaux::tableaux (const free_monoid::element &o) : tableaux ()
     {
-      // TODO
+      this->add_cells (o);
     }
 
     tableaux::~tableaux ()
@@ -47,6 +50,18 @@ namespace __placid
         this->rows[i] = o.rows[i];
       }
 
+      return *this;
+    }
+
+    tableaux &
+    tableaux::operator= (const free_monoid::element &o)
+    {
+      delete[] this->rows;
+      this->counter = 0;
+      this->size    = default_size;
+      this->rows    = new ordered_array[this->size];
+
+      this->add_cells (o);
       return *this;
     }
 
@@ -91,61 +106,194 @@ namespace __placid
       return sz;
     }
 
+    static void
+    get_reading_iteration_function (entry  e,
+                                    size_t index,
+                                    size_t real_index,
+                                    void * data)
+    {
+      free_monoid::element *w = (free_monoid::element *) data;
+      w->word[index].count    = e.count;
+      w->word[index].sym      = e.val;
+    }
+
     free_monoid::element
     tableaux::get_reading () const
     {
-      return free_monoid::element ();
+      size_t               storage_size = this->get_storage_size ();
+      free_monoid::element reading (storage_size);
+
+      this->iterate (get_reading_iteration_function, (void *) &reading);
+
+      return reading;
     }
 
     tableaux tableaux::operator* (const tableaux &o) const
     {
-      return o;
+      const free_monoid::element e1 = this->get_reading ();
+      const free_monoid::element e2 = o.get_reading ();
+
+      const free_monoid::element res_word = e1 * e2;
+
+      tableaux res (res_word);
+      return res;
     }
 
     void
     tableaux::read (FILE *f)
     {
-      return;
+      char format_id[256];
+      if (fscanf (f, "%s", format_id) != 1)
+      {
+        throw invalid_file_format_exception;
+      }
+
+      if (strcmp (format_id, semistandard_tableaux_format_id.c_str ()) != 0)
+      {
+        throw invalid_file_format_exception;
+      }
+
+      int format;
+      if (fscanf (f, "%d", &format) != 1)
+      {
+        throw invalid_file_format_exception;
+      }
+
+      if (format != plain_format && format != table_format
+          && format != table_format)
+      {
+        throw invalid_file_format_exception;
+      }
+
+      this->counter = 0;
+      this->size    = default_size;
+      delete[] this->rows;
+      this->rows = new ordered_array[this->size];
+
+      if (format == table_format)
+      {
+        size_t rows;
+
+        if (fscanf (f, "%lu", &rows) != 1)
+        {
+          throw invalid_file_format_exception;
+        }
+
+        char * l   = NULL;
+        size_t len = 0;
+        getline (&l, &len, f);
+        free (l);
+
+        this->read_table (f, rows);
+
+      } else
+      {
+        size_t lines = format == plain_format ? this->get_size () :
+                                                this->get_storage_size ();
+
+        free_monoid::element e;
+        if (format == plain_format)
+        {
+          e.read_plain (f, lines);
+        } else
+        {
+          e.read_compressed (f, lines);
+        }
+
+        this->add_cells (e);
+      }
     }
 
     void
     tableaux::write (FILE *f, file_format format) const
     {
-      return;
-    }
+      if (f == NULL)
+      {
+        return;
+      }
 
+      if (format != plain_format && format != compressed_format
+          && format != table_format)
+      {
+        throw invalid_file_format_exception;
+      }
+
+      fprintf (f, "%s\n%u\n", semistandard_tableaux_format_id.c_str (), format);
+
+      fprintf (f, "%lu\n", this->counter);
+
+      free_monoid::element e = this->get_reading ();
+
+      switch (format)
+      {
+        case plain_format:
+          e.write_plain (f);
+          break;
+        case compressed_format:
+          e.write_compressed (f);
+          break;
+        case table_format:
+          this->write_table (f);
+          break;
+      }
+    }
 
     void
-    tableaux::read_plain (FILE *f)
+    tableaux::read_table (FILE *f, size_t lines)
     {
+      ssize_t read;
+      char *  line     = NULL;
+      size_t  len      = 0;
+      char *  save_ptr = NULL;
+
+      for (size_t i = 0; i < lines; i++)
+      {
+        if (getline (&line, &len, f) == -1)
+        {
+          throw invalid_file_format_exception;
+        }
+
+        entry_val v;
+        char *    tmp = line;
+        char *    res;
+        while ((res = strtok_r (tmp, " ", &save_ptr)) != NULL)
+        {
+          tmp = NULL;
+
+          if (this->counter == this->size)
+          {
+            this->resize ();
+          }
+
+          entry  e (atoll (res));
+          entry *tmp      = NULL;
+          size_t replaced = 0;
+          this->rows[this->counter].add (&e, 1, tmp, &replaced);
+        }
+
+        free (line);
+        line = NULL;
+        this->counter++;
+      }
     }
 
     void
-    tableaux::read_compressed (FILE *f)
+    tableaux::write_table (FILE *f) const
     {
+      for (size_t i = 0; i < this->counter; i++)
+      {
+        for (size_t j = 0; j < this->rows[i].counter; j++)
+        {
+          for (size_t k = 0; k < this->rows[i].cells[j].count; k++)
+          {
+            fprintf (f, "%lu ", this->rows[i].cells[j].val);
+          }
+        }
+        fprintf (f, "\n");
+      }
     }
 
     void
-    tableaux::read_table (FILE *f) const
-    {
-    }
-
-    void
-    tableaux::write_plain (FILE *f) const
-    {
-    }
-
-    void
-    tableaux::write_compressed (FILE *f) const
-    {
-    }
-
-    void
-    tableaux::write_table (FILE *f)
-    {
-    }
-
-    size_t
     tableaux::add_cells (const free_monoid::element &word)
     {
       size_t word_len = word.get_size ();
@@ -157,8 +305,6 @@ namespace __placid
       entry *replaced = arr2;
 
       size_t result_sz = 0;
-
-
 
       for (size_t i = 0, j = 0; j < word_len; j += word.word[i++].count)
       {
@@ -187,7 +333,6 @@ namespace __placid
         to_place   = replaced;
         replaced   = tmp;
       }
-      return result_sz;
     }
 
     void
@@ -206,7 +351,9 @@ namespace __placid
     }
 
     void
-    tableaux::iterate (iteration_function fn, void *data)
+    tableaux::iterate (
+      const std::function<void(entry, size_t, size_t, void *)> &fn,
+      void *                                                    data) const
     {
       size_t index      = 0;
       size_t real_index = 0;
@@ -223,8 +370,6 @@ namespace __placid
         j--;
       }
     }
-
-
 
   }    // namespace semistandard_tableaux
 

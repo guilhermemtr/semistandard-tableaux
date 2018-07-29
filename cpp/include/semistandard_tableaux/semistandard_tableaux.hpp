@@ -7,6 +7,8 @@
 #include <cassert>
 #include <cstring>
 
+#include <functional>
+
 #include "free_monoid/free_monoid_element.hpp"
 #include "ordered_array.hpp"
 
@@ -16,13 +18,10 @@ namespace __placid
 {
   namespace semistandard_tableaux
   {
+    extern const std::string semistandard_tableaux_format_id;
+
     struct tableaux : public magma_element<tableaux>
     {
-      typedef ptrdiff_t (iteration_function) (entry  cell,
-                                              size_t index,
-                                              size_t real_index,
-                                              void * data);
-
       static const size_t default_size = (1 << 5);
 
       static const file_format plain_format      = 0;
@@ -54,6 +53,9 @@ namespace __placid
       tableaux &
       operator= (const tableaux &o);
 
+      tableaux &
+      operator= (const free_monoid::element &o);
+
       bool
       operator== (const tableaux &o) const;
 
@@ -76,31 +78,20 @@ namespace __placid
 
         private:
       void
-      iterate (iteration_function fn, void *data);
+      iterate (const std::function<void(entry, size_t, size_t, void *)> &fn,
+               void *data) const;
 
-      size_t
+      void
       add_cells (const free_monoid::element &word);
 
       void
       resize ();
 
       void
-      read_plain (FILE *f);
+      read_table (FILE *f, size_t lines);
 
       void
-      read_compressed (FILE *f);
-
-      void
-      read_table (FILE *f) const;
-
-      void
-      write_plain (FILE *f) const;
-
-      void
-      write_compressed (FILE *f) const;
-
-      void
-      write_table (FILE *f);
+      write_table (FILE *f) const;
     };
 
   }    // namespace semistandard_tableaux
