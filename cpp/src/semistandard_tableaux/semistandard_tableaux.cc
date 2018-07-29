@@ -27,7 +27,7 @@ namespace __placid
 
     tableaux::tableaux (const free_monoid::element &o) : tableaux ()
     {
-      this->add_cells (o);
+      this->append (o);
     }
 
     tableaux::~tableaux ()
@@ -38,12 +38,14 @@ namespace __placid
     tableaux &
     tableaux::operator= (const tableaux &o)
     {
-      if (this->size != o.size)
+      if (this->size < o.counter)
       {
         delete[] this->rows;
-        this->size    = o.size;
-        this->counter = o.counter;
+        this->size = o.counter;
+        this->rows = new ordered_array[this->size];
       }
+
+      this->counter = o.counter;
 
       for (size_t i = 0; i < this->counter; i++)
       {
@@ -56,12 +58,9 @@ namespace __placid
     tableaux &
     tableaux::operator= (const free_monoid::element &o)
     {
-      delete[] this->rows;
       this->counter = 0;
-      this->size    = default_size;
-      this->rows    = new ordered_array[this->size];
 
-      this->add_cells (o);
+      this->append (o);
       return *this;
     }
 
@@ -200,7 +199,7 @@ namespace __placid
           e.read_compressed (f, lines);
         }
 
-        this->add_cells (e);
+        this->append (e);
       }
     }
 
@@ -294,7 +293,7 @@ namespace __placid
     }
 
     void
-    tableaux::add_cells (const free_monoid::element &word)
+    tableaux::append (const free_monoid::element &word)
     {
       size_t word_len = word.get_size ();
 

@@ -23,6 +23,8 @@ namespace __placid
       {
         this->cells[i] = o.cells[i];
       }
+
+      this->compress ();
     }
 
     ordered_array::ordered_array (const ordered_array &o)
@@ -262,6 +264,8 @@ namespace __placid
         this->place_cell (to_place[nr_placed], replaced, real_nr_replaced);
         nr_placed += to_place[nr_placed].count;
       }
+
+      this->compress ();
     }
 
     void

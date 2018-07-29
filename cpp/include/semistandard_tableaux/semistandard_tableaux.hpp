@@ -76,13 +76,13 @@ namespace __placid
       void
       write (FILE *f, file_format format) const;
 
+      void
+      append (const free_monoid::element &word);
+
         private:
       void
       iterate (const std::function<void(entry, size_t, size_t, void *)> &fn,
                void *data) const;
-
-      void
-      add_cells (const free_monoid::element &word);
 
       void
       resize ();

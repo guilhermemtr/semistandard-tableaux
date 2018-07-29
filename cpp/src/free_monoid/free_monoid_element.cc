@@ -253,6 +253,8 @@ namespace __placid
           throw invalid_file_format_exception;
           break;
       }
+
+      this->compress ();
     }
 
     void
@@ -311,8 +313,6 @@ namespace __placid
         entry e (s);
         this->word[i] = e;
       }
-
-      this->compress ();
     }
 
     void
@@ -336,8 +336,6 @@ namespace __placid
 
         this->word[i] = e;
       }
-
-      this->compress ();
     }
 
     void

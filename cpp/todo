@@ -19,6 +19,8 @@ test everything
 
 check how I am saying that tableaux is friend of free monoid, in the free_monoid header.
 
+add tests testing if I keep the ordered arrays always compressed, or if there are cases where I don't (I should, because the get_storage_size and so on depend on that, and many other methods).
+
 consider changing the implementation of the free monoid to have a size and a counter, instead of only having a length (which requires constant memory management).
 
 Later: use fseek to let the user know which line the error is in, when reading input from files.
