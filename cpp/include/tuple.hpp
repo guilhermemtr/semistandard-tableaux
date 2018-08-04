@@ -70,6 +70,16 @@ namespace __placid
       return *this;
     }
 
+    T &operator[] (size_t idx)
+    {
+      return this->elements[idx];
+    }
+
+    const T &operator[] (size_t idx) const
+    {
+      return this->elements[idx];
+    }
+
     bool
     operator== (const tuple<T> &o) const
     {
