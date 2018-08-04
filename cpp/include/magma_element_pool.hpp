@@ -29,15 +29,6 @@ namespace __placid
       this->elements = new T[this->size];
     }
 
-    /*pool (const pool &o)
-    {
-      while (this->counter < o.counter)
-      {
-        this->elements[this->counter] = o.elements[this->counter];
-        this->counter++;
-      }
-      }*/
-
     ~pool ()
     {
       delete[] this->elements;
@@ -96,10 +87,51 @@ namespace __placid
       }
     }
 
-    bool
-    test_identity (std::string identity)
+    void
+    test_identity (std::string identity_)
     {
-      return true;
+      const char *identity = identity_.c_str ();
+
+      trim (identity);
+
+      char *split_1;
+      char *split_2;
+
+      split_identity (identity, &split_1, &split_2);
+
+      size_t split_1_sz = strlen (split_1);
+      size_t split_2_sz = strlen (split_2);
+
+      char *splits_1[split_1_sz];
+      char *splits_2[split_2_sz];
+
+      size_t nr_splits_1 = 0;
+      size_t nr_splits_2 = 0;
+
+      split_identity_variables (split_1, splits_1, &nr_splits_1);
+      split_identity_variables (split_2, splits_2, &nr_splits_2);
+
+      size_t mapped_splits_1[nr_splits_1];
+      size_t mapped_splits_2[nr_splits_2];
+
+      char *vars[nr_splits_1 + nr_splits_2];
+
+      size_t nr_vars = get_mapped_splits (splits_1,
+                                          nr_splits_1,
+                                          splits_2,
+                                          nr_splits_2,
+                                          mapped_splits_1,
+                                          mapped_splits_2,
+                                          vars);
+
+      test_identity (0,
+                     mapped_splits_1,
+                     nr_splits_1,
+                     mapped_splits_2,
+                     nr_splits_2,
+                     NULL,
+                     vars,
+                     nr_vars);
     }
 
     void
@@ -219,96 +251,98 @@ namespace __placid
       return id;
     }
 
-    /*bool
-    test_identity (char *               identity,
-                   void *               elems,
-                   size_t               nr_elems,
-                   __ap_identity_tester fn,
-                   __va_assignment_t ** counter_example)
+    void
+    test_identity (size_t  beg,
+                   size_t *mapped_splits_1,
+                   size_t  nr_splits_1,
+                   size_t *mapped_splits_2,
+                   size_t  nr_splits_2,
+                   size_t *id,
+                   char ** vars,
+                   size_t  nr_vars)
     {
-      trim (identity);
-
-      char *split_1;
-      char *split_2;
-
-      split_identity (identity, &split_1, &split_2);
-
-      size_t split_1_sz = strlen (split_1);
-      size_t split_2_sz = strlen (split_2);
-
-      char *splits_1[split_1_sz];
-      char *splits_2[split_2_sz];
-
-      size_t nr_splits_1 = 0;
-      size_t nr_splits_2 = 0;
-
-      split_identity_variables (split_1, splits_1, &nr_splits_1);
-      split_identity_variables (split_2, splits_2, &nr_splits_2);
-
-      size_t mapped_splits_1[nr_splits_1];
-      size_t mapped_splits_2[nr_splits_2];
-
-      char *vars[nr_splits_1 + nr_splits_2];
-
-      size_t nr_vars = get_mapped_splits (splits_1,
-                                          nr_splits_1,
-                                          splits_2,
-                                          nr_splits_2,
-                                          mapped_splits_1,
-                                          mapped_splits_2,
-                                          vars);
-
-
-      bool test_identity (size_t beg, size_t * id)
+      if (beg == nr_vars)
       {
-        if (beg == nr_vars)
+        bool res = check_identity_assignment (mapped_splits_1,
+                                              nr_splits_1,
+                                              mapped_splits_2,
+                                              nr_splits_2,
+                                              id,
+                                              nr_vars);
+
+        if (!res)
         {
-          return fn (mapped_splits_1,
-                     nr_splits_1,
-                     mapped_splits_2,
-                     nr_splits_2,
-                     id,
-                     nr_vars,
-                     elems);
-        } else
+          std::unordered_map<std::string, T> counter_example;
+          for (size_t j = 0; j < nr_vars; j++)
+          {
+            counter_example[std::string (vars[j])] = this->elems[id[j]];
+          }
+          throw counter_example;
+        }
+      } else
+      {
+        size_t tests[this->counter][beg + 1];
+
+        for (size_t i = 0; i < this->counter; i++)
         {
-          size_t tests[nr_elems][beg + 1];
-          bool   oks[nr_elems];
-          for (size_t i = 0; i < nr_elems; i++)
+          for (size_t j = 0; j < beg; j++)
           {
-            oks[i] = true;
-            for (size_t j = 0; j < beg; j++)
-            {
-              tests[i][j] = id[j];
-            }
+            tests[i][j] = id[j];
           }
-          for (size_t i = 0; i < nr_elems; i++)
-          {
-            tests[i][beg] = i;
-            oks[i]        = spawn (test_identity (beg + 1, tests[i]));
-          }
-          //sync;
-          bool ok = true;
-          for (size_t i = 0; i < nr_elems; i++)
-          {
-            ok &= oks[i];
-            if (counter_example != NULL && !oks[i] && beg + 1 == nr_vars)
-            {
-              *counter_example = __va_create_variable_assignment ();
-              for (size_t j = 0; j < nr_vars; j++)
-              {
-                __va_add_variable_assignment (
-                  *counter_example, vars[j], tests[i][j]);
-              }
-              return ok;
-            }
-          }
-          return ok;
+        }
+
+        for (size_t i = 0; i < this->counter; i++)
+        {
+          tests[i][beg] = i;
+          test_identity (beg + 1,
+                         mapped_splits_1,
+                         nr_splits_1,
+                         mapped_splits_2,
+                         nr_splits_2,
+                         tests[i],
+                         vars,
+                         nr_vars);
         }
       }
+    }
 
-      return nr_vars == 0 || test_identity (0, NULL);
-      }*/
+    bool
+    check_identity_assignment (size_t *x,
+                               size_t  len_x,
+                               size_t *y,
+                               size_t  len_y,
+                               size_t *assigns,
+                               size_t  nr_vars)
+    {
+      if (this->counter == 0)
+      {
+        return true;    // if there are no vars, it is not an identity.
+      }
+
+      T left_curr = this->elems[assigns[x[0]]];
+      T left_res  = this->elems[assigns[x[0]]];
+
+      T right_curr = this->elems[assigns[y[0]]];
+      T right_res  = this->elems[assigns[y[0]]];
+
+      for (size_t i = 1; i < len_x; i++)
+      {
+        left_res  = left_curr * this->elems[assigns[x[i]]];
+        T tmp     = left_res;
+        left_res  = left_curr;
+        left_curr = tmp;
+      }
+
+      for (size_t i = 1; i < len_y; i++)
+      {
+        right_res  = right_curr * this->elems[assigns[y[i]]];
+        T tmp      = right_res;
+        right_res  = right_curr;
+        right_curr = tmp;
+      }
+
+      return left_res == right_res;
+    }
   };
 
 }    // namespace __placid
