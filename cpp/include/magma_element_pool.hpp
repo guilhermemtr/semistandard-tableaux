@@ -7,6 +7,8 @@
 #include <map>
 #include <unordered_map>
 
+#include <stdio.h>
+
 #include "magma_element.hpp"
 
 namespace __placid
@@ -43,11 +45,6 @@ namespace __placid
     void
     add (const T t)
     {
-      if (this->contains (t))
-      {
-        return;
-      }
-
       if (this->counter == this->size)
       {
         this->resize ();
@@ -90,7 +87,8 @@ namespace __placid
     void
     test_identity (std::string identity_)
     {
-      const char *identity = identity_.c_str ();
+      char *identity;
+      identity = strcpy (identity, identity_.c_str ());
 
       trim (identity);
 
@@ -137,11 +135,13 @@ namespace __placid
     void
     read (std::string fn)
     {
+      throw std::string ("not implemented");
     }
 
     void
     write (std::string fn, file_format format) const
     {
+      throw std::string ("not implemented");
     }
 
       private:
@@ -206,8 +206,8 @@ namespace __placid
                        char ** vars)
     {
       // create the mappings
-      std::map<char *, size_t> mappings;
-      size_t                   id = 0;
+      std::map<std::string, size_t> mappings;
+      size_t                        id = 0;
 
       for (size_t i = 0; i < nr_splits_1; i++)
       {
@@ -242,7 +242,8 @@ namespace __placid
       for (size_t i = 0; i < nr_splits_2; i++)
       {
         assert (mappings.find (splits_2[i]) != mappings.end ());
-        size_t tmp = mappings[splits_2[i]];
+        size_t tmp         = mappings[splits_2[i]];
+        mapped_splits_2[i] = tmp;
         if (vars != NULL)
         {
           vars[tmp] = splits_2[i];
@@ -270,12 +271,13 @@ namespace __placid
                                               id,
                                               nr_vars);
 
+
         if (!res)
         {
           std::unordered_map<std::string, T> counter_example;
           for (size_t j = 0; j < nr_vars; j++)
           {
-            counter_example[std::string (vars[j])] = this->elems[id[j]];
+            counter_example[std::string (vars[j])] = this->elements[id[j]];
           }
           throw counter_example;
         }
@@ -319,15 +321,15 @@ namespace __placid
         return true;    // if there are no vars, it is not an identity.
       }
 
-      T left_curr = this->elems[assigns[x[0]]];
-      T left_res  = this->elems[assigns[x[0]]];
+      T left_curr = this->elements[assigns[x[0]]];
+      T left_res  = this->elements[assigns[x[0]]];
 
-      T right_curr = this->elems[assigns[y[0]]];
-      T right_res  = this->elems[assigns[y[0]]];
+      T right_curr = this->elements[assigns[y[0]]];
+      T right_res  = this->elements[assigns[y[0]]];
 
       for (size_t i = 1; i < len_x; i++)
       {
-        left_res  = left_curr * this->elems[assigns[x[i]]];
+        left_res  = left_curr * this->elements[assigns[x[i]]];
         T tmp     = left_res;
         left_res  = left_curr;
         left_curr = tmp;
@@ -335,7 +337,7 @@ namespace __placid
 
       for (size_t i = 1; i < len_y; i++)
       {
-        right_res  = right_curr * this->elems[assigns[y[i]]];
+        right_res  = right_curr * this->elements[assigns[y[i]]];
         T tmp      = right_res;
         right_res  = right_curr;
         right_curr = tmp;
