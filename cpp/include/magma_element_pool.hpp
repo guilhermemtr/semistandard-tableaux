@@ -219,7 +219,7 @@ namespace __placid
       return id;
     }
 
-    bool
+    /*bool
     test_identity (char *               identity,
                    void *               elems,
                    size_t               nr_elems,
@@ -285,7 +285,7 @@ namespace __placid
           for (size_t i = 0; i < nr_elems; i++)
           {
             tests[i][beg] = i;
-            oks[i]        = /*spawn*/ (test_identity (beg + 1, tests[i]));
+            oks[i]        = spawn (test_identity (beg + 1, tests[i]));
           }
           //sync;
           bool ok = true;
@@ -308,7 +308,7 @@ namespace __placid
       }
 
       return nr_vars == 0 || test_identity (0, NULL);
-    }
+      }*/
   };
 
 }    // namespace __placid

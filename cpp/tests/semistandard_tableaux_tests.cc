@@ -339,13 +339,13 @@ TEST (semistandard_tableaux_element, test_get_storage_size)
   ASSERT_TRUE (t2.get_storage_size () == 12);
 }
 
-TEST (semistandard_tableaux_element, test_get_reading)
+TEST (semistandard_tableaux_element, test_reading)
 {
   free_monoid::element e1 = get_element_1 ();
 
   tableaux t1 (e1);
 
-  tableaux t1_clone (t1.get_reading ());
+  tableaux t1_clone (t1.reading ());
 
   ASSERT_TRUE (t1_clone == t1);
 

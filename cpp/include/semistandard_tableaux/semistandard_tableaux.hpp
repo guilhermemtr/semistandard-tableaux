@@ -9,10 +9,11 @@
 
 #include <functional>
 
+#include "free_monoid/factor_monoid_element.hpp"
 #include "free_monoid/free_monoid_element.hpp"
 #include "ordered_array.hpp"
 
-#include "magma_element.hpp"
+
 
 namespace __placid
 {
@@ -20,7 +21,7 @@ namespace __placid
   {
     extern const std::string semistandard_tableaux_format_id;
 
-    struct tableaux : public magma_element<tableaux>
+    struct tableaux : public free_monoid::factor_element<tableaux>
     {
       static const size_t default_size = (1 << 5);
 
@@ -66,9 +67,7 @@ namespace __placid
       get_storage_size () const;
 
       free_monoid::element
-      get_reading () const;
-
-      tableaux operator* (const tableaux &o) const;
+      reading () const;
 
       void
       read (FILE *f);

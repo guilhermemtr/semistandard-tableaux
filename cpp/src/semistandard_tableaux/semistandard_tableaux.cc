@@ -117,7 +117,7 @@ namespace __placid
     }
 
     free_monoid::element
-    tableaux::get_reading () const
+    tableaux::reading () const
     {
       size_t               storage_size = this->get_storage_size ();
       free_monoid::element reading (storage_size);
@@ -125,11 +125,6 @@ namespace __placid
       this->iterate (get_reading_iteration_function, (void *) &reading);
 
       return reading;
-    }
-
-    tableaux tableaux::operator* (const tableaux &o) const
-    {
-      return tableaux(this->get_reading() * o.get_reading());
     }
 
     void
@@ -221,7 +216,7 @@ namespace __placid
         fprintf (f, "%lu\n", this->counter);
       }
 
-      free_monoid::element e = this->get_reading ();
+      free_monoid::element e = this->reading ();
 
       switch (format)
       {

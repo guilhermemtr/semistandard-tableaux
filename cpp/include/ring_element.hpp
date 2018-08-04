@@ -6,7 +6,7 @@
 namespace __placid
 {
   template <typename T>
-  class ring_element : public magma_element<T>
+  struct ring_element : public magma_element<T>
   {
       public:
     /** Returns the sum of two ring elements.
