@@ -1,9 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <iostream>
-
-#include "tropical_elements/tropical_number.hpp"
-
 int
 main (int argc, char **argv)
 {

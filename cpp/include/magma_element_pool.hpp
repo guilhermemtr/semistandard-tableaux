@@ -87,7 +87,8 @@ namespace __placid
     void
     test_identity (std::string identity_)
     {
-      char *identity;
+      char *identity =
+        (char *) malloc ((identity_.size () + 1) * sizeof (char));
       identity = strcpy (identity, identity_.c_str ());
 
       trim (identity);
@@ -130,6 +131,8 @@ namespace __placid
                      NULL,
                      vars,
                      nr_vars);
+
+      free (identity);
     }
 
     void
@@ -321,26 +324,17 @@ namespace __placid
         return true;    // if there are no vars, it is not an identity.
       }
 
-      T left_curr = this->elements[assigns[x[0]]];
       T left_res  = this->elements[assigns[x[0]]];
-
-      T right_curr = this->elements[assigns[y[0]]];
-      T right_res  = this->elements[assigns[y[0]]];
+      T right_res = this->elements[assigns[y[0]]];
 
       for (size_t i = 1; i < len_x; i++)
       {
-        left_res  = left_curr * this->elements[assigns[x[i]]];
-        T tmp     = left_res;
-        left_res  = left_curr;
-        left_curr = tmp;
+        left_res = left_res * this->elements[assigns[x[i]]];
       }
 
       for (size_t i = 1; i < len_y; i++)
       {
-        right_res  = right_curr * this->elements[assigns[y[i]]];
-        T tmp      = right_res;
-        right_res  = right_curr;
-        right_curr = tmp;
+        right_res = right_res * this->elements[assigns[y[i]]];
       }
 
       return left_res == right_res;

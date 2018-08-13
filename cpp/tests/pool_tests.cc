@@ -83,7 +83,6 @@ TEST (magma_element_pool, test_remove_duplicates)
   ASSERT_TRUE (p1.contains (5));
 }
 
-
 TEST (magma_element_pool, test_identity_testing)
 {
   pool<tropical_elements::number> p1;
@@ -110,8 +109,20 @@ TEST (magma_element_pool, test_identity_testing)
   try
   {
     p1.test_identity (id4);
+    printf ("Exception was expected\n");
+    ASSERT_TRUE (false);
   } catch (std::unordered_map<std::string, tropical_elements::number> e)
   {
-    
+    for (auto it : e)
+    {
+      // printf ("%s:\t", it.first.c_str ());
+      // it.second.write (stdout);
+      // printf ("\n");
+    }
   }
+
+  std::string id5 ("q.p.p.q = p.q.q.p");
+  
+  p1.test_identity (id5);
+  
 }
