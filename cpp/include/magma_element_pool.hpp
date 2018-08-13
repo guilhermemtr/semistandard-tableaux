@@ -31,6 +31,14 @@ namespace __placid
       this->elements = new T[this->size];
     }
 
+    pool (pool &o) : pool (o.size)
+    {
+      while (this->counter < o.counter)
+      {
+        this->add (o.elements[this->counter]);
+      }
+    }
+
     ~pool ()
     {
       delete[] this->elements;

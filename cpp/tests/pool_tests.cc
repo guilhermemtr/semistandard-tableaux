@@ -7,12 +7,12 @@ using namespace __placid;
 
 TEST (magma_element_pool, test_default_creation)
 {
-  pool<std::string> p1;
+  pool<tropical_elements::number> p1;
 
   ASSERT_TRUE (p1.size == pool<std::string>::default_size);
   ASSERT_TRUE (p1.counter == 0);
 
-  pool<std::string> p2 (17);
+  pool<tropical_elements::number> p2 (17);
 
   ASSERT_TRUE (p2.size == 17);
   ASSERT_TRUE (p2.counter == 0);
@@ -56,6 +56,32 @@ TEST (magma_element_pool, test_add)
   p1.add (a);
 
   ASSERT_TRUE (p1.contains (a));
+}
+
+TEST (magma_element_pool, test_creation_from_pool)
+{
+  pool<tropical_elements::number> p1;
+
+  for (int i = -1; i < 10; i++)
+  {
+    p1.add (i);
+  }
+
+  for (int i = -1; i < 10; i++)
+  {
+    p1.add (i);
+  }
+
+  pool<tropical_elements::number> p2 (p1);
+
+  ASSERT_TRUE (p1.size == p2.size);
+  ASSERT_TRUE (p1.counter == p2.counter);
+  for (size_t i = 0; i < p1.counter; i++)
+  {
+    EXPECT_TRUE (p1.elements[i] == p2.elements[i]);
+    ASSERT_TRUE (p1.contains (p2.elements[i]));
+    ASSERT_TRUE (p2.contains (p1.elements[i]));
+  }
 }
 
 TEST (magma_element_pool, test_remove_duplicates)
@@ -122,7 +148,14 @@ TEST (magma_element_pool, test_identity_testing)
   }
 
   std::string id5 ("q.p.p.q = p.q.q.p");
-  
+
   p1.test_identity (id5);
-  
+}
+
+TEST (magma_element_pool, test_read)
+{
+}
+
+TEST (magma_element_pool, test_write)
+{
 }

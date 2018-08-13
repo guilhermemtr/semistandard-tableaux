@@ -21,7 +21,8 @@ namespace __placid
     {
       friend semistandard_tableaux::tableaux;
 
-      static const size_t      default_size      = 0;
+      static const size_t default_size = 0;
+
       static const file_format plain_format      = 0;
       static const file_format compressed_format = 1;
 
