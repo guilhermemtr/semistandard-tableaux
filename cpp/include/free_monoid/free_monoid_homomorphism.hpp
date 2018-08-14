@@ -31,7 +31,7 @@ namespace __placid
       }
 
       symbol
-      max_rank() const
+      max_rank () const
       {
         return this->length - 1;
       }
@@ -46,7 +46,7 @@ namespace __placid
 
         for (size_t i = 0; i < e.length; i++)
         {
-          if (e.word[i].sym > this->max_rank())
+          if (e.word[i].sym > this->max_rank ())
           {
             throw std::string ("word with invalid rank");
           }
@@ -70,17 +70,6 @@ namespace __placid
         return res;
       }
     };
-
-    /*    template <typename T>
-    check_homomorphism_injectivity (homomorphism &h, pool<B> &o)
-    {
-      pool<T> =
-      for (size_t i = 0; i < o.counter; i++)
-      {
-        this->add (h.map (o.elements[i]));
-      }
-      }*/
-
 
   }    // namespace free_monoid
 
