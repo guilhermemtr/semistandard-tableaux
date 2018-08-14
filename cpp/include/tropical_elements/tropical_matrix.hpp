@@ -32,7 +32,7 @@ namespace __placid
        * @param rows the number of rows of the matrix.
        * @param columns the number of columns of the matrix.
        */
-      matrix (size_t rows, size_t columns);
+      matrix (size_t rows = 0, size_t columns = 0);
 
       /** Constructs a new tropical matrix, given its size (columns and rows),
        * and the values of the matrix's entries. Constructs a new tropical

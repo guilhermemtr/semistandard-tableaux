@@ -36,6 +36,15 @@ namespace __placid
       }
     }
 
+    /** Constructs a new tuple with 0-arity.
+     * Constructs a new tuple with 0-arity.
+     */
+    tuple ()
+    {
+      this->arity    = 0;
+      this->elements = new T[this->arity];
+    }
+
     /** Constructs a new tuple, from another tuple.
      * Constructs a new tuple, from another tuple.
      * @param tuple the tuple to be copied.

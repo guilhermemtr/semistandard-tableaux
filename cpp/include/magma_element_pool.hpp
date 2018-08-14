@@ -7,9 +7,9 @@
 #include <map>
 #include <unordered_map>
 
-#include <stdio.h>
-
 #include "magma_element.hpp"
+#include "free_monoid/free_monoid_element.hpp"
+#include "free_monoid/free_monoid_homomorphism.hpp"
 
 namespace __placid
 {
@@ -21,8 +21,6 @@ namespace __placid
     size_t size;
     size_t counter;
     T *    elements;
-
-    // add pool creation with rank, given another pool?
 
     pool (size_t size = default_size)
     {
@@ -141,18 +139,6 @@ namespace __placid
                      nr_vars);
 
       free (identity);
-    }
-
-    void
-    read (std::string fn)
-    {
-      throw std::string ("not implemented");
-    }
-
-    void
-    write (std::string fn, file_format format) const
-    {
-      throw std::string ("not implemented");
     }
 
       private:
@@ -347,7 +333,7 @@ namespace __placid
 
       return left_res == right_res;
     }
-  };
+  };    // namespace __placid
 
 }    // namespace __placid
 

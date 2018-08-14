@@ -2,6 +2,7 @@
 
 #include "magma_element_pool.hpp"
 #include "tropical_elements/tropical_number.hpp"
+#include "tropical_elements/tropical_matrix.hpp"
 
 using namespace __placid;
 
@@ -150,12 +151,4 @@ TEST (magma_element_pool, test_identity_testing)
   std::string id5 ("q.p.p.q = p.q.q.p");
 
   p1.test_identity (id5);
-}
-
-TEST (magma_element_pool, test_read)
-{
-}
-
-TEST (magma_element_pool, test_write)
-{
 }
