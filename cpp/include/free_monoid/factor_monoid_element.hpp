@@ -16,6 +16,8 @@ namespace __placid
 {
   namespace free_monoid
   {
+    struct element;
+    
     template <typename T>
     struct factor_element : public magma_element<T>
     {

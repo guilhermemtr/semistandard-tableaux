@@ -204,6 +204,12 @@ namespace __placid
       return sz;
     }
 
+    element
+    element::reading () const
+    {
+      return *this;
+    }
+
     void
     element::read (FILE *f)
     {

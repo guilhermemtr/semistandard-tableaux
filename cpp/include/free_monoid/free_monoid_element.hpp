@@ -5,6 +5,7 @@
 
 #include "magma_element.hpp"
 #include "free_monoid_entry.hpp"
+#include "factor_monoid_element.hpp"
 
 namespace __placid
 {
@@ -16,8 +17,8 @@ namespace __placid
   namespace free_monoid
   {
     extern const std::string free_monoid_format_id;
-
-    struct element : public magma_element<element>
+    
+    struct element : public factor_element<element>
     {
       friend semistandard_tableaux::tableaux;
 
@@ -67,6 +68,9 @@ namespace __placid
 
       void
       compress ();
+
+      element
+      reading () const;
 
       void
       read (FILE *f);

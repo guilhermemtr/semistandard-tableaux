@@ -17,6 +17,8 @@ namespace __placid
 
       homomorphism (const T *elems, const symbol rank)
       {
+        assert (elems != NULL);
+
         this->length  = rank + 1;
         this->mapping = new T[this->length];
         for (symbol s = 0; s < this->length; s++)

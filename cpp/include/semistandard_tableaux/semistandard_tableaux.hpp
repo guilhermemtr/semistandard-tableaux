@@ -9,8 +9,16 @@
 
 #include <functional>
 
-#include "free_monoid/factor_monoid_element.hpp"
+/** Do not change the order of these includes or everything will stop working and you won't have a clue why :)
+ *
+ * In short, there is a circular definition, because a free_monoid_element is a factor_monoid_element.
+ * 
+ *
+ *
+ *
+ */
 #include "free_monoid/free_monoid_element.hpp"
+#include "free_monoid/factor_monoid_element.hpp"
 #include "ordered_array.hpp"
 
 
