@@ -27,8 +27,13 @@ namespace __placid
         }
       }
 
-      homomorphism (const tuple<T> &homomorphism_)
-        : homomorphism (homomorphism_.elements, homomorphism_.arity)
+      homomorphism (const tuple<T> &tup)
+        : homomorphism (tup.elements, tup.arity - 1)
+      {
+      }
+
+      homomorphism (const homomorphism<T> &h)
+        : homomorphism (h.mapping, h.length - 1)
       {
       }
 

@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "free_monoid/free_monoid_homomorphism.hpp"
 #include "tropical_elements/tropical_number.hpp"
+#include "tuple.hpp"
+
+#include "free_monoid/free_monoid_homomorphism.hpp"
 
 using namespace __placid::free_monoid;
 
@@ -22,6 +24,27 @@ TEST (free_monoid_homomorphism, test_default_creation)
     ASSERT_TRUE (phi.mapping[i] == alphabet[i]);
   }
 }
+
+TEST (free_monoid_homomorphism, test_creation_from_tuple)
+{
+  __placid::tropical_elements::number elems[3] = {
+    __placid::tropical_elements::number (0),
+    __placid::tropical_elements::number (1),
+    __placid::tropical_elements::number (2)};
+
+  __placid::tuple<__placid::tropical_elements::number> tup (3, elems);
+
+  homomorphism<__placid::tropical_elements::number> phi (tup);
+
+  ASSERT_TRUE (phi.length == 3);
+
+  for (size_t i = 0; i < phi.length; i++)
+  {
+    __placid::tropical_elements::number n (i);
+    ASSERT_TRUE (phi.mapping[i] == n);
+  }
+}
+
 
 TEST (free_monoid_homomorphism, test_creation_from_homomorphism)
 {

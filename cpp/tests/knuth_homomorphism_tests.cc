@@ -16,20 +16,19 @@ TEST (knuth_homomorphism, test_knuth_relations_satisfied)
   strcpy (
     file_buffer,
     "tuple\n5\ntropical_matrix\n1\n4 4\n0    -inf -inf -inf\n-inf 0    -inf "
-    "-inf\n-inf -inf 0    -inf\n-inf -inf -inf 0\n,\ntropical_matrix\n1\n4 "
+    "-inf\n-inf -inf 0    -inf\n-inf -inf -inf 0\n\n,\ntropical_matrix\n1\n4 "
     "4\n1    1    1    1\n-inf 0    0    0\n-inf -inf 0    0\n-inf -inf -inf "
-    "0\n,\ntropical_matrix\n1\n4 4\n0    1    1    1\n-inf 1    1    1\n-inf "
-    "-inf 0    0\n-inf -inf -inf 0\n,\ntropical_matrix\n1\n4 4\n0    0    1    "
+    "0\n\n,\ntropical_matrix\n1\n4 4\n0    1    1    1\n-inf 1    1    1\n-inf "
+    "-inf 0    0\n-inf -inf -inf 0\n\n,\ntropical_matrix\n1\n4 4\n0    0    1  "
+    "  "
     "1\n-inf 0    1    1\n-inf -inf 1    1\n-inf -inf -inf "
-    "0\n,\ntropical_matrix\n1\n4 4\n0    0    0    1\n-inf 0    0    1\n-inf "
+    "0\n\n,\ntropical_matrix\n1\n4 4\n0    0    0    1\n-inf 0    0    1\n-inf "
     "-inf 0    1\n-inf -inf -inf 1\n");
 
-  tuple<tropical_elements::matrix> h;
-  try
-  {
-    test_magma_element_file_read (h, file_buffer);
-  } catch (std::string e)
-  {
-    printf("EXCEPTION: %s\n", e.c_str());
-  }
+  tuple<tropical_elements::matrix> t;
+
+  test_magma_element_file_read (t, file_buffer);
+
+  knuth_homomorphism<tropical_elements::matrix> h(t);
+  
 }

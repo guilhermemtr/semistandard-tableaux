@@ -7,6 +7,7 @@ tropical_matrix
 -inf 0    -inf -inf
 -inf -inf 0    -inf
 -inf -inf -inf 0
+
 ,
 tropical_matrix
 1
@@ -15,6 +16,7 @@ tropical_matrix
 -inf 0    0    0
 -inf -inf 0    0
 -inf -inf -inf 0
+
 ,
 tropical_matrix
 1
@@ -23,6 +25,7 @@ tropical_matrix
 -inf 1    1    1
 -inf -inf 0    0
 -inf -inf -inf 0
+
 ,
 tropical_matrix
 1
@@ -31,6 +34,7 @@ tropical_matrix
 -inf 0    1    1
 -inf -inf 1    1
 -inf -inf -inf 0
+
 ,
 tropical_matrix
 1
