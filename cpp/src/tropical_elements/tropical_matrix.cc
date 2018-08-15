@@ -47,7 +47,7 @@ namespace __placid
       if (this->columns * this->rows != o.columns * o.rows)
       {
         delete[] this->matrix_entries;
-        this->matrix_entries = new number[this->rows * this->columns];
+        this->matrix_entries = new number[o.rows * o.columns];
       }
 
       this->rows    = o.rows;
