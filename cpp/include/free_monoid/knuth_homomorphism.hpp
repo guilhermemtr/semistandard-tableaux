@@ -1,6 +1,7 @@
 #ifndef __PLACID_FREE_MONOID_KNUTH_HOMOMORPHISM__
 #define __PLACID_FREE_MONOID_KNUTH_HOMOMORPHISM__
 
+#include "free_monoid_homomorphism.hpp"
 #include "free_monoid_element.hpp"
 #include "tuple.hpp"
 
@@ -12,12 +13,12 @@ namespace __placid
     struct knuth_homomorphism : public homomorphism<T>
     {
       knuth_homomorphism (const T *elems, const symbol rank)
-        : homorphism (elems, rank)
+        : homomorphism<T> (elems, rank)
       {
       }
 
       knuth_homomorphism (const tuple<T> &homomorphism_)
-        : homomorphism (homomorphism_)
+        : homomorphism<T> (homomorphism_)
       {
       }
 
@@ -37,8 +38,8 @@ namespace __placid
           {
             for (symbol z = y; z < this->max_rank (); z++)
             {
-              T res_left  = mapping[y] * mapping[z] * mapping[x];
-              T res_right = mapping[y] * mapping[x] * mapping[z];
+              T res_left  = this->mapping[y] * this->mapping[z] * this->mapping[x];
+              T res_right = this->mapping[y] * this->mapping[x] * this->mapping[z];
               if (res_left != res_right)
               {
                 return false;
@@ -59,8 +60,8 @@ namespace __placid
           {
             for (symbol z = y + 1; z < this->max_rank (); z++)
             {
-              T res_left  = mapping[x] * mapping[z] * mapping[y];
-              T res_right = mapping[z] * mapping[x] * mapping[y];
+              T res_left  = this->mapping[x] * this->mapping[z] * this->mapping[y];
+              T res_right = this->mapping[z] * this->mapping[x] * this->mapping[y];
               if (res_left != res_right)
               {
                 return false;
