@@ -9,20 +9,41 @@
 
 #include "config.hpp"
 
+/**
+ * The namespace __placid is the default namespace for the placid project.
+ * All classes and utilities are defined within this namespace to avoid any
+ * possible clashes with other code that may be used. The name of the namespace
+ * itself was also chosen to avoid possible clashes with other namespaces (even
+ * though these were already unlikely to occur).
+ */
 namespace __placid
 {
+  /**
+   * Defines the type of file format identifiers.
+   * Defines the type of file format identifiers.
+   */
   typedef uint8_t file_format;
 
+  /**
+   * Defines the string corresponding to the exception to be thrown when the
+   * file format is invalid. Defines the string corresponding to the exception
+   * to be thrown when the file format is invalid.
+   */
   const std::string invalid_file_format_exception =
     std::string ("Invalid file format");
 
+  /**
+   * This class defines an abstract magma element.
+   * This class defines an abstract magma element.
+   * A magma element is an element from a mathematical structure called magma.
+   */
   template <typename T>
   class magma_element
   {
       public:
     /** Assigns to the magma element a value of another magma element.
      * Assigns to the magma element a value of another magma element.
-     * @param &o the magma element to assign.
+     * @param [in] &o the magma element to assign.
      * @return the magma element value assigned.
      */
     virtual T &
@@ -30,7 +51,7 @@ namespace __placid
 
     /** Checks if magma elements are equal.
      * Checks if magma elements are equal.
-     * @param &o the second argument of the equality.
+     * @param [in] &o the second argument of the equality.
      * @return whether the magma elements are equal or not.
      */
     virtual bool
@@ -38,7 +59,7 @@ namespace __placid
 
     /** Checks if magma elements are different.
      * Checks if magma elements are different.
-     * @param &o the second argument of the inequality.
+     * @param [in] &o the second argument of the inequality.
      * @return whether the magma elements are different or not.
      */
     bool
@@ -49,21 +70,21 @@ namespace __placid
 
     /** Returns the multiplication of two magma elements.
      * Returns the multiplication of two magma elements.
-     * @param &o the second argument of the multiplication.
+     * @param [in] &o the second argument of the multiplication.
      * @return the multiplication of the two given magma elements.
      */
     virtual T operator* (const T &o) const = 0;
 
     /** Reads a magma element from a file, given the file stream.
      * Reads a magma element from a file, given the file stream.
-     * @param f the file stream.
+     * @param [in] f the file stream.
      */
     virtual void
     read (FILE *f) = 0;
 
     /** Reads a magma element from a file, given the filename.
      * Reads a magma element from a file, given the filename.
-     * @param fn the filename.
+     * @param [in] fn the filename.
      */
     void
     read (std::string fn)
@@ -82,16 +103,16 @@ namespace __placid
 
     /** Writes a magma element into a file, given the file stream.
      * Writes a magma element into a file, given the file stream.
-     * @param f the file stream.
-     * @param format the file format to be used.
+     * @param [in] f the file stream.
+     * @param [in] format the file format to be used.
      */
     virtual void
     write (FILE *f, file_format format) const = 0;
 
     /** Writes a magma element into a file, given the filename.
      * Writes a magma element into a file, given the filename.
-     * @param fn the filename.
-     * @param format the file format to be used.
+     * @param [in] fn the filename.
+     * @param [in] format the file format to be used.
      */
     void
     write (std::string fn, file_format format) const

@@ -9,22 +9,27 @@
 #include <cctype>
 
 #include "magma_element.hpp"
+#include "utils.hpp"
 
 namespace __placid
 {
-  extern const std::string tuple_format_id;
-  extern const std::string incompatible_tuple_arities_exception;
+  extern const std::string tuple_format_id; // !< a constant defining the format of a tuple.
+  extern const std::string incompatible_tuple_arities_exception; // !< a constant defining an object thrown when the arities of two tuples being multiplied are different.
 
+  /**
+   * This class defines a tuple element.
+   * This class defines a tuple element.
+   */
   template <typename T>
   struct tuple : public magma_element<tuple<T>>
   {
-    size_t arity;
-    T *    elements;
+    size_t arity; // !< the arity of the tuple
+    T *    elements; // !< the elements of the tuple
 
     /** Constructs a new tuple with the given arity.
      * Constructs a new tuple with the given arity.
-     * @param arity the arity of the tuple.
-     * @param elements the elements of the tuple.
+     * @param [in] arity the arity of the tuple.
+     * @param [in] elements the elements of the tuple.
      */
     tuple (size_t arity, T *elements)
     {
@@ -45,9 +50,9 @@ namespace __placid
       this->elements = new T[this->arity];
     }
 
-    /** Constructs a new tuple, from another tuple.
-     * Constructs a new tuple, from another tuple.
-     * @param tuple the tuple to be copied.
+    /** Constructs a new tuple from another tuple.
+     * Constructs a new tuple from another tuple.
+     * @param [in] tuple the tuple to be copied.
      */
     tuple (const tuple<T> &tup) : tuple (tup.arity, tup.elements)
     {
@@ -79,11 +84,21 @@ namespace __placid
       return *this;
     }
 
+    /** Returns a reference to the idx-th element of the tuple.
+     * Returns a reference to the idx-th element of the tuple.
+     * @param [in] idx the index of the element to be projected.
+     * @return the reference to the projected element.
+     */
     T &operator[] (size_t idx)
     {
       return this->elements[idx];
     }
 
+    /** Returns the projection of the idx-th element of the tuple.
+     * Returns the projection of the idx-th element of the tuple.
+     * @param [in] idx the index of the element to be projected.
+     * @return the projection.
+     */
     const T &operator[] (size_t idx) const
     {
       return this->elements[idx];
@@ -109,6 +124,7 @@ namespace __placid
 
     tuple<T> operator* (const tuple<T> &o) const
     {
+      // The multiplication of tuples is the direct product
       if (this->arity != o.arity)
       {
         throw incompatible_tuple_arities_exception;
@@ -174,19 +190,6 @@ namespace __placid
     }
 
       private:
-    void
-    discard_line (FILE *f, size_t to_discard = 1)
-    {
-      char * tmp = NULL;
-      size_t len = 0;
-      for (size_t i = 0; i < to_discard; i++)
-      {
-        getline (&tmp, &len, f);
-        free (tmp);
-        tmp = NULL;
-      }
-    }
-
     void
     read_data (FILE *f)
     {

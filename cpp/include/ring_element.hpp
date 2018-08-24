@@ -5,13 +5,18 @@
 
 namespace __placid
 {
+  /**
+   * This class defines an abstract ring element.
+   * This class defines an abstract ring element.
+   * A ring element is an element from a mathematical structure called a ring.
+   */
   template <typename T>
   struct ring_element : public magma_element<T>
   {
       public:
     /** Returns the sum of two ring elements.
      * Returns the sum of two ring elements.
-     * @param &o the second argument of the sum.
+     * @param [in] &o the second argument of the sum.
      * @return the sum of the two given ring elements.
      */
     virtual T

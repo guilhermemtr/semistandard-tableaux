@@ -49,7 +49,7 @@ TEST (knuth_homomorphism, test_knuth_relations_unsatisfied)
     "  "
     "1\n-inf 0    1    1\n-inf -inf 1    1\n-inf -inf -inf "
     "0\n\n,\ntropical_matrix\n1\n4 4\n0    0    0    1\n-inf 0    0    1\n-inf "
-    "-inf 0    1\n-inf -inf -inf 1\n");
+    "-inf 0    1\n-inf -inf -inf 0\n"); //changed the last 1 to 0
 
   tuple<tropical_elements::matrix> t;
 
@@ -57,6 +57,6 @@ TEST (knuth_homomorphism, test_knuth_relations_unsatisfied)
 
   knuth_homomorphism<tropical_elements::matrix> h(t);
 
-  ASSERT_TRUE(h.knuth_relations_satisfied());
+  ASSERT_FALSE(h.knuth_relations_satisfied());
   
 }

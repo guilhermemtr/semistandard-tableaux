@@ -104,13 +104,13 @@ TEST (free_monoid_homomorphism, test_map)
   element e4 (e3);
   e4.add (&alphabet[2], 1);
 
-  ASSERT_TRUE (phi.map (e0) == 0);
+  ASSERT_TRUE (phi(e0) == 0);
 
-  ASSERT_TRUE (phi.map (e1) == 1);
+  ASSERT_TRUE (phi(e1) == 1);
 
-  ASSERT_TRUE (phi.map (e2) == 2);
+  ASSERT_TRUE (phi(e2) == 2);
 
-  ASSERT_TRUE (phi.map (e3) == 6);
+  ASSERT_TRUE (phi(e3) == 6);
 
-  ASSERT_TRUE (phi.map (e4) == 12);
+  ASSERT_TRUE (phi(e4) == 12);
 }

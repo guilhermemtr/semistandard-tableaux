@@ -32,11 +32,11 @@ namespace __placid
       bool
       yzx_yxz_satisfied ()
       {
-        for (symbol x = 1; x < this->max_rank (); x++)
+        for (symbol x = 1; x <= this->max_rank (); x++)
         {
-          for (symbol y = x + 1; y < this->max_rank (); y++)
+          for (symbol y = x + 1; y <= this->max_rank (); y++)
           {
-            for (symbol z = y; z < this->max_rank (); z++)
+            for (symbol z = y; z <= this->max_rank (); z++)
             {
               T res_left  = this->mapping[y] * this->mapping[z] * this->mapping[x];
               T res_right = this->mapping[y] * this->mapping[x] * this->mapping[z];
@@ -54,11 +54,11 @@ namespace __placid
       bool
       xzy_zxy_satisfied ()
       {
-        for (symbol x = 1; x < this->max_rank (); x++)
+        for (symbol x = 1; x <= this->max_rank (); x++)
         {
-          for (symbol y = x; y < this->max_rank (); y++)
+          for (symbol y = x; y <= this->max_rank (); y++)
           {
-            for (symbol z = y + 1; z < this->max_rank (); z++)
+            for (symbol z = y + 1; z <= this->max_rank (); z++)
             {
               T res_left  = this->mapping[x] * this->mapping[z] * this->mapping[y];
               T res_right = this->mapping[z] * this->mapping[x] * this->mapping[y];

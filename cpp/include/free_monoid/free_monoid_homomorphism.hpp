@@ -44,7 +44,7 @@ namespace __placid
       }
 
       T
-      map (const element &e) const
+      operator() (const element &e) const
       {
         if (e.get_size () == 0)
         {
