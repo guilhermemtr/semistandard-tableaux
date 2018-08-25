@@ -104,18 +104,41 @@ namespace __placid
       void
       compress ();
 
+      /** Gets the index of the row where an entry with the given value could be placed.
+       * Gets the index of the row where an entry with the given value could be placed.
+       * @param [in] val - the value.
+       * @return the index where the entry with the given value could be placed.
+       */
       size_t
       get_mid (const entry_val val) const;
 
+      /** Places an entry in a row.
+       * Places an entry in a row.
+       * @param [in,out] idx - the index where the cell should be placed.
+       * @param [in] to_place - the entry to be placed.
+       */
       void
       place_cell_mid (size_t *idx, const entry to_place);
 
+      /** Shifts all cells to the right.
+       * Shifts all cells to the right.
+       * @param [in,out] idx - the index from where to shift.
+       * @param [in] extra - the number of positions to shift.
+       * @param [in] replaced - the replaced entries.
+       * @param [in] pos - the position where the replaced cells should be written.
+       */
       void
       shift_cells_after_mid (size_t *  idx,
                              entry_len extra,
                              entry *   replaced,
                              size_t *  pos);
 
+      /** Places an entry in a row, doing all the necessary shifts and so on.
+       * Places an entry in a row, doing all the necessary shifts and so on.
+       * @param [in] to_place - the entry to be placed.
+       * @param [out] replaced - a vector of cells that were replaced.
+       * @param [in] pos - the real number of cells replaced.
+       */
       void
       place_cell (entry to_place, entry *replaced, size_t *pos);
     };
