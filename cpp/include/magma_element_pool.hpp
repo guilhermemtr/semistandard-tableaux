@@ -13,15 +13,25 @@
 
 namespace __placid
 {
+  /**
+   * This class defines a pool of magma elements.
+   * This class defines a pool of magma elements.
+   */
   template <typename T>
   struct pool
   {
-    static const size_t default_size = (1 << 5);
+    static const size_t default_size =
+      (1 << 5);    // !< the default size of the pool.
 
-    size_t size;
-    size_t counter;
-    T *    elements;
+    size_t size;        // !< the number of cells allocated to the pool.
+    size_t counter;     // !< the current size of the pool.
+    T *    elements;    // !< the elements of the pool.
 
+    /** Creates a new pool with the given size, or with the default size, in
+     * case no size is specified. Creates a new pool with the given size, or
+     * with the default size, in case no size is specified.
+     * @param [in] size - the size of the pool.
+     */
     pool (size_t size = default_size)
     {
       this->counter  = 0;
@@ -29,6 +39,10 @@ namespace __placid
       this->elements = new T[this->size];
     }
 
+    /** Creates a new pool by cloning the given pool.
+     * Creates a new pool by cloning the given pool.
+     * @param [in] o - the pool to be cloned.
+     */
     pool (pool &o) : pool (o.size)
     {
       while (this->counter < o.counter)
@@ -37,17 +51,27 @@ namespace __placid
       }
     }
 
+    /** Destroys the pool.
+     * Destroys the pool.
+     */
     ~pool ()
     {
       delete[] this->elements;
     }
 
+    /** Returns the size of the pool.
+     * Returns the size of the pool.
+     */
     size_t
     get_size () const
     {
       return this->counter;
     }
 
+    /** Adds an element to the pool.
+     * Adds an element to the pool.
+     * @param [in] t - the element to be added to the pool.
+     */
     void
     add (const T t)
     {
@@ -59,6 +83,10 @@ namespace __placid
       this->elements[this->counter++] = t;
     }
 
+    /** Checks if the pool contains the given element.
+     * Checks if the pool contains the given element.
+     * @param [in] t - the element to search for in the pool.
+     */
     bool
     contains (const T t) const
     {
@@ -73,6 +101,9 @@ namespace __placid
       return false;
     }
 
+    /** Removes all duplicate elements from the pool.
+     * Removes all duplicate elements from the pool.
+     */
     void
     remove_duplicates ()
     {
@@ -90,6 +121,10 @@ namespace __placid
       }
     }
 
+    /** Checks if the elements of the pool satisfy a given identity.
+     * Checks if the elements of the pool satisfy a given identity.
+     * @param [in] identity_ - the identity to be checked.
+     */
     void
     test_identity (std::string identity_)
     {
@@ -129,6 +164,8 @@ namespace __placid
                                           mapped_splits_2,
                                           vars);
 
+      free (identity);
+
       test_identity (0,
                      mapped_splits_1,
                      nr_splits_1,
@@ -137,11 +174,12 @@ namespace __placid
                      NULL,
                      vars,
                      nr_vars);
-
-      free (identity);
     }
 
       private:
+    /** Resizes the pool.
+     * Resizes the pool.
+     */
     void
     resize ()
     {
@@ -156,6 +194,11 @@ namespace __placid
       delete[] elems;
     }
 
+    /** Trims the given stream, removing all spaces (from regular spaces to TABs
+     * and new lines. Trims the given stream, removing all spaces (from regular
+     * spaces to TABs and new lines.
+     * @param [in,out] str - the string to be trimmed.
+     */
     void
     trim (char *str)
     {
@@ -172,6 +215,12 @@ namespace __placid
       str[b] = '\0';
     }
 
+    /** Splits an identity.
+     * Splits an identity.
+     * @param [in] identity - the identity to be split.
+     * @param [out] split1 - the left side of the identity.
+     * @param [out] split2 - the right side of the identity.
+     */
     void
     split_identity (char *identity, char **split1, char **split2)
     {
@@ -180,6 +229,12 @@ namespace __placid
       *split2 = strtok_r (NULL, "=", &save_ptr);
     }
 
+    /** Splits a side of an identity into variables.
+     * Splits a side of an identity into variables.
+     * @param [in] side - the string of variables.
+     * @param [out] splits - the variables split.
+     * @param [out] nr_splits - the number of splits.
+     */
     void
     split_identity_variables (char *side, char **splits, size_t *nr_splits)
     {
@@ -193,6 +248,17 @@ namespace __placid
     }
 
     // TODO optimize for different sizes (specially smaller sizes)
+    /** Gets the splits mapped into variable ids.
+     * Gets the splits mapped into variable ids.
+     * @param [in] splits_1 - the left side of the identity.
+     * @param [in] nr_splits_1 - the number of variables in the left side of the identity.
+     * @param [in] splits_2 - the right side of the identity.
+     * @param [in] nr_splits_2 - the number of variables in the right side of the identity.
+     * @param [out] mapped_splits_1 - the mapped splits for the left side of the identity.
+     * @param [out] mapped_splits_2 - the mapped splits for the right side of the identity.
+     * @param [out] vars - the variables.
+     * @return the number of distinct variables occurring in the identity.
+     */
     size_t
     get_mapped_splits (char ** splits_1,
                        size_t  nr_splits_1,
@@ -249,6 +315,17 @@ namespace __placid
       return id;
     }
 
+    /** Tests an identity.
+     * Tests an identity.
+     * @param [in] splits_1 - the left side of the identity.
+     * @param [in] nr_splits_1 - the number of variables in the left side of the identity.
+     * @param [in] splits_2 - the right side of the identity.
+     * @param [in] nr_splits_2 - the number of variables in the right side of the identity.
+     * @param [out] mapped_splits_1 - the mapped splits for the left side of the identity.
+     * @param [out] mapped_splits_2 - the mapped splits for the right side of the identity.
+     * @param [out] vars - the variables.
+     * @return the number of distinct variables occurring in the identity.
+     */
     void
     test_identity (size_t  beg,
                    size_t *mapped_splits_1,

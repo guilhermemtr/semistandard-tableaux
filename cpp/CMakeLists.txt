@@ -72,6 +72,8 @@ include_directories(${GTEST_INCLUDE_DIRS})
 add_executable(placid main.cc tests/tropical_number_tests.cc tests/tropical_matrix_tests.cc tests/tuple_tests.cc tests/tableaux_entry_tests.cc tests/ordered_array_tests.cc tests/semistandard_tableaux_tests.cc tests/free_monoid_entry_tests.cc tests/free_monoid_element_tests.cc tests/pool_tests.cc tests/homomorphism_tests.cc tests/knuth_homomorphism_tests.cc tests/injectivity_test_tests.cc)
 
 # add required libraries
+target_link_libraries (placid Utils)
+
 target_link_libraries (placid FreeMonoid)
 target_link_libraries (placid TropicalNumbers)
 target_link_libraries (placid TropicalMatrices)

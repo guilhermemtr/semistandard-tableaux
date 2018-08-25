@@ -13,8 +13,13 @@
 
 namespace __placid
 {
-  extern const std::string tuple_format_id; // !< a constant defining the format of a tuple.
-  extern const std::string incompatible_tuple_arities_exception; // !< a constant defining an object thrown when the arities of two tuples being multiplied are different.
+  extern const std::string
+    tuple_format_id;    // !< a constant defining the format of a tuple.
+  extern const std::string
+    incompatible_tuple_arities_exception;    // !< a constant defining an object
+                                             // thrown when the arities of two
+                                             // tuples being multiplied are
+                                             // different.
 
   /**
    * This class defines a tuple element.
@@ -23,8 +28,8 @@ namespace __placid
   template <typename T>
   struct tuple : public magma_element<tuple<T>>
   {
-    size_t arity; // !< the arity of the tuple
-    T *    elements; // !< the elements of the tuple
+    size_t arity;       // !< the arity of the tuple
+    T *    elements;    // !< the elements of the tuple
 
     /** Constructs a new tuple with the given arity.
      * Constructs a new tuple with the given arity.
@@ -190,6 +195,10 @@ namespace __placid
     }
 
       private:
+    /** Reads the tuple's elements from a file stream.
+     * Reads the tuple's elements from a file stream.
+     * @param [in] f - the file stream.
+     */
     void
     read_data (FILE *f)
     {
@@ -201,6 +210,11 @@ namespace __placid
       this->elements[this->arity - 1].read (f);
     }
 
+    /** Writes the tuple's elements to a file stream.
+     * Writes the tuple's elements to a file stream.
+     * @param [in] f - the file stream.
+     * @param [in] format - the file format to be used.
+     */
     void
     write_data (FILE *f, file_format format) const
     {
