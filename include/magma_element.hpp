@@ -87,7 +87,7 @@ namespace __placid
      * @param [in] fn the filename.
      */
     void
-    read (std::string fn)
+    read_file (std::string fn)
     {
       FILE *f = fopen (fn.c_str (), "r");
 
@@ -115,7 +115,7 @@ namespace __placid
      * @param [in] format the file format to be used.
      */
     void
-    write (std::string fn, file_format format) const
+    write_file (std::string fn, file_format format) const
     {
       FILE *f = fopen (fn.c_str (), "w");
 
