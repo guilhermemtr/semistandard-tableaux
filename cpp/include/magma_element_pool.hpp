@@ -251,11 +251,15 @@ namespace __placid
     /** Gets the splits mapped into variable ids.
      * Gets the splits mapped into variable ids.
      * @param [in] splits_1 - the left side of the identity.
-     * @param [in] nr_splits_1 - the number of variables in the left side of the identity.
+     * @param [in] nr_splits_1 - the number of variables in the left side of the
+     * identity.
      * @param [in] splits_2 - the right side of the identity.
-     * @param [in] nr_splits_2 - the number of variables in the right side of the identity.
-     * @param [out] mapped_splits_1 - the mapped splits for the left side of the identity.
-     * @param [out] mapped_splits_2 - the mapped splits for the right side of the identity.
+     * @param [in] nr_splits_2 - the number of variables in the right side of
+     * the identity.
+     * @param [out] mapped_splits_1 - the mapped splits for the left side of the
+     * identity.
+     * @param [out] mapped_splits_2 - the mapped splits for the right side of
+     * the identity.
      * @param [out] vars - the variables.
      * @return the number of distinct variables occurring in the identity.
      */
@@ -317,14 +321,18 @@ namespace __placid
 
     /** Tests an identity.
      * Tests an identity.
-     * @param [in] splits_1 - the left side of the identity.
-     * @param [in] nr_splits_1 - the number of variables in the left side of the identity.
-     * @param [in] splits_2 - the right side of the identity.
-     * @param [in] nr_splits_2 - the number of variables in the right side of the identity.
-     * @param [out] mapped_splits_1 - the mapped splits for the left side of the identity.
-     * @param [out] mapped_splits_2 - the mapped splits for the right side of the identity.
-     * @param [out] vars - the variables.
-     * @return the number of distinct variables occurring in the identity.
+     * @param [in] beg - the next variable to be assigned.
+     * @param [in] mapped_splits_1 - the left side of the identity, where the
+     * variables are identified by indices.
+     * @param [in] nr_splits_1 - the number of variables occurring in the left
+     * side of the identity.
+     * @param [in] mapped_splits_2 - the right side of the identity, where the
+     * variables are identified by indices.
+     * @param [in] nr_splits_1 - the number of variables occurring in the right
+     * side of the identity.
+     * @param [in] id - the current (possibly partial) variable assignment.
+     * @param [in] vars - the variable names.
+     * @param [in] nr_vars - the number of variables.
      */
     void
     test_identity (size_t  beg,
@@ -382,6 +390,23 @@ namespace __placid
       }
     }
 
+    /** Checks if the given identity is satisfied for the given variable
+     * assignment. Checks if the given identity is satisfied for the given
+     * variable assignment.
+     * @param [in] x - the left side of the identity, where each entry of the
+     * vector corresponds to a variable id.
+     * @param [in] len_x - the number of variables appearing on the left side of
+     * the identity.
+     * @param [in] y - the right side of the identity, where each entry of the
+     * vector corresponds to a variable id.
+     * @param [in] len_y - the number of variables appearing on the right side
+     * of the identity.
+     * @param [in] assigns - the assignments, where each entry of the vector
+     * corresponds to the index (in the pool) of the element that should be used
+     * in the identity testing.
+     * @param [in] nr_vars - the number of different variables occurring in the
+     * identity.
+     */
     bool
     check_identity_assignment (size_t *x,
                                size_t  len_x,
