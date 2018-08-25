@@ -1,2 +1,0 @@
-/usr/bin/ar qc libTropicalNumbers.a  CMakeFiles/TropicalNumbers.dir/tropical_number.cc.o
-/usr/bin/ranlib libTropicalNumbers.a
