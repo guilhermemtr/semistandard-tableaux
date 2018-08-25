@@ -24,15 +24,27 @@ namespace __placid
      */
     typedef uint64_t tn_t;
 
-    extern const std::string tn_str_format;
-    extern const std::string tn_str_infinite;
-    extern const tn_t        tn_infinite;
+    extern const std::string
+      tn_str_format;    // !< represents the format of a tropical number.
+    extern const std::string
+      tn_str_infinite;    // !< represents the notation used to denote an
+                          // infinite value of a tropical number as a string.
+    extern const tn_t
+      tn_infinite;    // !< represents the smallest number corresponding to
+                      // infinity. Every number larger than tn_infinite is also
+                      // infinite.
 
+    /**
+     * This class defines a tropical number.
+     * This class defines a tropical number.
+     */
     struct number : public ring_element<number>
     {
-      static const file_format plain_format = 0;
+      static const file_format plain_format =
+        0;    // !< represents the format corresponding to the plain format of
+              // the tropical number.
 
-      tn_t n;
+      tn_t n;    // !< represents the tropical number.
 
       /** Constructs a new tropical number, corresponding to -infinity.
        * Constructs a new tropical number, corresponding to -infinity.
@@ -41,13 +53,13 @@ namespace __placid
 
       /** Constructs a new tropical number, given its value.
        * Constructs a new tropical number, given its value.
-       * @param n the number of the tropical number to be created.
+       * @param [in] n the number of the tropical number to be created.
        */
-      number (const tn_t& n);
+      number (const tn_t &n);
 
       /** Constructs a new tropical number, given another tropical number.
        * Constructs a new tropical number, given another tropical number.
-       * @param &o the other tropical number.
+       * @param [in] &o the other tropical number.
        */
       number (const number &o);
 
@@ -73,11 +85,11 @@ namespace __placid
       /** Makes an assignment of tropical numbers, given a tropical number
        * integer value. Makes an assignment of tropical numbers, given a
        * tropical number integer value.
-       * @param &o the tropical number integer value to assign.
+       * @param [in] &o the tropical number integer value to assign.
        * @return the tropical number value assigned.
        */
       number &
-      operator= (const tn_t& o);
+      operator= (const tn_t &o);
 
       number &
       operator= (const number &o);
