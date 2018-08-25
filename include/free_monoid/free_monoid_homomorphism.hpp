@@ -8,13 +8,24 @@ namespace __placid
 {
   namespace free_monoid
   {
+    /**
+     * This class defines a homomorphism from an alphabet of a free monoid to a
+     * template type T. This class defines a homomorphism from an alphabet of a
+     * free monoid to a template type T.
+     */
     template <typename T>
     struct homomorphism
     {
       // the element with index 0 corresponds to the identity for type T.
-      T *    mapping;
-      size_t length;
+      T *    mapping;    // !< the homomorphism.
+      size_t length;     // !< the size of the alphabet.
 
+      /** Creates an homomorphism given the map of the homomorphism and the rank
+       * of the free group elements. Creates an homomorphism given the map of
+       * the homomorphism and the rank of the free group elements.
+       * @param [in] elems - the map.
+       * @param [in] rank - the rank of the free group elements.
+       */
       homomorphism (const T *elems, const symbol rank)
       {
         assert (elems != NULL);
@@ -27,22 +38,42 @@ namespace __placid
         }
       }
 
+      /** Creates an homomorphism given a tuple corresponding to the map of the
+       * homomorphism and the rank of the free group elements. Creates an
+       * homomorphism given a tuple corresponding to the map of the homomorphism
+       * and the rank of the free group elements.
+       * @param [in] tup - the map.
+       */
       homomorphism (const tuple<T> &tup)
         : homomorphism (tup.elements, tup.arity - 1)
       {
       }
+
+      /** Creates an homomorphism given a homomorphism.
+       * Creates an homomorphism given a homomorphism.
+       * @param [in] h - the homomorphism.
+       */
 
       homomorphism (const homomorphism<T> &h)
         : homomorphism (h.mapping, h.length - 1)
       {
       }
 
+      /** Gets the max rank of the free monoid.
+       * Gets the max rank of the free monoid.
+       * @return the max rank of the free monoid.
+       */
       symbol
       max_rank () const
       {
         return this->length - 1;
       }
 
+      /** Gets the mapping from a word to the element mapped by the homomorphism.
+       * Gets the mapping from a word to the element mapped by the homomorphism.
+       * @param [in] e - the word to be mapped.
+       * @return the mapped element.
+       */
       T
       operator() (const element &e) const
       {
