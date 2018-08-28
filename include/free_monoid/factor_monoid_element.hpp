@@ -10,6 +10,7 @@
 #include "config.hpp"
 
 #include "magma_element.hpp"
+
 #include "free_monoid_element.hpp"
 
 namespace __placid
@@ -17,7 +18,7 @@ namespace __placid
   namespace free_monoid
   {
     struct element;
-
+    
     /**
      * This class defines an abstract factor element.
      * This class defines an abstract factor element.
@@ -47,7 +48,7 @@ namespace __placid
        * @param [in] o - the second element.
        * @return the product of the factor elements.
        */
-      T operator* (const T &o) const
+      virtual T operator* (const T &o) const
       {
         T res = this->reading () * o.reading ();
         return res;

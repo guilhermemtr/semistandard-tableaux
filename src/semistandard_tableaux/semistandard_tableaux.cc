@@ -1,4 +1,5 @@
 #include "semistandard_tableaux.hpp"
+
 #ifdef __PLACID_SEMISTANDARD_TABLEAUX__
 
 namespace __placid

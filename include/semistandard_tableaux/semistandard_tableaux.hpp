@@ -2,22 +2,16 @@
 #define __PLACID_SEMISTANDARD_TABLEAUX__
 
 #include <string>
+#include <functional>
 
 #include <cstdint>
 #include <cassert>
 #include <cstring>
 
-#include <functional>
-
-/** Do not change the order of these includes or everything will stop working
- * and you won't have a clue why :)
- *
- * In short, there is a circular definition, because a free_monoid_element is a
- * factor_monoid_element.
- */
-#include "free_monoid/free_monoid_element.hpp"
-#include "free_monoid/factor_monoid_element.hpp"
 #include "ordered_array.hpp"
+
+#include "free_monoid/factor_monoid_element.hpp"
+
 
 
 
@@ -137,8 +131,9 @@ namespace __placid
       void
       read_table (FILE *f, size_t lines);
 
-      /** Writes the semistandard tableaux in table format to the given file stream.
-       * Writes the semistandard tableaux in table format to the given file stream.
+      /** Writes the semistandard tableaux in table format to the given file
+       * stream. Writes the semistandard tableaux in table format to the given
+       * file stream.
        * @param [in] f - the file stream.
        */
       void

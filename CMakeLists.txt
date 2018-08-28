@@ -56,7 +56,9 @@ FIND_PACKAGE(Boost COMPONENTS program_options REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 
+
 add_executable(sst_multiply sst_multiply_main.cc)
+add_executable(test main.cc)
 
 
 
@@ -66,12 +68,17 @@ target_link_libraries(sst_multiply ${Boost_LIBRARIES})
 # add required libraries
 target_link_libraries (sst_multiply Utils)
 target_link_libraries (sst_multiply FreeMonoid)
-#target_link_libraries (sst_multiply TropicalNumbers)
-#target_link_libraries (sst_multiply TropicalMatrices)
-#target_link_libraries (sst_multiply Tuples)
+target_link_libraries (sst_multiply TropicalNumbers)
+target_link_libraries (sst_multiply TropicalMatrices)
+target_link_libraries (sst_multiply Tuples)
 target_link_libraries (sst_multiply SemiStandardTableaux)
 
-
+target_link_libraries (test Utils)
+target_link_libraries (test FreeMonoid)
+target_link_libraries (test TropicalNumbers)
+target_link_libraries (test TropicalMatrices)
+target_link_libraries (test Tuples)
+target_link_libraries (test SemiStandardTableaux)
 
 
 

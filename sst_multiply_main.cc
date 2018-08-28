@@ -4,14 +4,15 @@
 
 #include <cstdio>
 
-#include "free_monoid/free_monoid_element.hpp"
-#include "free_monoid/factor_monoid_element.hpp"
-
+//#include "free_monoid/free_monoid_element.hpp"
+//#include "free_monoid/factor_monoid_element.hpp"
 
 #include "semistandard_tableaux/semistandard_tableaux.hpp"
+#include "free_monoid/free_monoid_element.hpp"
 
 namespace po = boost::program_options;
 namespace pt = __placid::semistandard_tableaux;
+
 int
 main (int argc, char **argv)
 {
@@ -57,9 +58,9 @@ main (int argc, char **argv)
     }
   }
 
-  pt::tableaux res;
+  __placid::semistandard_tableaux::entry res;
 
-  if (!vm.count ("input"))
+  /*if (!vm.count ("input"))
   {
     std::cout << "No input files." << std::endl;
   }
@@ -73,8 +74,6 @@ main (int argc, char **argv)
     input.read_file (in_fn);
     res = res * input;
   }
-
-
 
   __placid::file_format fm = 0;
   if (vm.count ("format"))
@@ -98,9 +97,9 @@ main (int argc, char **argv)
     std::cout << "No output format specified." << std::endl;
   }
 
-  this->write (f, fm);
+  res.write (f, fm);
 
-  fclose (f);
+  fclose (f);*/
 
   return 0;
 }

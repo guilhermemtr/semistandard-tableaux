@@ -3,17 +3,13 @@
 
 #include <string>
 
-#include "magma_element.hpp"
 #include "free_monoid_entry.hpp"
-#include "factor_monoid_element.hpp"
+
+#include "magma_element.hpp"
+
 
 namespace __placid
 {
-  namespace semistandard_tableaux
-  {
-    struct tableaux;
-  }
-
   namespace free_monoid
   {
     extern const std::string
@@ -25,11 +21,14 @@ namespace __placid
      * This class defines a word element.
      * A word element is an element from a mathematical structure called the
      * free monoid.
+     * Although a word should be a subtype of a factor monoid element, doing so
+     * would cause a circular dependency, and so, instead of making the word
+     * element a subtype of a factor_monoid_element, we implement all the
+     * methods of the factor_monoid_element to allow to use this as a
+     * factor_monoid_element would be used.
      */
-    struct element : public factor_element<element>
+    struct element : public magma_element<element>
     {
-      friend semistandard_tableaux::tableaux;
-
       static const size_t default_size = 0;    // !< the default size of a word.
 
       static const file_format plain_format = 0;    // !< the plain format id.
@@ -110,7 +109,7 @@ namespace __placid
       void
       write (FILE *f, file_format format) const;
 
-        private:
+      // private:
       /** Reads a word in the plain format from the given file
        * stream. Reads a word in the plain format from the given file
        * stream.
