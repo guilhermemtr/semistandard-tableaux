@@ -57,17 +57,19 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 
 
-add_executable(sst_multiply sst_multiply_main.cc)
-add_executable(tm_multiply tm_multiply_main.cc)
-add_executable(knuth_relations_testing knuth_relations_testing_main.cc)
+add_executable(sst_multiply mains/sst_multiply_main.cc)
+add_executable(tm_multiply mains/tm_multiply_main.cc)
+add_executable(knuth_relations_testing mains/knuth_relations_testing_main.cc)
+add_executable(pool_identity_testing mains/pool_identity_testing_main.cc)
 
-add_executable(test main.cc)
+add_executable(test mains/main.cc)
 
 
 
 target_link_libraries(sst_multiply ${Boost_LIBRARIES})
 target_link_libraries(tm_multiply ${Boost_LIBRARIES})
 target_link_libraries(knuth_relations_testing ${Boost_LIBRARIES})
+target_link_libraries(pool_identity_testing ${Boost_LIBRARIES})
 
 
 # add required libraries
@@ -91,6 +93,14 @@ target_link_libraries (knuth_relations_testing TropicalNumbers)
 target_link_libraries (knuth_relations_testing TropicalMatrices)
 target_link_libraries (knuth_relations_testing Tuples)
 target_link_libraries (knuth_relations_testing SemiStandardTableaux)
+
+target_link_libraries (pool_identity_testing Utils)
+target_link_libraries (pool_identity_testing FreeMonoid)
+target_link_libraries (pool_identity_testing TropicalNumbers)
+target_link_libraries (pool_identity_testing TropicalMatrices)
+target_link_libraries (pool_identity_testing Tuples)
+target_link_libraries (pool_identity_testing SemiStandardTableaux)
+
 
 target_link_libraries (test Utils)
 target_link_libraries (test FreeMonoid)
@@ -125,7 +135,7 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 
 # unit tests
-add_executable(unit_tests unit_tests_main.cc tests/tropical_number_tests.cc tests/tropical_matrix_tests.cc tests/tuple_tests.cc tests/tableaux_entry_tests.cc tests/ordered_array_tests.cc tests/semistandard_tableaux_tests.cc tests/free_monoid_entry_tests.cc tests/free_monoid_element_tests.cc tests/pool_tests.cc tests/homomorphism_tests.cc tests/knuth_homomorphism_tests.cc tests/injectivity_test_tests.cc)
+add_executable(unit_tests tests/unit_tests_main.cc tests/tropical_number_tests.cc tests/tropical_matrix_tests.cc tests/tuple_tests.cc tests/tableaux_entry_tests.cc tests/ordered_array_tests.cc tests/semistandard_tableaux_tests.cc tests/free_monoid_entry_tests.cc tests/free_monoid_element_tests.cc tests/pool_tests.cc tests/homomorphism_tests.cc tests/knuth_homomorphism_tests.cc tests/injectivity_test_tests.cc)
 
 
 # add required libraries
