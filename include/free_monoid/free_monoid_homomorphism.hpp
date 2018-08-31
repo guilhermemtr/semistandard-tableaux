@@ -63,7 +63,7 @@ namespace __placid
        * Gets the max rank of the free monoid.
        * @return the max rank of the free monoid.
        */
-      symbol
+      virtual symbol
       max_rank () const
       {
         return this->length - 1;
@@ -74,7 +74,7 @@ namespace __placid
        * @param [in] e - the word to be mapped.
        * @return the mapped element.
        */
-      T
+      virtual T
       operator() (const element &e) const
       {
         if (e.get_size () == 0)

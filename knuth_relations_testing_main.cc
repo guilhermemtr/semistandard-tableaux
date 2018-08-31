@@ -41,10 +41,15 @@ main (int argc, char **argv)
   p::tuple<p::tropical_elements::matrix> tup;
   if (vm.count ("input"))
   {
-    std::string                            fn = vm["input"].as<std::string> ();
-    p::tuple<p::tropical_elements::matrix> tup;
-    tup.read_file (fn);
-
+    std::string fn = vm["input"].as<std::string> ();
+    try
+    {
+      tup.read_file (fn);
+    } catch (std::string e)
+    {
+      std::cout << e << std::endl;
+      return 1;
+    }
   } else
   {
     std::cout << "No homomorphism given" << std::endl;
@@ -59,10 +64,6 @@ main (int argc, char **argv)
   {
     std::cout << "Knuth relations NOT satisfied :(" << std::endl;
   }
-
-  //  res.write (f, fm);
-
-  // fclose (f);
 
   return 0;
 }

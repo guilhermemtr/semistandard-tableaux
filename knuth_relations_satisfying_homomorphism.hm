@@ -3,43 +3,43 @@ tuple
 tropical_matrix
 1
 4 4
-0    -inf -inf -inf
--inf 0    -inf -inf
--inf -inf 0    -inf
--inf -inf -inf 0
+0 - - -
+- 0 - -
+- - 0 -
+- - - 0
 
 ,
 tropical_matrix
 1
 4 4
-1    1    1    1
--inf 0    0    0
--inf -inf 0    0
--inf -inf -inf 0
+1 1 1 1
+- 0 0 0
+- - 0 0
+- - - 0
 
 ,
 tropical_matrix
 1
 4 4
-0    1    1    1
--inf 1    1    1
--inf -inf 0    0
--inf -inf -inf 0
+0 1 1 1
+- 1 1 1
+- - 0 0
+- - - 0
 
 ,
 tropical_matrix
 1
 4 4
-0    0    1    1
--inf 0    1    1
--inf -inf 1    1
--inf -inf -inf 0
+0 0 1 1
+- 0 1 1
+- - 1 1
+- - - 0
 
 ,
 tropical_matrix
 1
 4 4
-0    0    0    1
--inf 0    0    1
--inf -inf 0    1
--inf -inf -inf 1
+0 0 0 1
+- 0 0 1
+- - 0 1
+- - - 1
