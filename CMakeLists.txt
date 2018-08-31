@@ -58,11 +58,16 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 
 add_executable(sst_multiply sst_multiply_main.cc)
+add_executable(tm_multiply tm_multiply_main.cc)
+add_executable(knuth_relations_testing knuth_relations_testing_main.cc)
+
 add_executable(test main.cc)
 
 
 
 target_link_libraries(sst_multiply ${Boost_LIBRARIES})
+target_link_libraries(tm_multiply ${Boost_LIBRARIES})
+target_link_libraries(knuth_relations_testing ${Boost_LIBRARIES})
 
 
 # add required libraries
@@ -72,6 +77,20 @@ target_link_libraries (sst_multiply TropicalNumbers)
 target_link_libraries (sst_multiply TropicalMatrices)
 target_link_libraries (sst_multiply Tuples)
 target_link_libraries (sst_multiply SemiStandardTableaux)
+
+target_link_libraries (tm_multiply Utils)
+target_link_libraries (tm_multiply FreeMonoid)
+target_link_libraries (tm_multiply TropicalNumbers)
+target_link_libraries (tm_multiply TropicalMatrices)
+target_link_libraries (tm_multiply Tuples)
+target_link_libraries (tm_multiply SemiStandardTableaux)
+
+target_link_libraries (knuth_relations_testing Utils)
+target_link_libraries (knuth_relations_testing FreeMonoid)
+target_link_libraries (knuth_relations_testing TropicalNumbers)
+target_link_libraries (knuth_relations_testing TropicalMatrices)
+target_link_libraries (knuth_relations_testing Tuples)
+target_link_libraries (knuth_relations_testing SemiStandardTableaux)
 
 target_link_libraries (test Utils)
 target_link_libraries (test FreeMonoid)

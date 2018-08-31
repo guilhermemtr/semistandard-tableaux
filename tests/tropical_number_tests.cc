@@ -125,7 +125,7 @@ TEST (tropical_number, test_read)
 {
   char *sn1 = (char *) "1230";
   char *sn2 = (char *) "1230L";
-  char *si  = (char *) "-inf";
+  char *si  = (char *) "-";
 
   tn_t n1 = atoll (sn1);
   tn_t i  = number ().get ();
@@ -151,7 +151,7 @@ TEST (tropical_number, test_write)
 {
   file_format format = number::plain_format;
   char *      sn     = (char *) "1230 ";
-  char *      si     = (char *) "-inf ";
+  char *      si     = (char *) "- ";
 
   tn_t n = 1230;
   tn_t i = number ().get ();

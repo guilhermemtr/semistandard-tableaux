@@ -7,7 +7,7 @@ namespace __placid
   namespace tropical_elements
   {
     const std::string tn_str_format   = std::string ("%lu");
-    const std::string tn_str_infinite = std::string ("-inf");
+    const std::string tn_str_infinite = std::string ("-");
     const tn_t        tn_infinite     = (1L << 32L);
 
     number::number ()

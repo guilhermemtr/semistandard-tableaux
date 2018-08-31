@@ -141,9 +141,9 @@ TEST (tuple, test_read_numbers)
   char f3[1 << 10];
 
   strcpy (f1, "tuple\n2\n1 \n,\n2 ");
-  strcpy (f2, "tuple\n5\n-inf \n,\n1 \n,\n2 \n,\n3 \n,\n4 ");
+  strcpy (f2, "tuple\n5\n- \n,\n1 \n,\n2 \n,\n3 \n,\n4 ");
   strcpy (f3,
-          "tuple\n10\n-inf \n,\n1 \n,\n2 \n,\n3 \n,\n4 \n,\n5 \n,\n6 \n,\n7 "
+          "tuple\n10\n- \n,\n1 \n,\n2 \n,\n3 \n,\n4 \n,\n5 \n,\n6 \n,\n7 "
           "\n,\n8 \n,\n9 ");
 
   tuple<tropical_elements::number> tup1 (2, tns_1);
@@ -191,10 +191,10 @@ TEST (tuple, test_write_numbers)
 
 
   ASSERT_TRUE (strcmp (tup1_res, "tuple\n2\n1 \n,\n2 ") == 0);
-  ASSERT_TRUE (strcmp (tup2_res, "tuple\n5\n-inf \n,\n1 \n,\n2 \n,\n3 \n,\n4 ")
+  ASSERT_TRUE (strcmp (tup2_res, "tuple\n5\n- \n,\n1 \n,\n2 \n,\n3 \n,\n4 ")
                == 0);
   ASSERT_TRUE (strcmp (tup3_res,
-                       "tuple\n10\n-inf \n,\n1 \n,\n2 \n,\n3 \n,\n4 \n,\n5 "
+                       "tuple\n10\n- \n,\n1 \n,\n2 \n,\n3 \n,\n4 \n,\n5 "
                        "\n,\n6 \n,\n7 \n,\n8 \n,\n9 ")
                == 0);
 }

@@ -86,7 +86,7 @@ namespace __placid
      * Reads a magma element from a file, given the filename.
      * @param [in] fn the filename.
      */
-    void
+    virtual void
     read_file (std::string fn)
     {
       FILE *f = fopen (fn.c_str (), "r");
@@ -114,7 +114,7 @@ namespace __placid
      * @param [in] fn the filename.
      * @param [in] format the file format to be used.
      */
-    void
+    virtual void
     write_file (std::string fn, file_format format) const
     {
       FILE *f = fopen (fn.c_str (), "w");

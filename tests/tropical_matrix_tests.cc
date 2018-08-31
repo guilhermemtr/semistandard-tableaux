@@ -287,9 +287,9 @@ TEST (matrix, test_read_plain)
   char f2[1 << 10];
   char f3[1 << 10];
 
-  strcpy (f1, "tropical_matrix\n0\n3 3\n 1 2 5 -inf -inf 2 -inf 3 -inf");
-  strcpy (f2, "tropical_matrix\n0\n3 3\n -inf 1 2  0 -inf 4 0 1 1\n  ");
-  strcpy (f3, "tropical_matrix\n0\n3 3\n0 1 1 -inf -inf 3 0L 0 0");
+  strcpy (f1, "tropical_matrix\n0\n3 3\n 1 2 5 - - 2 - 3 -");
+  strcpy (f2, "tropical_matrix\n0\n3 3\n - 1 2  0 - 4 0 1 1\n  ");
+  strcpy (f3, "tropical_matrix\n0\n3 3\n0 1 1 - - 3 0L 0 0");
 
   matrix tm1 (3, 3);
   matrix tm2 (3, 3);
@@ -320,9 +320,9 @@ TEST (matrix, test_read_table)
   char f2[1 << 10];
   char f3[1 << 10];
 
-  strcpy (f1, "tropical_matrix\n1\n3 3\n1 2 5\n -inf -inf 2\n -inf 3 -inf");
-  strcpy (f2, "tropical_matrix\n1\n3 3\n -inf 1 2 \n 0 -inf 4\n 0 1 1\n  ");
-  strcpy (f3, "tropical_matrix\n1\n3 3\n0 1 1\n -inf -inf 3\n 0L 0 0");
+  strcpy (f1, "tropical_matrix\n1\n3 3\n1 2 5\n - - 2\n - 3 -");
+  strcpy (f2, "tropical_matrix\n1\n3 3\n - 1 2 \n 0 - 4\n 0 1 1\n  ");
+  strcpy (f3, "tropical_matrix\n1\n3 3\n0 1 1\n - - 3\n 0L 0 0");
 
   matrix tm1 (3, 3);
   matrix tm2 (3, 3);
@@ -366,14 +366,14 @@ TEST (matrix, test_write_plain)
   char *f3 = test_magma_element_file_write (tm3, 1 << 10, format);
 
   ASSERT_TRUE (strcmp (f1,
-                       "tropical_matrix\n0\n3 3\n1 \n2 \n5 \n-inf \n-inf \n2 "
-                       "\n-inf \n3 \n-inf \n")
+                       "tropical_matrix\n0\n3 3\n1 \n2 \n5 \n- \n- \n2 "
+                       "\n- \n3 \n- \n")
                == 0);
   ASSERT_TRUE (
-    strcmp (f2, "tropical_matrix\n0\n3 3\n-inf \n1 \n2 \n0 \n-inf \n4 \n0 \n1 \n1 \n")
+    strcmp (f2, "tropical_matrix\n0\n3 3\n- \n1 \n2 \n0 \n- \n4 \n0 \n1 \n1 \n")
     == 0);
   ASSERT_TRUE (
-    strcmp (f3, "tropical_matrix\n0\n3 3\n0 \n1 \n1 \n-inf \n-inf \n3 \n0 \n0 \n0 \n")
+    strcmp (f3, "tropical_matrix\n0\n3 3\n0 \n1 \n1 \n- \n- \n3 \n0 \n0 \n0 \n")
     == 0);
 
   free (f1);
@@ -399,10 +399,10 @@ TEST (matrix, test_write_table)
   char *f3 = test_magma_element_file_write (tm3, 1 << 10, format);
 
   ASSERT_TRUE (
-    strcmp (f1, "tropical_matrix\n1\n3 3\n1 2 5 \n-inf -inf 2 \n-inf 3 -inf \n") == 0);
-  ASSERT_TRUE (strcmp (f2, "tropical_matrix\n1\n3 3\n-inf 1 2 \n0 -inf 4 \n0 1 1 \n")
+    strcmp (f1, "tropical_matrix\n1\n3 3\n1 2 5 \n- - 2 \n- 3 - \n") == 0);
+  ASSERT_TRUE (strcmp (f2, "tropical_matrix\n1\n3 3\n- 1 2 \n0 - 4 \n0 1 1 \n")
                == 0);
-  ASSERT_TRUE (strcmp (f3, "tropical_matrix\n1\n3 3\n0 1 1 \n-inf -inf 3 \n0 0 0 \n")
+  ASSERT_TRUE (strcmp (f3, "tropical_matrix\n1\n3 3\n0 1 1 \n- - 3 \n0 0 0 \n")
                == 0);
 
   free (f1);

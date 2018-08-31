@@ -16,9 +16,7 @@
 namespace __placid
 {
   namespace free_monoid
-  {
-    struct element;
-    
+  {    
     /**
      * This class defines an abstract factor element.
      * This class defines an abstract factor element.

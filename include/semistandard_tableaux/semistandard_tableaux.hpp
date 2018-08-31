@@ -12,7 +12,7 @@
 
 #include "free_monoid/factor_monoid_element.hpp"
 
-
+#include "free_monoid/free_monoid_element.hpp"
 
 
 namespace __placid

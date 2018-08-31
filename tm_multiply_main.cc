@@ -4,24 +4,23 @@
 
 #include <cstdio>
 
-//#include "free_monoid/free_monoid_element.hpp"
-//#include "free_monoid/factor_monoid_element.hpp"
-
 #include "placid.hpp"
 
 namespace po = boost::program_options;
-namespace pt = __placid::semistandard_tableaux;
+namespace pt = __placid::tropical_elements;
 
 int
 main (int argc, char **argv)
 {
-  __placid::free_monoid::element aaa;
+  __placid::free_monoid::element      aaa;
+  __placid::tropical_elements::number bbb;
+
 
   po::options_description desc ("Options");
   desc.add_options () ("help,h", "Produces this help message.")    //
     ("input,i",
      po::value<std::vector<std::string>> (),
-     "Adds semistandard tableaux to the multiplication.")    //
+     "Adds tropical matrices to the multiplication.")    //
     ("output,o",
      po::value<std::string> (),
      "Sets the output file. By default the result is written into stdout.")    //
@@ -37,7 +36,6 @@ main (int argc, char **argv)
     po::command_line_parser (argc, argv).options (desc).positional (p).run (),
     vm);
   po::notify (vm);
-
 
   if (vm.count ("help"))
   {
@@ -59,7 +57,7 @@ main (int argc, char **argv)
     }
   }
 
-  __placid::semistandard_tableaux::tableaux res;
+  pt::matrix res;
 
   if (!vm.count ("input"))
   {
@@ -68,13 +66,30 @@ main (int argc, char **argv)
 
   std::vector<std::string> opts = vm["input"].as<std::vector<std::string>> ();
 
-  for (size_t i = 0; i < opts.size (); i++)
+  if (opts.size () > 0)
   {
-    std::string  in_fn = opts[i];
-    pt::tableaux input;
-    input.read_file (in_fn);
-    res = res * input;
+    std::string in_fn = opts[0];
+
+    res.read_file (in_fn);
   }
+
+  for (size_t i = 1; i < opts.size (); i++)
+  {
+    std::string in_fn = opts[i];
+    pt::matrix  input;
+
+    input.read_file (in_fn);
+    try
+    {
+      res = res * input;
+    } catch (std::string exception)
+    {
+      printf ("%s\n", exception.c_str ());
+    }
+  }
+
+
+
 
   __placid::file_format fm = 0;
   if (vm.count ("format"))
@@ -82,13 +97,10 @@ main (int argc, char **argv)
     std::string format = vm["format"].as<std::string> ();
     if (format == "plain")
     {
-      fm = pt::tableaux::plain_format;
-    } else if (format == "compressed")
+      fm = pt::matrix::plain_format;
+    } else if (format == "matrix")
     {
-      fm = pt::tableaux::compressed_format;
-    } else if (format == "table")
-    {
-      fm = pt::tableaux::table_format;
+      fm = pt::matrix::table_format;
     } else
     {
       std::cout << "Invalid output format specified." << std::endl;
