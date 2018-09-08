@@ -61,6 +61,7 @@ main (int argc, char **argv)
   if (vm.count ("test"))
   {
     std::string id_to_test = vm["test"].as<std::string> ();
+    std::cout << id_to_test << std::endl;
     try
     {
       pool.test_identity (id_to_test);
@@ -69,7 +70,7 @@ main (int argc, char **argv)
     {
       for (auto it : counter_example)
       {
-        std::cout << " " << it.first << ":" << std::endl;//it.second << std::endl;
+        std::cout << " " << it.first << ":" << it.second << std::endl;
       }
     } catch (...)
     {

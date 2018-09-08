@@ -116,6 +116,7 @@ namespace __placid
           if (curr == curr_comp)
           {
             this->elements[j] = this->elements[--this->counter];
+            j--;
           }
         }
       }
@@ -174,6 +175,16 @@ namespace __placid
                      NULL,
                      vars,
                      nr_vars);
+    }
+
+    void
+    print ()
+    {
+      for (size_t i = 0; i < this->counter; i++)
+      {
+        this->elements[i].write(stdout,0);
+        printf("\n");
+      }
     }
 
       private:

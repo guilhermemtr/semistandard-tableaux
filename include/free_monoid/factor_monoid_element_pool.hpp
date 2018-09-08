@@ -20,7 +20,8 @@ namespace __placid
     template <typename T>
     struct factor_element_pool : public pool<T>
     {
-      static const size_t default_size = (1 << 5); // !< the default size of the pool.
+      static const size_t default_size =
+        (1 << 5);    // !< the default size of the pool.
 
       /** Creates a new pool given a size.
        * Creates a new pool given a size.
@@ -37,7 +38,7 @@ namespace __placid
       factor_element_pool (factor_element_pool<T> &o) : pool<T> (o)
       {
       }
-      
+
       /** Destroys the pool.
        * Destroys the pool.
        */
@@ -45,25 +46,27 @@ namespace __placid
       {
       }
 
-      /** Applies a homomorphism to the pool, creating a new one with the mapped elements.
-       * Applies a homomorphism to the pool, creating a new one with the mapped elements.
+      /** Applies a homomorphism to the pool, creating a new one with the mapped
+       * elements. Applies a homomorphism to the pool, creating a new one with
+       * the mapped elements.
        * @param [in] h - the homomorphism.
        * @return the pool created with the mapped elements.
        */
       template <typename V>
-      __placid::pool<V>
+      __placid::pool<V> &
       operator() (free_monoid::homomorphism<V> h) const
       {
-        pool<V> homomorphic_image;
+        pool<V> *homomorphic_image = new pool<V> ();
         for (size_t i = 0; i < this->counter; i++)
         {
-          homomorphic_image.add (h (this->elements[i].reading ()));
+          homomorphic_image->add (h (this->elements[i].reading ()));
         }
-        return homomorphic_image;
+        return *homomorphic_image;
       }
 
       /** Checks if the given homomorphism is injective.
-       * Checks if the given homomorphism is injective, by mapping all elements of the pool to a new pool and checking for repetitions.
+       * Checks if the given homomorphism is injective, by mapping all elements
+       * of the pool to a new pool and checking for repetitions.
        * @param [in] h - the homomorphism to be tested.
        * @return whether the homomorphism passed the test.
        */
@@ -76,7 +79,7 @@ namespace __placid
         factor_element_pool<T> p = *this;
         p.remove_duplicates ();
 
-        pool<V> homomorphic_image = this->get_homomorphic_image (h);
+        pool<V> homomorphic_image = this->operator() (h);
         homomorphic_image.remove_duplicates ();
 
         return homomorphic_image.counter == p.counter;

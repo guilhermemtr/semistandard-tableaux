@@ -94,11 +94,14 @@ TEST (magma_element_pool, test_remove_duplicates)
   p1.add (a);
 
   p1.add (3);
+  p1.add (3);
   p1.add (4);
   p1.add (3);
   p1.add (5);
+  p1.add (a);
+  p1.add (a);
 
-  ASSERT_TRUE (p1.get_size () == 6);
+  ASSERT_TRUE (p1.get_size () == 9);
 
   p1.remove_duplicates ();
 
