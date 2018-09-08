@@ -15,12 +15,12 @@ def getAllSemistandardTableaux (size):
 def writeTableauxToFile (t, fn):
     f = open(fn,"w")
     f.write("semistandard_tableaux\n")
-    f.write("2\n")
+    f.write("0\n")
     f.write(str(len(t)) + "\n")
     for row in reversed(t):
         for e in row:
-            f.write("" + str(e) + " ")
-        f.write("\n")
+            f.write("" + str(e) + "\n")
+        # f.write("\n")
     f.close()
 
 
