@@ -1,8 +1,5 @@
 CMake output build directory: https://stackoverflow.com/questions/18826789/cmake-output-build-directory
 
-FEATURES:
-test everything
-
 check how I am saying that tableaux is friend of free monoid, in the free_monoid header.
 
 consider changing the implementation of the free monoid to have a size and a counter, instead of only having a length (which requires constant memory management).

@@ -165,8 +165,6 @@ namespace __placid
                                           mapped_splits_2,
                                           vars);
 
-      free (identity);
-
       test_identity (0,
                      mapped_splits_1,
                      nr_splits_1,
@@ -175,16 +173,8 @@ namespace __placid
                      NULL,
                      vars,
                      nr_vars);
-    }
 
-    void
-    print ()
-    {
-      for (size_t i = 0; i < this->counter; i++)
-      {
-        this->elements[i].write(stdout,0);
-        printf("\n");
-      }
+      free (identity);
     }
 
       private:

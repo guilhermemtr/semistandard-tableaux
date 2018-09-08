@@ -64,16 +64,19 @@ main (int argc, char **argv)
     try
     {
       pool.test_identity (id_to_test);
+      std::cout << "Identity holds." << std::endl;
     } catch (std::unordered_map<std::string, p::semistandard_tableaux::tableaux>
                counter_example)
     {
+      std::cout << "Identity does not hold." << std::endl;
       for (auto it : counter_example)
       {
-        std::cout << " " << it.first << ":" << std::endl;//it.second << std::endl;
+        printf ("\n%s:\n", it.first.c_str ());
+        it.second.write (stdout, 2);
       }
     } catch (...)
     {
-      printf("other error\n");
+      printf ("Unknown error occurred.\n");
     }
   } else
   {

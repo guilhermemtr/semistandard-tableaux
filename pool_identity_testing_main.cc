@@ -68,13 +68,16 @@ main (int argc, char **argv)
     } catch (std::unordered_map<std::string, p::semistandard_tableaux::tableaux>
                counter_example)
     {
-      for (auto it : counter_example)
+      for (auto it = counter_example.begin (); it != counter_example.end (); ++it) {
+        std::cout << " " << it->first << ":" << it->second;
+      }
+      /*for (auto it : counter_example)
       {
         std::cout << " " << it.first << ":" << it.second << std::endl;
-      }
+        }*/
     } catch (...)
     {
-      printf("other error\n");
+      printf ("other error\n");
     }
   } else
   {
