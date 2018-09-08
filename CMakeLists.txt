@@ -61,8 +61,9 @@ add_executable(sst_multiply mains/sst_multiply_main.cc)
 add_executable(tm_multiply mains/tm_multiply_main.cc)
 add_executable(knuth_relations_testing mains/knuth_relations_testing_main.cc)
 add_executable(pool_identity_testing mains/pool_identity_testing_main.cc)
+add_executable(homomorphism_injectivity_testing mains/homomorphism_injectivity_testing_main.cc)
 
-add_executable(test mains/main.cc)
+# add_executable(test mains/main.cc)
 
 
 
@@ -70,6 +71,7 @@ target_link_libraries(sst_multiply ${Boost_LIBRARIES})
 target_link_libraries(tm_multiply ${Boost_LIBRARIES})
 target_link_libraries(knuth_relations_testing ${Boost_LIBRARIES})
 target_link_libraries(pool_identity_testing ${Boost_LIBRARIES})
+target_link_libraries(homomorphism_injectivity_testing ${Boost_LIBRARIES})
 
 
 # add required libraries
@@ -101,13 +103,20 @@ target_link_libraries (pool_identity_testing TropicalMatrices)
 target_link_libraries (pool_identity_testing Tuples)
 target_link_libraries (pool_identity_testing SemiStandardTableaux)
 
+target_link_libraries (homomorphism_injectivity_testing Utils)
+target_link_libraries (homomorphism_injectivity_testing FreeMonoid)
+target_link_libraries (homomorphism_injectivity_testing TropicalNumbers)
+target_link_libraries (homomorphism_injectivity_testing TropicalMatrices)
+target_link_libraries (homomorphism_injectivity_testing Tuples)
+target_link_libraries (homomorphism_injectivity_testing SemiStandardTableaux)
 
-target_link_libraries (test Utils)
-target_link_libraries (test FreeMonoid)
-target_link_libraries (test TropicalNumbers)
-target_link_libraries (test TropicalMatrices)
-target_link_libraries (test Tuples)
-target_link_libraries (test SemiStandardTableaux)
+
+#target_link_libraries (test Utils)
+#target_link_libraries (test FreeMonoid)
+#target_link_libraries (test TropicalNumbers)
+#target_link_libraries (test TropicalMatrices)
+#target_link_libraries (test Tuples)
+#target_link_libraries (test SemiStandardTableaux)
 
 
 

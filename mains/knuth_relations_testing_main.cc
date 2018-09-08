@@ -20,7 +20,7 @@ main (int argc, char **argv)
   desc.add_options () ("help,h", "Produces this help message.")    //
     ("input,i",
      po::value<std::string> (),
-     "Adds semistandard tableaux to the multiplication.");
+     "Sets the filename where the homomorphism to be tested is stored.");
 
   po::positional_options_description p;
   p.add ("input", -1);
